@@ -1,0 +1,30 @@
+answer_index:
+    path:     /
+    defaults: { _controller: "GMQuestionAnswersBundle:Answer:index" }
+    methods:  GET
+
+answer_show:
+    path:     /{id}/show
+    defaults: { _controller: "GMQuestionAnswersBundle:Answer:show" }
+    methods:  GET
+    requirements:
+        id: '\d+'
+
+answer_new:
+    path:     /new
+    defaults: { _controller: "GMQuestionAnswersBundle:Answer:new" }
+    methods:  [GET, POST]
+
+answer_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "GMQuestionAnswersBundle:Answer:edit" }
+    methods:  [GET, POST]
+    requirements:
+        id: '\d+'
+
+answer_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "GMQuestionAnswersBundle:Answer:delete" }
+    methods:  DELETE
+    requirements:
+        id: '\d+'

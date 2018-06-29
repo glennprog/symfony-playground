@@ -1,0 +1,10 @@
+php bin/console generate:doctrine:form QuestionAnswersBundle:Answer
+
+
+->add('cities', EntityType::class, array(
+                'class' => \AppBundle\Entity\Cities::class,
+                'choice_label' => 'cityname',
+                'choice_value' => 'cityid')
+            )
+
+            

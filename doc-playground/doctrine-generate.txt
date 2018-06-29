@@ -1,0 +1,52 @@
+Help command for example:
+    php bin/console help doctrine:cache:clear
+
+
+
+some commands :
+
+    doctrine:generate:entity
+    generate:bundle
+    generate:command
+    generate:controller
+    generate:doctrine:crud
+    generate:doctrine:entities
+    generate:doctrine:entity
+    generate:doctrine:form
+
+
+
+===== Plus constant =====
+      doctrine:cache:clear
+      doctrine:cache:clear-collection-region
+      doctrine:cache:clear-entity-region
+      doctrine:cache:clear-metadata
+      doctrine:cache:clear-query
+      doctrine:cache:clear-query-region
+      doctrine:cache:clear-result
+      doctrine:cache:contains
+      doctrine:cache:delete
+      doctrine:cache:flush
+      doctrine:cache:stats
+      doctrine:database:create
+      doctrine:database:drop
+      doctrine:database:import
+      doctrine:ensure-production-settings
+      doctrine:generate:crud
+      doctrine:generate:entities
+      doctrine:generate:entity
+      doctrine:generate:form
+      doctrine:mapping:convert
+      doctrine:mapping:import
+      doctrine:mapping:info
+      doctrine:query:dql
+      doctrine:query:sql
+      doctrine:schema:create
+      doctrine:schema:drop
+      doctrine:schema:update
+      doctrine:schema:validate
+      generate:doctrine:crud
+      generate:doctrine:entities
+      generate:doctrine:entity
+      generate:doctrine:form
+

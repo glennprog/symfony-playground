@@ -1,0 +1,8 @@
+1. git checkout -b updating-README-file
+2. git status
+3. ...... phase de développement .... 
+4. git commit -a -m "mise à jour du fichier README. Instruction pour bien initialiser son projet par rapport à : symfony, git"
+5. git status
+6. git checkout master
+7. git merge updating-README-file
+8. git push -u origin master

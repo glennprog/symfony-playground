@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block app_main_content %}
+    <h1>Answers list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Wording</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for answer in answers %}
+            <tr>
+                <td><a href="{{ path('answer_show', { 'id': answer.id }) }}">{{ answer.id }}</a></td>
+                <td>{{ answer.wording }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('answer_show', { 'id': answer.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('answer_edit', { 'id': answer.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('answer_new') }}">Create a new answer</a>
+        </li>
+    </ul>
+{% endblock %}

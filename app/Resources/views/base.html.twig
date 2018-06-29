@@ -2,12 +2,48 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Question-Answers{% endblock %}</title>
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('frameworks/bootstrap/css/bootstrap.min.css') }}" />
+            <link rel="stylesheet" href="{{ asset('application/css/application.css') }}" />
+            <!--
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+            <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+            -->
+        {% endblock %}
+</head>
+<body>
+    {% block body %}
+        {% block flashbag %}
+            {% if app.request.hasPreviousSession %}
+                {% for type, messages in app.session.flashbag.all() %}
+                    {% for message in messages %}
+                        <div class="flash-{{ type }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+        {% endblock %}
+        <div id="app_wrapper" class="app-wrapper">
+            <div id="app_bar_menu" class="app-barmenu">
+                {% block app_bar_menu %}{% endblock %}
+            </div>
+            <div id="app_side_menu" class="app-sidemenu">
+                {% block app_side_menu %}{% endblock %}
+            </div>
+            <div id="app_content" class="container-fluid app-content">
+                {% block app_main_content %}{% endblock %}
+            </div>
+            <div id="app_footer" class="app-footer">
+                {% block app_footer %}{% endblock %}
+            </div>
+        </div>
+    {% endblock %}
+    {% block javascripts %}
+            <script src="{{ asset('frameworks/jquery/jquery-3.3.1.min.js') }}"></script>
+            <script src="{{ asset('frameworks/bootstrap/js/bootstrap.min.js') }}"></script>
+    {% endblock %}
+</body>
 </html>

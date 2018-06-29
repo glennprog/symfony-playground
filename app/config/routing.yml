@@ -1,3 +1,7 @@
+gm_question_answers:
+    resource: "@GMQuestionAnswersBundle/Resources/config/routing.yml"
+    prefix:   /
+
 app:
     resource: '@AppBundle/Controller/'
     type: annotation

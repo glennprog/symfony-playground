@@ -1,0 +1,29 @@
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Gmf\GPricerBundle\Entity\product_ck_content\product_ck_content", inversedBy="fk_id_ck_content_price", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_ck_content", referencedColumnName="id")
+     */
+    private $fk_id_ck_content;
+
+    /**
+    * Extrait de la classe Region
+    * @var Collection $departements
+    *
+    * @ORMOneToMany(targetEntity="Departement", mappedBy="region", cascade={"persist", "remove", "merge"})
+    */
+    private $departements;
+
+    /**
+    * @ORM\ManyToOne(targetEntity=Question::class)
+    */
+    protected $question;
+
+    /**
+    * @ORM\OneToMany(targetEntity=Answer::class, cascade={"persist", "remove"}, mappedBy="question")
+    */
+    protected $answers;
+
+
+    //GM\QuestionAnswersBundle\Entity\Question
+
+    

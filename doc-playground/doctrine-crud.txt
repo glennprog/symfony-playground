@@ -1,0 +1,28 @@
+1.
+php bin/console doctrine:generate:entity
+
+2.
+add some fiedls (quick add, for example add just a description field (one fiedl))
+
+3
+php bin/console generate:doctrine:crud
+
+3
+php bin/console generate:doctrine:entities GMQuestionAnswersBundle:Answer
+php bin/console generate:doctrine:entities GMQuestionAnswersBundle:Question
+    or
+    "symfony/maker-bundle": "^1.5", and use make:entity --regenerate
+
+        => To read more about the differences between anemic and rich models go here (url bellow)
+        => http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/tutorials/getting-started.html#adding-behavior-to-entities.
+        
+        As Doctrine ORM is a persistence tool for your domain, the state of an object is really important.
+        This is why we strongly recommend using rich entities.
+
+4.
+php bin/console doctrine:schema:update --force
+
+5.
+php bin/console doctrine:schema:validate
+
+
