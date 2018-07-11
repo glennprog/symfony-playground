@@ -3,6 +3,7 @@
 namespace GM\QuestionAnswersBundle\Controller;
 
 use GM\QuestionAnswersBundle\Entity\Question;
+use GM\QuestionAnswersBundle\Entity\Answer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -57,11 +58,17 @@ class QuestionController extends Controller
      */
     public function showAction(Question $question)
     {
+        $em = $this->getDoctrine()->getManager(); // Récupération the entity manager doctrine.
+        $answers = $em->getRepository('GMQuestionAnswersBundle:Answer')->findBy(
+                array('question' => $question)
+        );
+
         $deleteForm = $this->createDeleteForm($question);
 
         return $this->render('question/show.html.twig', array(
             'question' => $question,
             'delete_form' => $deleteForm->createView(),
+            'answers' => $answers,
         ));
     }
 

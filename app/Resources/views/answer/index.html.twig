@@ -1,39 +1,30 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout_GMQuestionAnswersBundle.html.twig' %}
 
 {% block app_main_content %}
-    <h1>Answers list</h1>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Wording</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for answer in answers %}
-            <tr>
-                <td><a href="{{ path('answer_show', { 'id': answer.id }) }}">{{ answer.id }}</a></td>
-                <td>{{ answer.wording }}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('answer_show', { 'id': answer.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('answer_edit', { 'id': answer.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('answer_new') }}">Create a new answer</a>
-        </li>
-    </ul>
+    <div class="container-fluid">
+        <h1>Answers list</h1>
+        <table class="table table-dark table-bordered table-hover table-sm">
+            <caption>Answers list</caption>
+            <thead>
+                <tr class="bg-info">
+                    <th>Id</th>
+                    <th>Wording</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for answer in answers %}
+                <tr class="clickable-row" data-href="{{ path('answer_show', { 'id': answer.id }) }}">
+                    <td><a href="{{ path('answer_show', { 'id': answer.id }) }}">{{ answer.id }}</a></td>
+                    <td>{{ answer.wording }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col">
+                <a class="text-dark create-action" href="{{ path('answer_new') }}"><i class="fas fa-plus-square"></i> Add answer</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

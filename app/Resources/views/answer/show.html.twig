@@ -1,32 +1,76 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout_GMQuestionAnswersBundle.html.twig' %}
 
 {% block app_main_content %}
-    <h1>Answer</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="h1-questionanswer">Answer</h1>
+            </div>
+        </div>
+    
+        <div class="row">
+            <div class="col">
+                <table class="table table-sm">
+                    <tbody>
+                        <tr>
+                            <th>Id</th>
+                            <td>{{ answer.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Wording</th>
+                            <td>{{ answer.wording }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container container-action border-bottom">
+        <div class="row">
+            <div class="col">
+                <a class="text-dark link-no-decoration" href="{{ path('answer_edit', { 'id': answer.id }) }}"><i class="fas fa-edit"></i> Edit</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {{ form_start(delete_form) }}
+                    <i class="far fa-trash-alt"></i> <input class="bg-danger text-white border border-danger" type="submit" value="Delete">
+                {{ form_end(delete_form) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a class="text-dark link-no-decoration" href="{{ path('answer_index') }}"><i class="fas fa-arrow-left"></i> Back to the list</a>
+            </div>
+        </div>
+    </div>
 
-    <table>
-        <tbody>
-            <tr>
+
+    <h2 class="h1-questionanswer margin-top-xm">Question associated</h2>
+    <table class="table table-dark table-bordered table-hover table-sm">
+        <caption>Question associated</caption>
+        <thead>
+            <tr class="bg-info">
                 <th>Id</th>
-                <td>{{ answer.id }}</td>
-            </tr>
-            <tr>
                 <th>Wording</th>
-                <td>{{ answer.wording }}</td>
             </tr>
+        </thead>
+        <tbody>
+
+        {% if answer.question is iterable %}
+            {% for question in answer.question %}
+                <tr class="clickable-row" data-href="{{ path('question_show', { 'id': question.id }) }}">
+                    <td><a href="{{ path('question_show', { 'id': question.id }) }}">{{ question.id }}</a></td>
+                    <td>{{ question.wording }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+                <tr class="clickable-row" data-href="{{ path('question_show', { 'id': answer.question.id }) }}">
+                    <td><a href="{{ path('question_show', { 'id': answer.question.id }) }}">{{ answer.question.id }}</a></td>
+                    <td>{{ answer.question.wording }}</td>
+                </tr>
+        {% endif %}
         </tbody>
     </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('answer_index') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('answer_edit', { 'id': answer.id }) }}">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
 {% endblock %}

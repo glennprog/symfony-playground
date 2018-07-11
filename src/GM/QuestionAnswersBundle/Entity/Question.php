@@ -4,11 +4,14 @@ namespace GM\QuestionAnswersBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * Question
  *
  * @ORM\Table(name="question")
  * @ORM\Entity(repositoryClass="GM\QuestionAnswersBundle\Repository\QuestionRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Question
 {
@@ -23,6 +26,13 @@ class Question
 
     /**
     * @ORM\Column(type="string", nullable=false)
+    * @Assert\Length(
+    *      min = 3,
+    *      max = 50,
+    *      minMessage = "Question must be at least {{ limit }} characters long",
+    *      maxMessage = "Question cannot be longer than {{ limit }} characters"
+    * )
+    * @Assert\NotNull()
     */
     protected $wording;
 
@@ -31,13 +41,26 @@ class Question
      */
     public function __construct()
     {
+        //$this->create_date = new \DateTime("now");
+        //$this->update_date = new \DateTime("now");
         $this->answers = new \Doctrine\Common\Collections\ArrayCollection();
+        
     }
 
     public function __toString() {
         $format = "Question (id: %s, wording: %s)\n";
         return sprintf($format, $this->id, $this->wording);
     }
+
+    /** @ORM\Column(type="datetime", nullable=false)
+    * @Assert\DateTime()
+    */
+    private $create_date;
+
+    /** @ORM\Column(type="datetime", nullable=false)
+    * @Assert\DateTime()
+    */
+    private $update_date;
 
     /**
     * @var Collection
@@ -112,5 +135,63 @@ class Question
     public function getAnswers()
     {
         return $this->answers;
+    }
+
+    /**
+     * Set createDate
+     *
+     * @param \DateTime $createDate
+     *
+     * @return Question
+     */
+    public function setCreateDate($createDate)
+    {
+        $this->create_date = $createDate;
+
+        return $this;
+    }
+
+    /**
+     * Get createDate
+     *
+     * @return \DateTime
+     */
+    public function getCreateDate()
+    {
+        return $this->create_date;
+    }
+
+    /**
+     * Set updateDate
+     *
+     * @param \DateTime $updateDate
+     *
+     * @return Question
+     */
+    public function setUpdateDate($updateDate)
+    {
+        $this->update_date = $updateDate;
+
+        return $this;
+    }
+
+    /**
+     * Get updateDate
+     *
+     * @return \DateTime
+     */
+    public function getUpdateDate()
+    {
+        return $this->update_date;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreateUpdateDateValue()
+    {
+        //$this->createdAt = new \DateTime();
+        $this->create_date = new \DateTime("now");
+        $this->update_date = new \DateTime("now");
     }
 }

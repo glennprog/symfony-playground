@@ -1,22 +1,42 @@
-{% extends 'base.html.twig' %}
-{% form_theme edit_form 'bootstrap_3_horizontal_layout.html.twig' %}
+{% extends 'layout_GMQuestionAnswersBundle.html.twig' %}
 
 {% block app_main_content %}
-    <h1>Answer edit</h1>
-
-    {{ form_start(edit_form) }}
-        {{ form_widget(edit_form) }}
-        <input type="submit" value="Edit" />
-    {{ form_end(edit_form) }}
-
-    <ul>
-        <li>
-            <a href="{{ path('answer_index') }}">Back to the list</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    <div class="container">
+        <h1 class="h1-questionanswer">Answer edit</h1>
+        <div class="safe-margin-action">
+            {{ form_start(edit_form) }}
+            <div class="row safe-margin-action">
+                <div class="col">
+                    {{ form_label(edit_form.wording, 'Answer', {'label_attr': {'class': 'label-questionanswer-xl'}}) }}
+                    {{ form_errors(edit_form.wording)}}
+                    {{ form_widget(edit_form.wording, {'attr': {'class': 'input-questionanswer input-questionanswer-border', 'required':'true', 'autocomplete':'off'} }) }}
+                </div>
+            </div>
+            <div class="row safe-margin-action">
+                <div class="col">
+                    {{ form_label(edit_form.question, 'Choose question associated : ', {'label_attr': {'class': 'sub-label-questionanswer-xl'}}) }}
+                    {{ form_errors(edit_form.question) }}
+                    {{ form_widget(edit_form.question, {'attr': {'placeholder': 'Choose question associated', 'class': 'select-input-questionanswer', 'required':'true'} }) }}
+                </div>
+            </div> 
+            <div class="row margin-top-xm">
+                <div class="col">
+                    <input class="btn btn-outline-info main-default-btn" type="submit" value="Save" />
+                </div>
+            </div>
+            {{ form_end(edit_form) }}
+            <div class="row margin-top-xs">
+                <div class="col">
+                    {{ form_start(delete_form) }}
+                        <input class="btn btn-outline-danger main-default-btn" type="submit" value="Delete">
+                    {{ form_end(delete_form) }}
+                </div>
+                <div class="col">
+                    <a class="float-right text-dark back-list-xl" href="{{ path('answer_index') }}">Go to the list
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

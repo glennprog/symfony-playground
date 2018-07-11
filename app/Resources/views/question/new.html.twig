@@ -1,17 +1,28 @@
-{% extends 'base.html.twig' %}
-{% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+{% extends 'layout_GMQuestionAnswersBundle.html.twig' %}
 
 {% block app_main_content %}
-    <h1>Question creation</h1>
-
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <input type="submit" value="Create" />
-    {{ form_end(form) }}
-
-    <ul>
-        <li>
-            <a href="{{ path('question_index') }}">Back to the list</a>
-        </li>
-    </ul>
+    <div class="container">
+        <h1 class="h1-questionanswer">Question edit</h1>
+        <div class="safe-margin-action">
+            {{ form_start(form) }}
+            <div class="row safe-margin-action">
+                <div class="col">
+                    {{ form_label(form.wording, 'Question', {'label_attr': {'class': 'label-questionanswer-xl'}}) }}
+                    {{ form_errors(form.wording)}}
+                    {{ form_widget(form.wording, {'attr': {'class': 'input-questionanswer input-questionanswer-border', 'required':'true', 'autocomplete':'off'} }) }}
+                </div>
+            </div>
+            <div class="row margin-top-xm">
+                <div class="col">
+                    <input class="btn btn-outline-info main-default-btn" type="submit" value="Save" />
+                </div>
+                <div class="col">
+                    <a class="float-right text-dark back-list-xl" href="{{ path('question_index') }}">Go to the list
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}

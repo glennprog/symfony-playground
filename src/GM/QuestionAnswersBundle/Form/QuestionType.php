@@ -31,6 +31,4 @@ class QuestionType extends AbstractType
     {
         return 'gm_questionanswersbundle_question';
     }
-
-
 }
