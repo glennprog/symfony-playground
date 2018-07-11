@@ -23,7 +23,7 @@ class QuestionController extends Controller
 
         $questions = $em->getRepository('GMQuestionAnswersBundle:Question')->findAll();
 
-        return $this->render('question/index.html.twig', array(
+        return $this->render('GMQuestionAnswersBundle:question:index.html.twig', array(
             'questions' => $questions,
         ));
     }
@@ -46,10 +46,20 @@ class QuestionController extends Controller
             return $this->redirectToRoute('question_show', array('id' => $question->getId()));
         }
 
+        //GmfGPricerBundle:Pricing/pricing:index.html.twig
+        //if the template is in the BUndle ressources directory
+        return $this->render('GMQuestionAnswersBundle:question:new.html.twig', array(
+            'question' => $question,
+            'form' => $form->createView(),
+        ));
+
+        /*
+        //if the template is directly in app/Resources
         return $this->render('question/new.html.twig', array(
             'question' => $question,
             'form' => $form->createView(),
         ));
+        */
     }
 
     /**
@@ -65,7 +75,7 @@ class QuestionController extends Controller
 
         $deleteForm = $this->createDeleteForm($question);
 
-        return $this->render('question/show.html.twig', array(
+        return $this->render('GMQuestionAnswersBundle:question:show.html.twig', array(
             'question' => $question,
             'delete_form' => $deleteForm->createView(),
             'answers' => $answers,
@@ -88,7 +98,7 @@ class QuestionController extends Controller
             return $this->redirectToRoute('question_edit', array('id' => $question->getId()));
         }
 
-        return $this->render('question/edit.html.twig', array(
+        return $this->render('GMQuestionAnswersBundle:question:edit.html.twig', array(
             'question' => $question,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),

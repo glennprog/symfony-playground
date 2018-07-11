@@ -22,7 +22,7 @@ class AnswerController extends Controller
 
         $answers = $em->getRepository('GMQuestionAnswersBundle:Answer')->findAll();
 
-        return $this->render('answer/index.html.twig', array(
+        return $this->render('GMQuestionAnswersBundle:answer:index.html.twig', array(
             'answers' => $answers,
         ));
     }
@@ -45,7 +45,7 @@ class AnswerController extends Controller
             return $this->redirectToRoute('answer_show', array('id' => $answer->getId()));
         }
 
-        return $this->render('answer/new.html.twig', array(
+        return $this->render('GMQuestionAnswersBundle:answer:new.html.twig', array(
             'answer' => $answer,
             'form' => $form->createView(),
         ));
@@ -59,7 +59,7 @@ class AnswerController extends Controller
     {
         $deleteForm = $this->createDeleteForm($answer);
 
-        return $this->render('answer/show.html.twig', array(
+        return $this->render('GMQuestionAnswersBundle:answer:show.html.twig', array(
             'answer' => $answer,
             'delete_form' => $deleteForm->createView(),
         ));
@@ -81,7 +81,7 @@ class AnswerController extends Controller
             return $this->redirectToRoute('answer_edit', array('id' => $answer->getId()));
         }
 
-        return $this->render('answer/edit.html.twig', array(
+        return $this->render('GMQuestionAnswersBundle:answer:edit.html.twig', array(
             'answer' => $answer,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
