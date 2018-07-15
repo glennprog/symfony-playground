@@ -31,29 +31,11 @@ h1, h2{
     border-color: lightgray;
 }
 
-.margin-top-xm{
-    margin-top : 100px;
-}
-
-.margin-top-xs{
-    margin-top : 10px;
-}
-
-.margin-top-bottom-xm{
-    margin-top : 100px;
-    margin-bottom : 100px;
-}
 
 .container-action{
     margin-top : 43px;
     margin-bottom : 43px;
 }
-
-.safe-margin-action{
-    margin-top : 27px;
-    margin-bottom : 27px;
-}
-
 
 .link-no-decoration{
     text-decoration: none;

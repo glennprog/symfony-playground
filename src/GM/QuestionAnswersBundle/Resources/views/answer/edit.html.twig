@@ -26,11 +26,15 @@
             </div>
             {{ form_end(edit_form) }}
             <div class="row margin-top-xs">
-                <div class="col">
-                    {{ form_start(delete_form) }}
-                        <input class="btn btn-outline-danger main-default-btn" type="submit" value="Delete">
-                    {{ form_end(delete_form) }}
-                </div>
+
+                {% if delete_form is defined %}
+                    <div class="col">
+                        {{ form_start(delete_form) }}
+                            <input class="btn btn-outline-danger main-default-btn" type="submit" value="Delete">
+                        {{ form_end(delete_form) }}
+                    </div>
+                {% endif %}
+
                 <div class="col">
                     <a class="float-right text-dark back-list-xl" href="{{ path('answer_index') }}">Go to the list
                         <i class="fas fa-arrow-right"></i>

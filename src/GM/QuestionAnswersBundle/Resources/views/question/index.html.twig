@@ -1,29 +1,29 @@
 {% extends 'GMQuestionAnswersBundle::layout_GMQuestionAnswersBundle.html.twig' %}
 
 {% block app_main_content %}
-    <div class="container-fluid">
-    <h1 class="h1-questionanswer">Questions list</h1>
-    <table class="table table-dark table-bordered table-hover table-sm">
-        <caption>Questions list</caption>
-        <thead>
-            <tr class="bg-info">
-                <th>Id</th>
-                <th>Wording</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for question in questions %}
-            <tr class="clickable-row" data-href="{{ path('question_show', { 'id': question.id }) }}">
-                <td><a href="{{ path('question_show', { 'id': question.id }) }}">{{ question.id }}</a></td>
-                <td>{{ question.wording }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <div class="row">
-        <div class="col">
-            <a class="text-dark create-action" href="{{ path('question_new') }}"><i class="fas fa-plus-square"></i> Add question</a>
+    <div class="container">
+        <h1 class="h1-questionanswer">Questions list</h1>
+        <table class="table table-dark table-bordered table-hover table-sm">
+            <caption>Questions list</caption>
+            <thead>
+                <tr class="bg-info">
+                    <th>Id</th>
+                    <th>Wording</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for question in questions %}
+                <tr class="clickable-row" data-href="{{ path('question_show', { 'id': question.id }) }}">
+                    <td><a href="{{ path('question_show', { 'id': question.id }) }}">{{ question.id }}</a></td>
+                    <td>{{ question.wording }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col">
+                <a class="text-dark create-action" href="{{ path('question_new') }}"><i class="fas fa-plus-square"></i> Add question</a>
+            </div>
         </div>
-    </div>
     </div>
 {% endblock %}

@@ -7,3 +7,13 @@
 {% block javascriptsChild %}
     <script src="{{ asset('application/js/GMQuestionAnswersBundle.js') }}"></script>
 {% endblock %}
+
+{% block flashbag %}
+    <div class="container margin-top-xs">
+        {{parent()}}
+    </div>
+{% endblock %}
+
+
+
+            

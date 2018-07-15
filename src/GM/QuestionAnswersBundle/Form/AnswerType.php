@@ -5,12 +5,9 @@ namespace GM\QuestionAnswersBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
-
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Doctrine\ORM\EntityRepository;
 use GM\QuestionAnswersBundle\Entity\Question;
-
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class AnswerType extends AbstractType
 {
@@ -50,6 +47,10 @@ class AnswerType extends AbstractType
     public function getBlockPrefix()
     {
         return 'gm_questionanswersbundle_answer';
+    }
+
+    public function getName(){
+        return 'answer_type';
     }
 
 

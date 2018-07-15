@@ -7,6 +7,8 @@ use GM\QuestionAnswersBundle\Entity\Answer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
+use GM\QuestionAnswersBundle\Service\MessageGenerator;
+
 /**
  * Question controller.
  *
@@ -43,23 +45,15 @@ class QuestionController extends Controller
             $em->persist($question);
             $em->flush();
 
+            $message = MessageGenerator::Msg_InsertionDB_OK();
+            $this->addFlash('success', $message);
+
             return $this->redirectToRoute('question_show', array('id' => $question->getId()));
         }
-
-        //GmfGPricerBundle:Pricing/pricing:index.html.twig
-        //if the template is in the BUndle ressources directory
         return $this->render('GMQuestionAnswersBundle:question:new.html.twig', array(
             'question' => $question,
             'form' => $form->createView(),
         ));
-
-        /*
-        //if the template is directly in app/Resources
-        return $this->render('question/new.html.twig', array(
-            'question' => $question,
-            'form' => $form->createView(),
-        ));
-        */
     }
 
     /**
@@ -95,6 +89,9 @@ class QuestionController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
+            $message = MessageGenerator::Msg_UpdateDB_OK();
+            $this->addFlash('success', $message);
+
             return $this->redirectToRoute('question_edit', array('id' => $question->getId()));
         }
 
@@ -118,6 +115,9 @@ class QuestionController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->remove($question);
             $em->flush();
+
+            $message = MessageGenerator::Msg_DeleteDB_OK();
+            $this->addFlash('success', $message);
         }
 
         return $this->redirectToRoute('question_index');

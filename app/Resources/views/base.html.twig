@@ -7,7 +7,7 @@
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('frameworks/bootstrap/css/bootstrap.min.css') }}" />
             <link rel="stylesheet" href="{{ asset('application/css/application.css') }}" />
-            
+            <link rel="stylesheet" href="{{ asset('application/css/GMAlert.css') }}" />
             <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
             <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
             
@@ -17,17 +17,6 @@
 </head>
 <body>
     {% block body %}
-        {% block flashbag %}
-            {% if app.request.hasPreviousSession %}
-                {% for type, messages in app.session.flashbag.all() %}
-                    {% for message in messages %}
-                        <div class="flash-{{ type }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endfor %}
-            {% endif %}
-        {% endblock %}
         <div id="app_wrapper" class="app-wrapper">
             <div id="app_bar_menu" class="app-barmenu">
                 {% block app_bar_menu %}{% endblock %}
@@ -36,10 +25,26 @@
                 {% block app_side_menu %}{% endblock %}
             </div>
             <div id="app_content" class="container-fluid app-content">
+                {% block flashbag %}
+                    {% if app.request.hasPreviousSession %}
+                        {% for type, messages in app.session.flashbag.all() %}
+                            {% for message in messages %}
+                                <div class="gm-alert gm-{{ type }}">
+                                    <span class="gm-closebtn">&times;</span>  
+                                    <strong>{{ type }}!</strong> {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                {% endblock %}
                 {% block app_main_content %}{% endblock %}
             </div>
             <div id="app_footer" class="app-footer">
-                {% block app_footer %}{% endblock %}
+                {% block app_footer %}
+                    <footer class="container margin-top-xm gm-border-top">
+                        <p class="float-right footer-text">© The sky is not the limit  Glenn Milingui, GM vawes center <(^__^)></p>
+                    </footer>
+                {% endblock %}
             </div>
         </div>
     {% endblock %}
