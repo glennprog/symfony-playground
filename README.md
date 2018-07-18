@@ -15,7 +15,7 @@ Sera mise à jour bientôt en prenant compte des version symfony etc.
 php symfony.phar new playground 3.3.3
 ```
 
-2. (for linux users recommended)
+2. (Pour utilisateurs linux)
 ```
 HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
 ```
@@ -24,7 +24,7 @@ sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX var/cache var/logs var/s
 sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX var/cache var/logs var/sessions
 ```
 
-*OR (recommended)*
+*Ou aussi*
 ```
 sudo apt-get install acl
 sudo setfacl -R -m u:www-data:rX var/cache
@@ -32,7 +32,7 @@ sudo setfacl -dR -m u:www-data:rX var/cache
 and so ... and so ... for session, logs 
 ```
 
-*OR (but not recommended)*
+*Ou aussi (mais pas recommandé)*
 ```
 chmod -R 777 var/*  (or sudo chmod -R 777 var/)
 ```
