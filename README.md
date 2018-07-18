@@ -1,97 +1,111 @@
-playground
-==========
+# playground symfony
 
 A Symfony project created on June 26, 2018, 9:16 pm.
 
+Objectif :
+partager des astuces, des idées tant sur le code que sur l'installation ou le déploiement projet symfony.
 
+## Astuces/conseil Installation
 
-Installation and set-up for more and good helping. Please read this if needed.
-=============================================================================
-Translation comming soon asap ;-)
+Sera mise à jour bientôt en prenant compte des version symfony etc.
 
 
 1. Création du projet
 php symfony.phar new playground 3.3.3
 
 2. (for linux users recommended)
+```
 HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
+```
+```
 sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX var/cache var/logs var/sessions
 sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX var/cache var/logs var/sessions
+```
+```
+OR (recommended)
+sudo apt-get install acl
+sudo setfacl -R -m u:www-data:rX var/cache
+sudo setfacl -dR -m u:www-data:rX var/cache
+and so ... and so ... for session, logs 
+```
 
-    OR (recommended)
-    sudo apt-get install acl
-    sudo setfacl -R -m u:www-data:rX var/cache
-    sudo setfacl -dR -m u:www-data:rX var/cache
-    and so ... and so ... for session, logs 
-
-    OR (but not recommended)
-    chmod -R 777 var/*  (or sudo chmod -R 777 var/)
+```
+OR (but not recommended)
+chmod -R 777 var/*  (or sudo chmod -R 777 var/)
+```
 
 3. Mise à jour du composer
+```
 php composer.phar self-update
 php composer.phar update
+```
 
+## Astuces/conseil Installation et utilisation repo git
 
-4. Initialisation des réglages du repository git
+1. Initialisation des réglages du repository git
+```
 git init   
+```
 → à faire depuis la console par exemple dans le répertoire du projet
 
-5. Ajout et mandat de dépôt
+2. Ajout et mandat de dépôt
+```
 git add .
-=> Penser à gitignore pour enlever les fichier à ne pas déposer dans git (database configuration par exemple ...)
-→ à faire depuis la console par exemple dans le répertoire du projet        
+```
+=> Penser à gitignore pour enlever les fichier à ne pas déposer dans git (database configuration par exemple ...)      
 
-6. Voir le status du repository
-git status
-→ à faire depuis la console par exemple dans le répertoire du projet
+3. Voir le status du repository
+    git status
 
-7. Indiquer à Git de conserver les changements
-git commit -m "Initial commit"
-→ à faire depuis la console par exemple dans le répertoire du projet
+4. Indiquer à Git de conserver les changements
+    git commit -m "Initial commit"
 
-8. GitHub : Créer un nouveau repository sur github
-→ à faire depuis l'application github (https://github.com)
+5. GitHub : Créer un nouveau repository sur https://github.com
 
-9. 
-git remote add origin https://github.com/glennprog/symfony-playground.git
-→ à faire depuis la console par exemple dans le répertoire du projet
+6. git remote add origin https://github.com/glennprog/symfony-playground.git
     
-    9.1
+    6.1
     La commande au dessus utilise https et non ssh. Pour basculer en https, faire d'abord comme suite :
     git remote set-url origin https://github.com/glennprog/symfony-playground.git
     git remote -v
     => git remote -v pour vérifier si la configuration à bien basculer en https.
     => channel officiel help.github : https://help.github.com/articles/changing-a-remote-s-url/
 
-10. Pousser le code sur la branche distante dans GitHub
-git push -u origin master
-→ à faire depuis la console par exemple dans le répertoire du projet
+7. Pousser le code sur la branche distante dans GitHub
+    git push -u origin master
 
-11. Utiliser git à ses fins pour le projet
-Branch, edit, commit, merge, push
-
+8. Utiliser git à ses fins pour le projet
+    Branch, edit, commit, merge, push
 
 
 
-Principal Contenus du playground
-================================
+# Principal Contenus du playground
 
-Tous le contenus n'est pas renseigné, il sera mis à jour bientôt.
+Tous le contenu n'est pas renseigné, il sera mis à jour bientôt.
 
-- Commit des Services
+- Services
+    - QuestionHadnler service
     - AnswerHadnler service
     - WatchDogLogger service
     - message generator service
-    - injection of core Services
-    - injection of own service
+    - Form Manager service
+    - injection des service Core
+    - injection des services custom
 
-Bonus : 
-- Alerts message adding (could see here https://github.com/glennprog/custom-alert)
-- Using of flashbag and alert message box
-- using of repository for own queries, class : GM\QuestionAnswersBundle\Repository\WatchDogLoggerRepository
-- WatchDogLogger : A trailer log (with writing in DB) rfor the action handled in the application.
-- message generator : A generator of message regarding the action handled.
-- AnswerHadnler Handler of Answer (using as a service also)
+    Bonus : 
+    - Outils Alerts message (disponible depuis le repos https://github.com/glennprog/custom-alert)
+    - Utlisation des flashbag injecté dans la réponse de la requête.
+    - Utilisation des repository entité pour des requête custom (par exemple QuestionRepository)
+    - WatchDogLogger : Traceur de log sur Suppression et mis à jour; Avec écriture de log en DB par exemple.
+    - message generator : Un générateur de message associés aux actions (création, mise à jour, etc)
+    - AnswerHadnler Handler of Answer (using as a service also)
+
+Mise à jour du contenus bientôt
+
+# Arrive bientôt:
+
+Un prochain travail portera sur la documentation du code, avec la génération de la doc associée.
 
 
 
+<(^__^)>

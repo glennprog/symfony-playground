@@ -10,4 +10,12 @@ namespace GM\QuestionAnswersBundle\Repository;
  */
 class QuestionRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function onReadBy($readBy = 'id', $attrVal = null){ // put array option which contains ()
+        if ($readBy = 'all'){
+            $answers = $this->getEntityManager()->getRepository('GMQuestionAnswersBundle:Answer')->findAll();
+            return $answers;
+        }
+        $answers = $this->getEntityManager()->getRepository('GMQuestionAnswersBundle:Answer')->findBy(array($readBy => $attrVal));
+        return $answers;
+    }
 }

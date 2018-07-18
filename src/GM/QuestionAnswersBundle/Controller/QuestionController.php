@@ -7,7 +7,7 @@ use GM\QuestionAnswersBundle\Entity\Answer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
-use GM\QuestionAnswersBundle\Service\MessageGenerator;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 
 /**
  * Question controller.
@@ -21,13 +21,8 @@ class QuestionController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $questions = $em->getRepository('GMQuestionAnswersBundle:Question')->findAll();
-
-        return $this->render('GMQuestionAnswersBundle:question:index.html.twig', array(
-            'questions' => $questions,
-        ));
+        $questions = $this->getDoctrine()->getManager()->getRepository('GMQuestionAnswersBundle:Question')->findAll();
+        return $this->render('GMQuestionAnswersBundle:question:index.html.twig', array('questions' => $questions));
     }
 
     /**
@@ -36,106 +31,54 @@ class QuestionController extends Controller
      */
     public function newAction(Request $request)
     {
-        $question = new Question();
-        $form = $this->createForm('GM\QuestionAnswersBundle\Form\QuestionType', $question);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($question);
-            $em->flush();
-
-            $message = MessageGenerator::Msg_InsertionDB_OK();
-            $this->addFlash('success', $message);
-
-            return $this->redirectToRoute('question_show', array('id' => $question->getId()));
+        $questionHandler = $this->get('question_handler');
+        if ($questionHandler->onCreate()) {
+            return $this->redirectToRoute('question_show', array('id' => $questionHandler->getQuestion()->getId()));
         }
-        return $this->render('GMQuestionAnswersBundle:question:new.html.twig', array(
-            'question' => $question,
-            'form' => $form->createView(),
-        ));
+        return $this->render($this->getTwig('new'), array('form' => $questionHandler->getForm()->createView()));
     }
 
     /**
-     * Finds and displays a question entity.
-     *
+     * Finds and displays only one question entity. By Id.
      */
-    public function showAction(Question $question)
+    public function showAction($id, Question $question)
     {
-        $em = $this->getDoctrine()->getManager(); // Récupération the entity manager doctrine.
-        $answers = $em->getRepository('GMQuestionAnswersBundle:Answer')->findBy(
-                array('question' => $question)
-        );
-
-        $deleteForm = $this->createDeleteForm($question);
-
-        return $this->render('GMQuestionAnswersBundle:question:show.html.twig', array(
-            'question' => $question,
-            'delete_form' => $deleteForm->createView(),
-            'answers' => $answers,
-        ));
+        $answers = $this->get('answer_handler')->onReadBy('question', $id);
+        return $this->render($this->getTwig('show'), array('question' => $question, 'answers' => $answers, 'delete_form' => $this->getDeleteFormById($id)->createView()));
     }
 
     /**
-     * Displays a form to edit an existing question entity.
-     *
+     * Displays a form to edit only one existing question entity. By Id.
      */
-    public function editAction(Request $request, Question $question)
-    {
-        $deleteForm = $this->createDeleteForm($question);
-        $editForm = $this->createForm('GM\QuestionAnswersBundle\Form\QuestionType', $question);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            $message = MessageGenerator::Msg_UpdateDB_OK();
-            $this->addFlash('success', $message);
-
-            return $this->redirectToRoute('question_edit', array('id' => $question->getId()));
+    public function editAction($id, Question $question){
+        $questionHandler = $this->get('question_handler');
+        if ($questionHandler->onUpdate($question)) {
+            return $this->redirectToRoute('question_edit', array('id' => $id));
         }
-
-        return $this->render('GMQuestionAnswersBundle:question:edit.html.twig', array(
-            'question' => $question,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
+        return $this->render($this->getTwig('edit'), array('question' => $question, 'edit_form' => $questionHandler->getForm()->createView(), 'delete_form' => $this->getDeleteFormById($id)->createView()));
     }
 
     /**
-     * Deletes a question entity.
-     *
+     * Deletes only one question entity. By Id.
      */
-    public function deleteAction(Request $request, Question $question)
-    {
-        $form = $this->createDeleteForm($question);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($question);
-            $em->flush();
-
-            $message = MessageGenerator::Msg_DeleteDB_OK();
-            $this->addFlash('success', $message);
-        }
-
+    public function deleteAction($id, Question $question){
+        $this->get('question_handler')->OnDelete($question, "Deleting a question entity with id = ".$id);
         return $this->redirectToRoute('question_index');
     }
 
-    /**
-     * Creates a form to delete a question entity.
-     *
-     * @param Question $question The question entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(Question $question)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('question_delete', array('id' => $question->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
+    public function getDeleteFormById($id){
+        $option_delete_form = array('action' => $this->generateUrl('question_delete', array('id' => $id)), 'method' => 'DELETE');
+        $delete_form = $this->get('form_manager')->createForm(FormType::class, new Answer(), $option_delete_form, 'delete');
+        return $delete_form;
+    }
+
+    public function getTwig($template = 'index'){
+        $listTemplates = array(
+            'new' => 'GMQuestionAnswersBundle:question:new.html.twig',
+            'index' => 'GMQuestionAnswersBundle:question:index.html.twig',
+            'show' => 'GMQuestionAnswersBundle:question:show.html.twig',
+            'edit' => 'GMQuestionAnswersBundle:question:edit.html.twig',
+        );
+        return $listTemplates[$template];
     }
 }

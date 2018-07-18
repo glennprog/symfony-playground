@@ -55,7 +55,7 @@ class AnswerController extends Controller
      * Deletes only one answer entity. By Id.
      */
     public function deleteAction($id, Answer $answer){
-        $this->get('answer_handler')->OnDelete($answer, "Deleting of the answer entity with id = ".$id);
+        $this->get('answer_handler')->OnDelete($answer, "Deleting an answer entity with id = ".$id);
         return $this->redirectToRoute('answer_index');
     }
 
@@ -65,24 +65,12 @@ class AnswerController extends Controller
         return $delete_form;
     }
 
-
-    /* other version to work : to list an set of answer entity (for exemple by wording, etc)
-    public function showAction($id){
-        $answerHandler = $this->get('answer_handler');
-        $answer = $answerHandler->OnRead($readBy = 'id', $id);
-        $option_delete_form = array('action' => $this->generateUrl('answer_delete', array('id' => $id)), 'method' => 'DELETE');
-        $delete_form = $this->get('form_manager')->createForm(FormType::class, $answer, $option_delete_form, 'delete');
-        return $this->render($this->getTwig('show'), array('answer' => $answer[0], 'delete_form' => $answerHandler->getFormManager()->getDeleteForm()->createView()));
-    }
-    */
-
     public function getTwig($template = 'index'){
         $listTemplates = array(
             'new' => 'GMQuestionAnswersBundle:answer:new.html.twig',
             'index' => 'GMQuestionAnswersBundle:answer:index.html.twig',
             'show' => 'GMQuestionAnswersBundle:answer:show.html.twig',
             'edit' => 'GMQuestionAnswersBundle:answer:edit.html.twig',
-            'email-registration' => 'GMQuestionAnswersBundle:answer:email.html.twig',
         );
         return $listTemplates[$template];
     }

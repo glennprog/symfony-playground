@@ -10,24 +10,12 @@ namespace GM\QuestionAnswersBundle\Repository;
  */
 class AnswerRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function onReadByBy($readBy = 'id', $attrVal = null){ // put array option which contains ()
-        switch ($readBy) {
-            case 'id':
-                $answers = $this->getEntityManager()->getRepository('GMQuestionAnswersBundle:Answer')->findById($attrVal);
-                break;
-
-            case 'all':
-                $answers = $this->getEntityManager()->getRepository('GMQuestionAnswersBundle:Answer')->findAll();
-                break;
-
-            case 'answer':
-                $answers = $this->getEntityManager()->getRepository('GMQuestionAnswersBundle:Answer')->findByWording($attrVal);    
-                break;
-
-            default:
-                $answers = $this->getEntityManager()->findById($attrVal);
-                break;
+    public function onReadBy($readBy = 'id', $attrVal = null){ // put array option which contains ()
+        if ($readBy == 'all'){
+            $answers = $this->getEntityManager()->getRepository('GMQuestionAnswersBundle:Answer')->findAll();
+            return $answers;
         }
+        $answers = $this->getEntityManager()->getRepository('GMQuestionAnswersBundle:Answer')->findBy(array($readBy => $attrVal));
         return $answers;
     }
 }
