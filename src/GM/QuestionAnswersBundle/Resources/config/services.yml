@@ -3,7 +3,19 @@ services:
 #        class: GM\QuestionAnswersBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
 
+     watchdoglogger:
+         class: GM\QuestionAnswersBundle\Service\WatchDogLogger
+         arguments: ["@request_stack", "@doctrine.orm.entity_manager", "@security.token_storage","@security.authorization_checker", "@message_generator"]
+
      answer_handler:
          class: GM\QuestionAnswersBundle\Handler\AnswerHandler
-         # arguments: ["@form.factory", "@request_stack", "@doctrine.orm.entity_manager"]
-         arguments: [ '@router', "@request_stack", "@form.factory", "@doctrine.orm.entity_manager"]
+         arguments: ["@request_stack", "@doctrine.orm.entity_manager", "@watchdoglogger", "@message_generator", "@form_manager"]
+
+     message_generator:
+         class: GM\QuestionAnswersBundle\Service\MessageGenerator
+
+
+     form_manager:
+         class: GM\QuestionAnswersBundle\Service\FormManager
+         arguments: ["@form.factory"]
+

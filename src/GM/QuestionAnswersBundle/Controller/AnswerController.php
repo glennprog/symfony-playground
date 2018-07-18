@@ -3,7 +3,10 @@
 namespace GM\QuestionAnswersBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use GM\QuestionAnswersBundle\Entity\Answer;
 use GM\QuestionAnswersBundle\Handler\AnswerHandler;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 
 /**
  * Answer controller.
@@ -15,80 +18,63 @@ class AnswerController extends Controller
      * Lists all answer entities.
      */
     public function indexAction(){
-        $answers = $this->get('answer_handler')->OnRead($readBy = 'all');
+        $answers = $this->getDoctrine()->getManager()->getRepository('GMQuestionAnswersBundle:Answer')->findAll();
         return $this->render($this->getTwig('index'), array('answers' => $answers));
     }
 
     /**
      * Creates a new answer entity.
      */
-    public function newAction(){
+    public function newAction(Request $request){
         $answerHandler = $this->get('answer_handler');
-        if ($answerHandler->OnCreate()) {
-
-            /*
-            $mailMsg = "Creation of a new question : " . $answerHandler->getAnswerId();
-            $mailer = $this->get('app.mailer');
-            $mailer->send('glenn.milinuig@gmail.com', $mailMsg);
-            */
-
-            $name = 'Glenn M.';
-            $message = (new \Swift_Message('Hello Email'))
-            ->setSubject('Hello Email')
-            ->setFrom('glenn.milingui@gmail.com')
-            ->setTo('glenn.milingui@crossknowlegde.com')
-            ->setBody(
-                $this->renderView(
-                    // app/Resources/views/Emails/registration.html.twig
-                    $this->getTwig('email-registration'),
-                    array('name' => $name, 'answer' => $answerHandler->getAnswer())
-                ),
-                'text/html'
-            )
-            /*
-             * If you also want to include a plaintext version of the message
-            ->addPart(
-                $this->renderView(
-                    'Emails/registration.txt.twig',
-                    array('name' => $name)
-                ),
-                'text/plain'
-            )
-            */
-            ;
-            $this->get('mailer')->send($message);
-            return $this->redirectToRoute('answer_show', array('id' => $answerHandler->getAnswerId()));
+        if ($answerHandler->onCreate()) {
+            return $this->redirectToRoute('answer_show', array('id' => $answerHandler->getAnswer()->getId()));
         }
-        return $this->render($this->getTwig('new'), array('form' => $answerHandler->getCreateForm()->createView()));
+        return $this->render($this->getTwig('new'), array('form' => $answerHandler->getForm()->createView()));
     }
 
     /**
-     * Finds and displays a answer entity.
+     * Finds and displays only one answer entity. By Id.
      */
-    public function showAction(){
-        $answerHandler = $this->get('answer_handler');
-        $answer = $answerHandler->OnRead($readBy = 'id');
-        return $this->render($this->getTwig('show'), array('answer' => $answer, 'delete_form' => $answerHandler->getDeleteForm()->createView()));
+    public function showAction($id, Answer $answer){
+        return $this->render($this->getTwig('show'), array('answer' => $answer, 'delete_form' => $this->getDeleteFormById($id)->createView()));
     }
 
     /**
-     * Displays a form to edit an existing answer entity.
+     * Displays a form to edit only one existing answer entity. By Id.
      */
-    public function editAction(){
+    public function editAction($id, Answer $answer){
         $answerHandler = $this->get('answer_handler');
-        if ($answerHandler->OnUpdate($readBy = 'id')) {
-            return $this->redirectToRoute('answer_edit', array('id' => $answerHandler->getAnswerId()));
+        if ($answerHandler->onUpdate($answer)) {
+            return $this->redirectToRoute('answer_edit', array('id' => $answer->getId()));
         }
-        return $this->render($this->getTwig('edit'), array('answer' => $answerHandler->getanswer(), 'edit_form' => $answerHandler->getEditForm()->createView(), 'delete_form' => $answerHandler->getDeleteForm()->createView()));
+        return $this->render($this->getTwig('edit'), array('answer' => $answer, 'edit_form' => $answerHandler->getForm()->createView(), 'delete_form' => $this->getDeleteFormById($id)->createView()));
     }
     
     /**
-     * Deletes a answer entity.
+     * Deletes only one answer entity. By Id.
      */
-    public function deleteAction(){
-        $this->get('answer_handler')->OnDelete($readBy = 'id');
+    public function deleteAction($id, Answer $answer){
+        $this->get('answer_handler')->OnDelete($answer, "Deleting of the answer entity with id = ".$id);
         return $this->redirectToRoute('answer_index');
     }
+
+    public function getDeleteFormById($id){
+        $option_delete_form = array('action' => $this->generateUrl('answer_delete', array('id' => $id)), 'method' => 'DELETE');
+        $delete_form = $this->get('form_manager')->createForm(FormType::class, new Answer(), $option_delete_form, 'delete');
+        return $delete_form;
+    }
+
+
+    /* other version to work : to list an set of answer entity (for exemple by wording, etc)
+    public function showAction($id){
+        $answerHandler = $this->get('answer_handler');
+        $answer = $answerHandler->OnRead($readBy = 'id', $id);
+        $option_delete_form = array('action' => $this->generateUrl('answer_delete', array('id' => $id)), 'method' => 'DELETE');
+        $delete_form = $this->get('form_manager')->createForm(FormType::class, $answer, $option_delete_form, 'delete');
+        return $this->render($this->getTwig('show'), array('answer' => $answer[0], 'delete_form' => $answerHandler->getFormManager()->getDeleteForm()->createView()));
+    }
+    */
 
     public function getTwig($template = 'index'){
         $listTemplates = array(

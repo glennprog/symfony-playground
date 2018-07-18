@@ -72,3 +72,26 @@ Branch, edit, commit, merge, push
 
 
 
+
+Principal Contenus du playground
+================================
+
+Tous le contenus n'est pas renseigné, il sera mis à jour bientôt.
+
+- Commit des Services
+    - AnswerHadnler service
+    - WatchDogLogger service
+    - message generator service
+    - injection of core Services
+    - injection of own service
+
+Bonus : 
+- Alerts message adding (could see here https://github.com/glennprog/custom-alert)
+- Using of flashbag and alert message box
+- using of repository for own queries, class : GM\QuestionAnswersBundle\Repository\WatchDogLoggerRepository
+- WatchDogLogger : A trailer log (with writing in DB) rfor the action handled in the application.
+- message generator : A generator of message regarding the action handled.
+- AnswerHadnler Handler of Answer (using as a service also)
+
+
+

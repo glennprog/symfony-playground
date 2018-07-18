@@ -52,6 +52,10 @@ class Question
         return sprintf($format, $this->id, $this->wording);
     }
 
+    public function whoIAm(){
+        return "Question";
+    }
+
     /** @ORM\Column(type="datetime", nullable=false)
     * @Assert\DateTime()
     */
@@ -190,7 +194,6 @@ class Question
      */
     public function setCreateUpdateDateValue()
     {
-        //$this->createdAt = new \DateTime();
         $this->create_date = new \DateTime("now");
         $this->update_date = new \DateTime("now");
     }

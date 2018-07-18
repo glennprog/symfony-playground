@@ -6,10 +6,6 @@ parameters:
 
 services:
 
-    GM\QuestionAnswersBundle\Service\AppAdminEmail:
-        arguments:
-            $adminEmail: '%admin_email%'
-
     # default configuration for services in *this* file
     _defaults:
         # automatically injects dependencies in your services

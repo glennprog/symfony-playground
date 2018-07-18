@@ -53,4 +53,31 @@ class MessageGenerator
         return $messages[$index];
     }
 
+    public function Msg_ActionAdmin_FAIL(){
+        $messages = [
+            'Admin action denied for this action',
+            'You have not the right to this admin action',
+            'You are not allowed to this admin action',
+        ];
+
+        $index = array_rand($messages);
+
+        return $messages[$index];
+    }
+
+    public function getTokenStorage(){
+		return $this->tokenStorage;
+	}
+
+	public function setTokenStorage($tokenStorage){
+		$this->tokenStorage = $tokenStorage;
+	}
+
+	public function getAuthorizationChecker(){
+		return $this->authorizationChecker;
+	}
+
+	public function setAuthorizationChecker($authorizationChecker){
+		$this->authorizationChecker = $authorizationChecker;
+	}
 }

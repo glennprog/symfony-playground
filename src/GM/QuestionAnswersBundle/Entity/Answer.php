@@ -63,6 +63,10 @@ class Answer
         return sprintf($format, $this->id, $this->wording);
     }
 
+    public function whoIAm(){
+        return "Answer";
+    }
+
     /**
      * Get id
      *
