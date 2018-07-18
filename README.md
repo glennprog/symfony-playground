@@ -10,8 +10,10 @@ partager des astuces, des idées tant sur le code que sur l'installation ou le d
 Sera mise à jour bientôt en prenant compte des version symfony etc.
 
 
-1. Création du projet
+1. Création du projet (Symfony 3)
+```
 php symfony.phar new playground 3.3.3
+```
 
 2. (for linux users recommended)
 ```
@@ -21,16 +23,17 @@ HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep 
 sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX var/cache var/logs var/sessions
 sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX var/cache var/logs var/sessions
 ```
+
+*OR (recommended)*
 ```
-OR (recommended)
 sudo apt-get install acl
 sudo setfacl -R -m u:www-data:rX var/cache
 sudo setfacl -dR -m u:www-data:rX var/cache
 and so ... and so ... for session, logs 
 ```
 
+*OR (but not recommended)*
 ```
-OR (but not recommended)
 chmod -R 777 var/*  (or sudo chmod -R 777 var/)
 ```
 
@@ -40,43 +43,53 @@ php composer.phar self-update
 php composer.phar update
 ```
 
-## Astuces/conseil Installation et utilisation repo git
+## Astuces/conseil Installation et utilisation nouveau repo git du projet
 
 1. Initialisation des réglages du repository git
 ```
 git init   
 ```
-→ à faire depuis la console par exemple dans le répertoire du projet
 
 2. Ajout et mandat de dépôt
 ```
 git add .
 ```
-=> Penser à gitignore pour enlever les fichier à ne pas déposer dans git (database configuration par exemple ...)      
+
+Penser à gitignore pour enlever les fichier à ne pas déposer dans git (database configuration par exemple ...)      
 
 3. Voir le status du repository
-    git status
+```
+git status
+```
 
 4. Indiquer à Git de conserver les changements
-    git commit -m "Initial commit"
+```
+git commit -m "Initial commit"
+```
 
 5. GitHub : Créer un nouveau repository sur https://github.com
 
-6. git remote add origin https://github.com/glennprog/symfony-playground.git
-    
-    6.1
-    La commande au dessus utilise https et non ssh. Pour basculer en https, faire d'abord comme suite :
-    git remote set-url origin https://github.com/glennprog/symfony-playground.git
-    git remote -v
-    => git remote -v pour vérifier si la configuration à bien basculer en https.
-    => channel officiel help.github : https://help.github.com/articles/changing-a-remote-s-url/
+6. Add orignin  
+```
+git remote add origin https://github.com/glennprog/symfony-playground.git
+```
+La commande au dessus utilise https et non ssh. Pour basculer en https, faire d'abord comme suite :
+```
+git remote set-url origin https://github.com/glennprog/symfony-playground.git
+git remote -v
+```
+git remote -v pour vérifier si la configuration à bien basculer en https.
+channel officiel help.github : https://help.github.com/articles/changing-a-remote-s-url/
 
 7. Pousser le code sur la branche distante dans GitHub
-    git push -u origin master
+```
+git push -u origin master
+```
 
 8. Utiliser git à ses fins pour le projet
-    Branch, edit, commit, merge, push
-
+```
+Branch, edit, commit, merge, push, status, add ...
+```
 
 
 # Principal Contenus du playground
