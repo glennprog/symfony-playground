@@ -19,7 +19,7 @@
     {% block body %}
         <div id="app_wrapper" class="app-wrapper">
             <div id="app_bar_menu" class="app-barmenu">
-                {% block app_bar_menu %}{% endblock %}
+                {% block app_bar_menu %}{% include 'navigationbar.html.twig' %}{% endblock %}
             </div>
             <div id="app_side_menu" class="app-sidemenu">
                 {% block app_side_menu %}{% endblock %}

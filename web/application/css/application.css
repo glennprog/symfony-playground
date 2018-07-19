@@ -1,3 +1,29 @@
+:root {
+    --main-bg-color: rgb(15, 13, 12);
+    --main-btn-width: 140px;
+    --main-btn-height: 40px;
+    --main-input-color: #383838;
+    --main-input-font-size: 20px;
+    --main-color-1: #17a2b8;
+    --main-color-2: #96d9e4;/*rgb(45, 166, 223);*//*rgb(54, 166, 218);*/
+    --main-color-3: #ababab;
+    --main-h1-color: #ababab;
+    --main-h1-font-size: 21px;
+}
+
+.navbar-nav li.active{
+    border-bottom-style: solid;
+    border-width: 1px;
+    border-color: lightgray;
+}
+
+.navbar-nav li:hover{
+    color: #fff;
+    background-color: var(--main-color-1);
+    transition-duration: 0.3s;
+}
+
+
 .margin-top-xm{
     margin-top : 100px;
 }

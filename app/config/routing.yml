@@ -1,3 +1,7 @@
+gm_phototeque:
+    resource: "@GMPhototequeBundle/Resources/config/routing.yml"
+    prefix:   /
+
 gm_question_answers:
     resource: "@GMQuestionAnswersBundle/Resources/config/routing.yml"
     prefix:   /

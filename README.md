@@ -69,7 +69,7 @@ git commit -m "Initial commit"
 
 5. GitHub : Créer un nouveau repository sur https://github.com
 
-6. Add orignin  
+6. Add origin  
 ```
 git remote add origin https://github.com/glennprog/symfony-playground.git
 ```

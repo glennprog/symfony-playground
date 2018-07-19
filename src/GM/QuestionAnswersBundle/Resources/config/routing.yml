@@ -5,7 +5,3 @@ gm_question_answers_answer:
 gm_question_answers_question:
         resource: "@GMQuestionAnswersBundle/Resources/config/routing/question.yml"
         prefix:   /question
-
-gm_question_answers_homepage:
-    path:     /
-    defaults: { _controller: GMQuestionAnswersBundle:Default:index }

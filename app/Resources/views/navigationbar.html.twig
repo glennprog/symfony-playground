@@ -1,0 +1,29 @@
+
+{% block app_bar_menu %}
+<!--<div id="app_bar_menu" class="app-barmenu"></div>-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#"></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav navigation-menu">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('homeapp') }}">{{ 'Home'|trans }}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('question_index') }}">{{ 'Question & Answer'|trans }}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">{{ 'Phototheque'|trans }}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">{{ 'Project Management'|trans }}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">{{ 'Users'|trans }}</a>
+        </li>
+    </ul>
+  </div>
+</nav>
+{% endblock %}
