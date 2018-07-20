@@ -3,10 +3,13 @@ services:
 #        class: GM\QuestionAnswersBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
 
-     answer_handler:
-         class: GM\QuestionAnswersBundle\Handler\AnswerHandler
-         arguments: ["@request_stack", "@doctrine.orm.entity_manager", "@watchdoglogger", "@message_generator", "@form_manager"]
+        guid_generator:
+                class: AppBundle\Service\GuidGenerator
 
-     question_handler:
-         class: GM\QuestionAnswersBundle\Handler\QuestionHandler
-         arguments: ["@request_stack", "@doctrine.orm.entity_manager", "@watchdoglogger", "@message_generator", "@form_manager"]
+        answer_handler:
+                class: GM\QuestionAnswersBundle\Handler\AnswerHandler
+                arguments: ["@request_stack", "@doctrine.orm.entity_manager", "@watchdoglogger", "@message_generator", "@form_manager"]
+
+        question_handler:
+                class: GM\QuestionAnswersBundle\Handler\QuestionHandler
+                arguments: ["@request_stack", "@doctrine.orm.entity_manager", "@watchdoglogger", "@message_generator", "@form_manager"]

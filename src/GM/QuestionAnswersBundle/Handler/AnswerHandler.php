@@ -58,6 +58,7 @@ class AnswerHandler
             $resultInsertData = $this->getEntityManager()->flush(); // Try saving data in the data base;
             $this->getWatchdoglogger()->process("onUpdate", "Answer", $this->getForm()->getData()->getId(), $this->getForm()->getData()->getWording(), "Answer Handler");// Save the action in the log watchdog
             $this->SetFlashBag($this->getMsgGenerator()->Msg_UpdateDB_OK()); // Set a flashbag message to confirm the updating of the new answer.
+            $this->getWatchdoglogger()->cleanWatchDogLoggerData();
             return true; // Return true as everything (mostly answer's creation) is OK.
         }
         return false; // Return false if no submittion or validation form failed.

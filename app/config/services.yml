@@ -64,3 +64,7 @@ services:
     watchdoglogger:
             class: AppBundle\Service\WatchDogLogger
             arguments: ["@request_stack", "@doctrine.orm.entity_manager", "@security.token_storage","@security.authorization_checker", "@message_generator"]
+
+    base_handler:
+            class: GM\PhototequeBundle\Handler\PhotoHandler
+            arguments: ["@request_stack", "@doctrine.orm.entity_manager", "@watchdoglogger", "@message_generator", "@form_manager"]

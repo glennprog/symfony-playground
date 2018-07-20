@@ -62,5 +62,9 @@ class Configuration
     {
         return $this->guid;
     }
+
+    public function whoIAm(){
+        return "Configuration";
+    }
 }
 

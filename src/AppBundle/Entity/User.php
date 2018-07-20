@@ -216,4 +216,8 @@ class User extends FosUSER
         return $this->create_date;
     }
 
+    public function whoIAm(){
+        return "User";
+    }
+
 }

@@ -5,121 +5,74 @@ namespace GM\PhototequeBundle\Controller;
 use GM\PhototequeBundle\Entity\Photo;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use GM\PhototequeBundle\Form\PhotoType;
 
 /**
  * Photo controller.
- *
+ * Author : Glenn Milingui : Architect, Developer
  */
 class PhotoController extends Controller
 {
     /**
      * Lists all photo entities.
-     *
      */
-    public function indexAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $photos = $em->getRepository('GMPhototequeBundle:Photo')->findAll();
-
-        return $this->render('photo/index.html.twig', array(
-            'photos' => $photos,
-        ));
+    public function indexAction(){
+        $entity_handler = $this->get('base_handler');
+        $photos = $entity_handler->onReadBy('all',null,'GMPhototequeBundle:Photo');
+        return $this->render($this->getTwig('index'), array('photos' => $photos));
     }
 
     /**
-     * Creates a new photo entity.
-     *
+     * Creates a new Photo entity.
      */
-    public function newAction(Request $request)
-    {
-        $photo = new Photo($this->getUser());
-        $form = $this->createForm('GM\PhototequeBundle\Form\PhotoType', $photo);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($photo);
-            $em->flush();
-
-            return $this->redirectToRoute('photo_show', array('id' => $photo->getId()));
+    public function newAction(Request $request){
+        $entity_handler = $this->get('base_handler');
+        if ($entity_handler->onCreate(new Photo($this->getUser()), PhotoType::class)) {
+            return $this->redirectToRoute('photo_show', array('id' => $entity_handler->getEntityObj()->getId()));
         }
-
-        return $this->render('photo/new.html.twig', array(
-            'photo' => $photo,
-            'form' => $form->createView(),
-        ));
+        return $this->render($this->getTwig('new'), array('form' => $entity_handler->getForm()->createView()));
     }
 
     /**
-     * Finds and displays a photo entity.
-     *
+     * Finds and displays only one Photo entity. By Id.
      */
-    public function showAction(Photo $photo)
-    {
-        $deleteForm = $this->createDeleteForm($photo);
-
-        return $this->render('photo/show.html.twig', array(
-            'photo' => $photo,
-            'delete_form' => $deleteForm->createView(),
-        ));
+    public function showAction($id, Photo $photo){ // Benefits of Controller mechanic for retrieving photo entity directly in parameters.
+        return $this->render($this->getTwig('show'), array('photo' => $photo, 'delete_form' => $this->getDeleteFormById($id)->createView()));
     }
 
     /**
-     * Displays a form to edit an existing photo entity.
-     *
+     * Displays a form to edit only one existing photo entity. By Id.
      */
-    public function editAction(Request $request, Photo $photo)
-    {
-        $deleteForm = $this->createDeleteForm($photo);
-        $editForm = $this->createForm('GM\PhototequeBundle\Form\PhotoType', $photo);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $photo->setUpdateDate();
-            $this->getDoctrine()->getManager()->flush();
-
+    public function editAction($id, Photo $photo){
+        $entity_handler = $this->get('base_handler');
+        if ($entity_handler->onUpdate($photo, PhotoType::class)) {
             return $this->redirectToRoute('photo_edit', array('id' => $photo->getId()));
         }
-
-        return $this->render('photo/edit.html.twig', array(
-            'photo' => $photo,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
+        return $this->render($this->getTwig('edit'), array('photo' => $photo, 'edit_form' => $entity_handler->getForm()->createView(), 'delete_form' => $this->getDeleteFormById($id)->createView()));
     }
 
     /**
-     * Deletes a photo entity.
-     *
+     * Deletes only one photo entity. By Id.
      */
-    public function deleteAction(Request $request, Photo $photo)
-    {
-        $form = $this->createDeleteForm($photo);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($photo);
-            $em->flush();
-        }
-
+    public function deleteAction($id, Photo $photo){
+        $this->get('base_handler')->OnDelete($photo, "Deleting a photo entity with id = ".$id);
         return $this->redirectToRoute('photo_index');
     }
 
-    /**
-     * Creates a form to delete a photo entity.
-     *
-     * @param Photo $photo The photo entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(Photo $photo)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('photo_delete', array('id' => $photo->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
+    public function getDeleteFormById($id){
+        $option_delete_form = array('action' => $this->generateUrl('photo_delete', array('id' => $id)), 'method' => 'DELETE');
+        $delete_form = $this->get('form_manager')->createForm(FormType::class, new Photo($this->getUser()), $option_delete_form, 'delete');
+        return $delete_form;
+    }
+
+    public function getTwig($template = 'index'){
+        $listTemplates = array(
+            'new' => 'photo/new.html.twig',
+            'index' => 'photo/index.html.twig',
+            'show' => 'photo/show.html.twig',
+            'edit' => 'photo/edit.html.twig',
+        );
+        return $listTemplates[$template];
     }
 }

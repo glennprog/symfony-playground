@@ -84,7 +84,7 @@ class WatchDogLogger
             $this->SetFlashBag($this->getMsgGenerator()->Msg_ActionAdmin_FAIL());
             return false;
         }
-        $deletor = $this->getEntityManager()->getRepository('GMQuestionAnswersBundle:WatchDogLogger');
+        $deletor = $this->getEntityManager()->getRepository('AppBundle:WatchDogLogger');
         $result_deletor = $deletor->removeAll();
         return true;
     }

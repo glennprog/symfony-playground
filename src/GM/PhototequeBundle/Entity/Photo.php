@@ -238,4 +238,8 @@ class Photo
     {
         return $this->owner;
     }
+
+    public function whoIAm(){
+        return "Photo";
+    }
 }
