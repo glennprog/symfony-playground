@@ -16,6 +16,11 @@ $(document).ready(function () {
     });
     */
 
+    //###################### handle register button (nav bar) handle //##
+    $("#registration_at_login_form").on('click', function(){
+        window.location.href = $("#registration_at_login_form").data( "href"); 
+    });
+
     //###################### Custom alert handle //######################
     var close = document.getElementsByClassName("gm-closebtn");
     var i;

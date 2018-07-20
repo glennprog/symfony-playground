@@ -8,21 +8,37 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
     <ul class="navbar-nav navigation-menu">
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('homeapp') }}">{{ 'Home'|trans }}</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('question_index') }}">{{ 'Question & Answer'|trans }}</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">{{ 'Phototheque'|trans }}</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">{{ 'Project Management'|trans }}</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">{{ 'Users'|trans }}</a>
-        </li>
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('homeapp') }}"><i class="fas fa-home"></i> {{ 'Home'|trans }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('question_index') }}">{{ 'Question & Answer'|trans }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">{{ 'Phototheque'|trans }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">{{ 'Videotheque'|trans }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">{{ 'Project Management'|trans }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('fos_user_profile_show') }}"><i class="fas fa-user"></i> {{ 'Mon Profile'|trans }}</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('fos_user_security_logout') }}"><i class="fas fa-power-off"></i> {{ 'Déconnexion'|trans }}</a>
+            </li>
+        {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('fos_user_security_login') }}"><i class="fas fa-sign-in-alt"></i> {{ 'Connexion'|trans }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('fos_user_registration_register') }}"><i class="fas fa-chalkboard-teacher"></i> {{ 'Inscription'|trans }}</a>
+            </li>
+        {% endif %}
     </ul>
   </div>
 </nav>

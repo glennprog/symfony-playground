@@ -14,4 +14,9 @@
     </div>
 {% endblock %}
 
-{% block app_bar_menu %}{% include 'GMQuestionAnswersBundle::navbar_GMQuestionAnswersBundle.html.twig' %}{% endblock %}
+{% block app_bar_menu %}
+    {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+        <script>window.location.href = '{{ path("fos_user_security_login") }}'</script>
+    {% endif %}
+    {% include 'GMQuestionAnswersBundle::navbar_GMQuestionAnswersBundle.html.twig' %}
+{% endblock %}

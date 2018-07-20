@@ -1,3 +1,7 @@
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
+
 gm_phototeque:
     resource: "@GMPhototequeBundle/Resources/config/routing.yml"
     prefix:   /
@@ -6,6 +10,8 @@ gm_question_answers:
     resource: "@GMQuestionAnswersBundle/Resources/config/routing.yml"
     prefix:   /
 
-app:
-    resource: '@AppBundle/Controller/'
-    type: annotation
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+fos_user_change_password:
+    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"

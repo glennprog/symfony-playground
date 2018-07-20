@@ -1,0 +1,4 @@
+gm_phototeque_photo:
+    resource: "@GMPhototequeBundle/Resources/config/routing/photo.yml"
+    prefix:   /photo
+

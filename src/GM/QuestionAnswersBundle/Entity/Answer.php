@@ -3,8 +3,8 @@
 namespace GM\QuestionAnswersBundle\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
-
 use Doctrine\ORM\Mapping as ORM;
+use AppBundle\Service\GuidGenerator;
 
 /**
  * Answer
@@ -28,6 +28,13 @@ class Answer
 
     /** @ORM\Column(type="datetime", nullable=false) */
     private $update_date;
+
+    /**
+     * @var guid
+     *
+     * @ORM\Column(name="guid", type="guid", nullable=false, unique=true)
+     */
+    private $guid;
 
     /**
     * @ORM\Column(type="string", nullable=false)
@@ -56,6 +63,8 @@ class Answer
     {
         $this->create_date = new \DateTime("now");
         $this->update_date = new \DateTime("now"); 
+        $guidObj = new GuidGenerator();
+        $this->setGuid($guidObj->GUIDv4());
     }
 
     public function __toString() {
@@ -171,5 +180,29 @@ class Answer
     public function getUpdateDate()
     {
         return $this->update_date;
+    }
+
+    /**
+     * Set guid
+     *
+     * @param guid $guid
+     *
+     * @return Configuration
+     */
+    public function setGuid($guid)
+    {
+        $this->guid = $guid;
+
+        return $this;
+    }
+
+    /**
+     * Get guid
+     *
+     * @return guid
+     */
+    public function getGuid()
+    {
+        return $this->guid;
     }
 }

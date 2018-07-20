@@ -104,6 +104,7 @@ Tous le contenu n'est pas renseigné, il sera mis à jour bientôt.
     - Form Manager service
     - injection des service Core
     - injection des services custom
+    - Generator de guid
 
     Bonus : 
     - Outils Alerts message (disponible depuis le repos https://github.com/glennprog/custom-alert)
@@ -112,6 +113,28 @@ Tous le contenu n'est pas renseigné, il sera mis à jour bientôt.
     - WatchDogLogger : Traceur de log sur Suppression et mis à jour; Avec écriture de log en DB par exemple.
     - message generator : Un générateur de message associés aux actions (création, mise à jour, etc)
     - AnswerHadnler Handler of Answer (using as a service also)
+    - Generateur de GUID moins secure et très secure (avec open ssl par exemple)
+
+- Bar de navigation
+    - Layout pour l'app
+    - layout pour chaque bundle
+
+- Gestion d'utilisateur avec FOSUSER
+    ```
+    Voir la documentation symfony : http://symfony.com/doc/master/bundles/FOSUserBundle/index.html
+    ```
+    - Personalisation des templates FosUser
+        - register_content
+        - register confirmed
+        - security : login_content
+        - change password
+        - profile
+    - Class Utilisateur personnalisée (nom, prénom, guid)
+    - Personalisation du formulaire d'inscription : RegistrationFormType
+        - lien doc officielle : https://symfony.com/doc/current/bundles/FOSUserBundle/overriding_forms.html
+    - Connexion google [à faire]
+    - Connexion facebook [à faire]
+
 
 Mise à jour du contenus bientôt
 

@@ -3,8 +3,8 @@
 namespace GM\QuestionAnswersBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
 use Symfony\Component\Validator\Constraints as Assert;
+use AppBundle\Service\GuidGenerator;
 
 /**
  * Question
@@ -37,24 +37,11 @@ class Question
     protected $wording;
 
     /**
-     * Constructor
+     * @var guid
+     *
+     * @ORM\Column(name="guid", type="guid", nullable=false, unique=true)
      */
-    public function __construct()
-    {
-        //$this->create_date = new \DateTime("now");
-        //$this->update_date = new \DateTime("now");
-        $this->answers = new \Doctrine\Common\Collections\ArrayCollection();
-        
-    }
-
-    public function __toString() {
-        $format = "Question (id: %s, wording: %s)\n";
-        return sprintf($format, $this->id, $this->wording);
-    }
-
-    public function whoIAm(){
-        return "Question";
-    }
+    private $guid;
 
     /** @ORM\Column(type="datetime", nullable=false)
     * @Assert\DateTime()
@@ -72,6 +59,26 @@ class Question
     * @ORM\OneToMany(targetEntity=Answer::class, cascade={"remove"}, mappedBy="question")
     */
     protected $answers;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->answers = new \Doctrine\Common\Collections\ArrayCollection();
+        $guidObj = new GuidGenerator();
+        $this->setGuid($guidObj->GUIDv4());
+        
+    }
+
+    public function __toString() {
+        $format = "Question (id: %s, wording: %s)\n";
+        return sprintf($format, $this->id, $this->wording);
+    }
+
+    public function whoIAm(){
+        return "Question";
+    }
 
     /**
      * Get id
@@ -196,5 +203,29 @@ class Question
     {
         $this->create_date = new \DateTime("now");
         $this->update_date = new \DateTime("now");
+    }
+
+    /**
+     * Set guid
+     *
+     * @param guid $guid
+     *
+     * @return Configuration
+     */
+    public function setGuid($guid)
+    {
+        $this->guid = $guid;
+
+        return $this;
+    }
+
+    /**
+     * Get guid
+     *
+     * @return guid
+     */
+    public function getGuid()
+    {
+        return $this->guid;
     }
 }
