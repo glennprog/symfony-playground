@@ -1,0 +1,30 @@
+photo_index:
+    path:     /
+    defaults: { _controller: "GMPhototequeBundle:Photo:index" }
+    methods:  GET
+
+photo_show:
+    path:     /{id}/show
+    defaults: { _controller: "GMPhototequeBundle:Photo:show" }
+    methods:  GET
+    requirements:
+        id: '\d+'
+
+photo_new:
+    path:     /new
+    defaults: { _controller: "GMPhototequeBundle:Photo:new" }
+    methods:  [GET, POST]
+
+photo_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "GMPhototequeBundle:Photo:edit" }
+    methods:  [GET, POST]
+    requirements:
+        id: '\d+'
+
+photo_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "GMPhototequeBundle:Photo:delete" }
+    methods:  DELETE
+    requirements:
+        id: '\d+'
