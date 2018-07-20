@@ -179,10 +179,14 @@ class Question
      *
      * @return Question
      */
-    public function setUpdateDate($updateDate)
+    public function setUpdateDate($updateDate = null)
     {
-        $this->update_date = $updateDate;
-
+        if($updateDate == null){
+            $this->update_date = new \DateTime("now");
+        }
+        else{
+            $this->update_date = $updateDate;
+        }
         return $this;
     }
 
