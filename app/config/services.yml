@@ -53,3 +53,14 @@ services:
 
     guid_generator:
             class: AppBundle\Service\GuidGenerator
+
+    message_generator:
+            class: AppBundle\Service\MessageGenerator
+
+    form_manager:
+            class: AppBundle\Service\FormManager
+            arguments: ["@form.factory"]
+
+    watchdoglogger:
+            class: AppBundle\Service\WatchDogLogger
+            arguments: ["@request_stack", "@doctrine.orm.entity_manager", "@security.token_storage","@security.authorization_checker", "@message_generator"]

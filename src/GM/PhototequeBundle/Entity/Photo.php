@@ -38,26 +38,24 @@ class Photo
     private $update_date;
 
     /**
-    * @ORM\Column(type="string", nullable=false)
+    * @ORM\Column(type="string", nullable=true)
     * @Assert\Length(
     *      min = 3,
     *      max = 50,
     *      minMessage = "Nam must be at least {{ limit }} characters long",
     *      maxMessage = "Name cannot be longer than {{ limit }} characters"
     * )
-    * @Assert\NotNull()
     */
     protected $name;
 
     /**
-    * @ORM\Column(type="text", nullable=false)
+    * @ORM\Column(type="text", nullable=true)
     * @Assert\Length(
     *      min = 0,
     *      max = 100,
     *      minMessage = "Question must be at least {{ limit }} characters long",
     *      maxMessage = "Question cannot be longer than {{ limit }} characters"
     * )
-    * @Assert\NotNull()
     */
     protected $description;
 

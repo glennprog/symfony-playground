@@ -3,11 +3,10 @@
 namespace GM\QuestionAnswersBundle\Handler;
 
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Form\FormFactory;
 use Doctrine\ORM\EntityManager;
-use GM\QuestionAnswersBundle\Service\MessageGenerator;
-use GM\QuestionAnswersBundle\Service\WatchDogLogger;
-use GM\QuestionAnswersBundle\Service\FormManager;
+use AppBundle\Service\MessageGenerator;
+use AppBundle\Service\WatchDogLogger;
+use AppBundle\Service\FormManager;
 use GM\QuestionAnswersBundle\Entity\Question;
 use GM\QuestionAnswersBundle\Form\QuestionType;
 
