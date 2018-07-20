@@ -18,8 +18,8 @@ class PhotoController extends Controller
      * Lists all photo entities.
      */
     public function indexAction(){
-        $entity_handler = $this->get('base_handler');
-        $photos = $entity_handler->onReadBy('all',null,'GMPhototequeBundle:Photo');
+        $photo_handler = $this->get('photo_handler');
+        $photos = $photo_handler->onReadBy('all',null,'GMPhototequeBundle:Photo');
         return $this->render($this->getTwig('index'), array('photos' => $photos));
     }
 
@@ -27,11 +27,11 @@ class PhotoController extends Controller
      * Creates a new Photo entity.
      */
     public function newAction(Request $request){
-        $entity_handler = $this->get('base_handler');
-        if ($entity_handler->onCreate(new Photo($this->getUser()), PhotoType::class)) {
-            return $this->redirectToRoute('photo_show', array('id' => $entity_handler->getEntityObj()->getId()));
+        $photo_handler = $this->get('photo_handler');
+        if ($photo_handler->onCreate(new Photo($this->getUser()), PhotoType::class)) {
+            return $this->redirectToRoute('photo_show', array('id' => $photo_handler->getEntityObj()->getId()));
         }
-        return $this->render($this->getTwig('new'), array('form' => $entity_handler->getForm()->createView()));
+        return $this->render($this->getTwig('new'), array('form' => $photo_handler->getForm()->createView()));
     }
 
     /**
@@ -45,18 +45,18 @@ class PhotoController extends Controller
      * Displays a form to edit only one existing photo entity. By Id.
      */
     public function editAction($id, Photo $photo){
-        $entity_handler = $this->get('base_handler');
-        if ($entity_handler->onUpdate($photo, PhotoType::class)) {
+        $photo_handler = $this->get('photo_handler');
+        if ($photo_handler->onUpdate($photo, PhotoType::class)) {
             return $this->redirectToRoute('photo_edit', array('id' => $photo->getId()));
         }
-        return $this->render($this->getTwig('edit'), array('photo' => $photo, 'edit_form' => $entity_handler->getForm()->createView(), 'delete_form' => $this->getDeleteFormById($id)->createView()));
+        return $this->render($this->getTwig('edit'), array('photo' => $photo, 'edit_form' => $photo_handler->getForm()->createView(), 'delete_form' => $this->getDeleteFormById($id)->createView()));
     }
 
     /**
      * Deletes only one photo entity. By Id.
      */
     public function deleteAction($id, Photo $photo){
-        $this->get('base_handler')->OnDelete($photo, "Deleting a photo entity with id = ".$id);
+        $this->get('photo_handler')->OnDelete($photo, "Deleting a photo entity with id = ".$id);
         return $this->redirectToRoute('photo_index');
     }
 

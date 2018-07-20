@@ -114,6 +114,7 @@ Tous le contenu n'est pas renseigné, il sera mis à jour bientôt.
     - message generator : Un générateur de message associés aux actions (création, mise à jour, etc)
     - AnswerHadnler Handler of Answer (using as a service also)
     - Generateur de GUID moins secure et très secure (avec open ssl par exemple)
+    - BaseHandler in AppBundle
 
 - Bar de navigation
     - Layout pour l'app

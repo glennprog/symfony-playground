@@ -1,14 +1,14 @@
 <?php
 
-namespace GM\QuestionAnswersBundle\Handler;
+namespace GM\PhototequeBundle\Handler;
 
 use AppBundle\Handler\BaseHandler;
 
 /**
- * Question Handler.
+ * Photo Handler.
  *
  */
-class QuestionHandler extends BaseHandler
+class PhotoHandler extends BaseHandler
 {
     protected $answer;
     protected $requestStack;

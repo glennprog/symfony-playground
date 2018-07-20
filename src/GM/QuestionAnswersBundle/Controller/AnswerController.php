@@ -16,11 +16,12 @@ class AnswerController extends Controller
 {
 
     /**
-     * Lists all photo entities.
+     * Lists all answers entities.
      */
     public function indexAction(){
-        $entity_handler = $this->get('base_handler');
-        $answers = $entity_handler->onReadBy('all',null,'GMQuestionAnswersBundle:Answer');
+        $answer_handler =  $this->get('answer_handler');
+        $answer_handler = $this->get('answer_handler');
+        $answers = $answer_handler->onReadBy('all',null,'GMQuestionAnswersBundle:Answer');
         return $this->render($this->getTwig('index'), array('answers' => $answers));
     }
 
@@ -29,11 +30,11 @@ class AnswerController extends Controller
      * Creates a new answer entity.
      */
     public function newAction(Request $request){
-        $answerHandler = $this->get('base_handler');
-        if ($answerHandler->onCreate()) {
-            return $this->redirectToRoute('answer_show', array('id' => $answerHandler->getAnswer()->getId()));
+        $answer_handler = $this->get('answer_handler');
+        if ($answer_handler->onCreate(new Answer(), AnswerType::class)) {
+            return $this->redirectToRoute('answer_show', array('id' => $answer_handler->getEntityObj()->getId()));
         }
-        return $this->render($this->getTwig('new'), array('form' => $answerHandler->getForm()->createView()));
+        return $this->render($this->getTwig('new'), array('form' => $answer_handler->getForm()->createView()));
     }
 
     /**
@@ -47,18 +48,18 @@ class AnswerController extends Controller
      * Displays a form to edit only one existing answer entity. By Id.
      */
     public function editAction($id, Answer $answer){
-        $entity_handler = $this->get('base_handler');
-        if ($entity_handler->onUpdate($answer, AnswerType::class)) {
+        $answer_handler = $this->get('answer_handler');
+        if ($answer_handler->onUpdate($answer, AnswerType::class)) {
             return $this->redirectToRoute('answer_edit', array('id' => $answer->getId()));
         }
-        return $this->render($this->getTwig('edit'), array('answer' => $answer, 'edit_form' => $entity_handler->getForm()->createView(), 'delete_form' => $this->getDeleteFormById($id)->createView()));
+        return $this->render($this->getTwig('edit'), array('answer' => $answer, 'edit_form' => $answer_handler->getForm()->createView(), 'delete_form' => $this->getDeleteFormById($id)->createView()));
     }
 
     /**
      * Deletes only one answer entity. By Id.
      */
     public function deleteAction($id, Answer $answer){
-        $this->get('base_handler')->OnDelete($answer, "Deleting an answer entity with id = ".$id);
+        $this->get('answer_handler')->OnDelete($answer, "Deleting an answer entity with id = ".$id);
         return $this->redirectToRoute('answer_index');
     }
 
