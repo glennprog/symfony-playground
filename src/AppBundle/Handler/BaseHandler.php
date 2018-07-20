@@ -1,22 +1,20 @@
 <?php
 
-namespace GM\QuestionAnswersBundle\Handler;
+namespace AppBundle\Service;
 
 use Symfony\Component\HttpFoundation\RequestStack;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use AppBundle\Service\MessageGenerator;
 use AppBundle\Service\WatchDogLogger;
 use AppBundle\Service\FormManager;
-use GM\QuestionAnswersBundle\Entity\Answer;
-use GM\QuestionAnswersBundle\Form\AnswerType;
 
 /**
- * Answer Handler.
+ * Base Handler.
  *
  */
-class AnswerHandler
+class BaseHandler
 {
-    protected $answer;
+    protected $entityObj;
     protected $requestStack;
     protected $em;
     protected $msgGenerator;
@@ -24,7 +22,7 @@ class AnswerHandler
     protected $formManager;
     protected $form;
 
-    public function __construct(RequestStack $requestStack, EntityManager $em, WatchDogLogger $watchdoglogger, MessageGenerator $msgGenerator, FormManager $formManager){
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $em, WatchDogLogger $watchdoglogger, MessageGenerator $msgGenerator, FormManager $formManager){
         $this->setRequestStack($requestStack);
         $this->setEntityManager($em);
         $this->setMsgGenerator($msgGenerator);
@@ -32,44 +30,46 @@ class AnswerHandler
         $this->setFormManager($formManager);
     }
 
-    public function onReadBy($readBy = 'id', $attrVal = null){
-        $answers = $this->getEntityManager()->getRepository('GMQuestionAnswersBundle:Answer')->onReadBy($readBy, $attrVal);
-        return $answers;
+    public function onReadBy($readBy = 'id', $attrVal = null, $reposiroty = null){
+        $entities = $this->getEntityManager()->getRepository($reposiroty)->onReadBy($readBy, $attrVal);
+        return $entities;
     }
 
-    public function onCreate(){
-        $this->createAnswer(); // Create an Answer entity
-        $this->setForm($this->getFormManager()->createForm(AnswerType::class, $this->getAnswer(), array(), 'create')); // Create the new form of entity created above, and set the form in the form attribute of Answer Handler
+    public function onCreate($entityObj, $formTypeEntityClass){
+        $this->setEntityObj($entityObj);
+        $this->setForm($this->getFormManager()->createForm($formTypeEntityClass, $this->getEntityObj(), array(), 'create')); // Create the new form of entity created above, and set the form in the form attribute of Entity Handler
         $this->getForm()->handleRequest($this->getRequestStack()->getCurrentRequest()); // Attach the request on the form of handler
         if ($this->getForm()->isSubmitted() && $this->getForm()->isValid()) { // Test the submittion and validation of the form beforme try to save the data in the database
             $this->getEntityManager()->persist($this->getForm()->getData()); // Get the entity manager and persist 
             $resultInsertData = $this->getEntityManager()->flush(); // Try saving data in the data base;
-            $this->getWatchdoglogger()->process("onCreate", "Answer", $this->getForm()->getData()->getId(), $this->getForm()->getData()->getWording(), "Answer Handler"); // Save the action in the log watchdog
+            $this->getWatchdoglogger()->process("onCreate", $this->getEntityObj()->whoIAm(), $this->getEntityObj()->getId(), $this->getEntityObj()->getGuid(), "Entity Handler"); // Save the action in the log watchdog
             $this->SetFlashBag($this->getMsgGenerator()->Msg_InsertionDB_OK()); // Set a flashbag message to confirm the creation of the new answer.
             return true; // Return true as everything (mostly answer's creation) is OK.
         }
         return false; // Return false if no submittion or validation form failed.
     }
 
-    public function onUpdate($answer){
-        $this->setForm($this->getFormManager()->createForm(AnswerType::class, $answer, array(), 'update')); // Create the edit form of entity created above, and set the form in the form attribute of Answer Handler
+    public function onUpdate($entityObj, $formTypeEntityClass){
+        $this->setEntityObj($entityObj);
+        $this->setForm($this->getFormManager()->createForm($formTypeEntityClass, $this->getEntityObj(), array(), 'update')); // Create the edit form of entity created above, and set the form in the form attribute of Enity Handler
         $this->getForm()->handleRequest($this->getRequestStack()->getCurrentRequest()); // Attach the request on the form of handler
         if ($this->getForm()->isSubmitted() && $this->getForm()->isValid()) { // Test the submittion and validation of the form beforme try to save the data in the database
             $resultInsertData = $this->getEntityManager()->flush(); // Try saving data in the data base;
-            $this->getWatchdoglogger()->process("onUpdate", "Answer", $this->getForm()->getData()->getId(), $this->getForm()->getData()->getWording(), "Answer Handler");// Save the action in the log watchdog
+            $this->getWatchdoglogger()->process("onUpdate", $this->getEntityObj()->whoIAm(), $this->getEntityObj()->getId(), $this->getEntityObj()->getGuid(), "Entity Handler");// Save the action in the log watchdog
             $this->SetFlashBag($this->getMsgGenerator()->Msg_UpdateDB_OK()); // Set a flashbag message to confirm the updating of the new answer.
             return true; // Return true as everything (mostly answer's creation) is OK.
         }
         return false; // Return false if no submittion or validation form failed.
     }
 
-    public function OnDelete($entity, $appMsg){
-        $id = $entity->getId(); // Keep the id data before that the object will be deleted.
-        $anIdentifyEntity = $entity->__toString(); // Keep the wording data before that the object will be deleted.
-        $this->getEntityManager()->remove($entity); // Get the entity manager and prepare removing of the answer.
+    public function OnDelete($entityObj, $appMsg){
+        $this->setEntityObj($entityObj);
+        $id = $this->getEntityObj()->getId(); // Keep the id data before that the object will be deleted.
+        $anIdentifyEntity = $this->getEntityObj()->getGuid(); // Keep the wording data before that the object will be deleted.
+        $this->getEntityManager()->remove($this->getEntityObj()); // Get the entity manager and prepare removing of the answer.
         $this->getEntityManager()->flush();  // Execute query to remove the answer from the database
         $this->SetFlashBag($this->getMsgGenerator()->Msg_DeleteDB_OK()); // Set a flashbag message to confirm the deleting of the answer.
-        $this->getWatchdoglogger()->process("onDelete", $entity->whoIAm(), $id, $anIdentifyEntity, $appMsg); //Save in watcher after the data has been deleted well from the database.
+        $this->getWatchdoglogger()->process("onDelete", $this->getEntityObj()->whoIAm(), $id, $anIdentifyEntity, $appMsg); //Save in watcher after the data has been deleted well from the database.
         return true;
     }
 
@@ -94,20 +94,12 @@ class AnswerHandler
         return $this->em;
     }    
 
-    public function getAnswer(){
-        return $this->answer;
+    public function getEntityObj(){
+        return $this->entityObj;
     }
 
-    public function setAnswer(Answer $answer){
-        $this->answer = $answer;
-    }
-
-    public function createAnswer(){
-        $this->setAnswer(new Answer());
-    }
-
-    public function getAnswerId(){
-        return $this->getAnswer()->getId();
+    public function setEntityObj($entityObj){
+        $this->entityObj = $entityObj;
     }
 
     public function getMsgGenerator(){
