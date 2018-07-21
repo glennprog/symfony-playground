@@ -33,4 +33,9 @@ $(document).ready(function () {
         }
     }
 
+    //###################### CLickable row handle //######################
+    $(".clickable-row").click(function() {
+        window.location = $(this).data("href");
+    });
+
 });

@@ -1,13 +1,12 @@
 {% extends '::base.html.twig' %}
-
-{% block title %}QuesAnsw{% endblock %}
+{% block title %}My Photo{% endblock %}
 
 {% block stylesheetsChild %}
-    <link rel="stylesheet" href="{{ asset('application/css/GMQuestionAnswersBundle.css') }}" />
+    <link rel="stylesheet" href="{{ asset('application/css/GMPhototequeBundle.css') }}" />
 {% endblock %}
 
 {% block javascriptsChild %}
-    <script src="{{ asset('application/js/GMQuestionAnswersBundle.js') }}"></script>
+    <script src="{{ asset('application/js/GMPhototequeBundle.js') }}"></script>
 {% endblock %}
 
 {% block flashbag %}
@@ -20,5 +19,6 @@
     {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}
         <script>window.location.href = '{{ path("fos_user_security_login") }}'</script>
     {% endif %}
-    {% include 'GMQuestionAnswersBundle::navbar_GMQuestionAnswersBundle.html.twig' %}
+    {% include 'GMPhototequeBundle::navbar_GMPhototequeBundle.html.twig' %}
+
 {% endblock %}

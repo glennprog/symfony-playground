@@ -1,47 +1,37 @@
-{% extends 'base.html.twig' %}
+{% extends 'GMPhototequeBundle::layout_GMPhototequeBundle.html.twig' %}
 
-{% block body %}
-    <h1>Photos list</h1>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Guid</th>
-                <th>Create_date</th>
-                <th>Update_date</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for photo in photos %}
-            <tr>
-                <td><a href="{{ path('photo_show', { 'id': photo.id }) }}">{{ photo.id }}</a></td>
-                <td>{{ photo.guid }}</td>
-                <td>{% if photo.createdate %}{{ photo.createdate|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if photo.updatedate %}{{ photo.updatedate|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{{ photo.name }}</td>
-                <td>{{ photo.description }}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('photo_show', { 'id': photo.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('photo_edit', { 'id': photo.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('photo_new') }}">Create a new photo</a>
-        </li>
-    </ul>
+{% block app_main_content %}
+    <div class="container">
+        <h1 class="h1-questionanswer">Questions list</h1>
+        <table class="table table-dark table-bordered table-hover table-sm">
+            <caption>photo list</caption>
+            <thead>
+                <tr class="bg-info">
+                    <th>Id</th>
+                    <th>Guid</th>
+                    <th>Create_date</th>
+                    <th>Update_date</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for photo in photos %}
+                <tr class="clickable-row" data-href="{{ path('photo_show', { 'id': photo.id }) }}">
+                    <td><a href="{{ path('photo_show', { 'id': photo.id }) }}">{{ photo.id }}</a></td>
+                    <td>{{ photo.guid }}</td>
+                    <td>{% if photo.createdate %}{{ photo.createdate|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    <td>{% if photo.updatedate %}{{ photo.updatedate|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    <td>{{ photo.name }}</td>
+                    <td>{{ photo.description }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col">
+                <a class="text-dark create-action" href="{{ path('photo_new') }}"><i class="fas fa-plus-square"></i> Add photo</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

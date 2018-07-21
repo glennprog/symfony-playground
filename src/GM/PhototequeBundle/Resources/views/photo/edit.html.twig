@@ -1,21 +1,46 @@
-{% extends 'base.html.twig' %}
+{% extends 'GMPhototequeBundle::layout_GMPhototequeBundle.html.twig' %}
 
-{% block body %}
-    <h1>Photo edit</h1>
+{% block app_main_content %}
+    <div class="container">
+        <h1 class="h1-app">Photo edit</h1>
+        <div class="full-margin-m">
+            {{ form_start(edit_form) }}
+            <div class="row full-margin-m">
+                <div class="col">
+                    {{ form_label(edit_form.name, 'Name', {'label_attr': {'class': 'sub-label-app-sm'}}) }}
+                    {{ form_errors(edit_form.name)}}
+                    {{ form_widget(edit_form.name, {'attr': {'class': 'input-app input-app-border', 'required':'true', 'autocomplete':'off'} }) }}
+                </div>
+            </div>
+            <div class="row full-margin-m">
+                <div class="col">
+                    {{ form_label(edit_form.description, 'Description', {'label_attr': {'class': 'sub-label-app-sm'}}) }}
+                    {{ form_errors(edit_form.description) }}
+                    {{ form_widget(edit_form.description, {'attr': {'class': 'text-input-app text-input-app-border'} }) }}
+                </div>
+            </div> 
+            <div class="row margin-top-m">
+                <div class="col">
+                    <input class="btn btn-outline-info main-default-btn" type="submit" value="Save" />
+                </div>
+            </div>
+            {{ form_end(edit_form) }}
+            <div class="row margin-top-xs">
 
-    {{ form_start(edit_form) }}
-        {{ form_widget(edit_form) }}
-        <input type="submit" value="Edit" />
-    {{ form_end(edit_form) }}
+                {% if delete_form is defined %}
+                    <div class="col">
+                        {{ form_start(delete_form) }}
+                            <input class="btn btn-outline-danger main-default-btn" type="submit" value="Delete">
+                        {{ form_end(delete_form) }}
+                    </div>
+                {% endif %}
 
-    <ul>
-        <li>
-            <a href="{{ path('photo_index') }}">Back to the list</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+                <div class="col">
+                    <a class="float-right text-dark back-list-xl" href="{{ path('photo_index') }}">Go to the list
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

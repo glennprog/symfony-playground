@@ -68,10 +68,10 @@ class PhotoController extends Controller
 
     public function getTwig($template = 'index'){
         $listTemplates = array(
-            'new' => 'photo/new.html.twig',
-            'index' => 'photo/index.html.twig',
-            'show' => 'photo/show.html.twig',
-            'edit' => 'photo/edit.html.twig',
+            'new' => 'GMPhototequeBundle:photo:new.html.twig',
+            'index' => 'GMPhototequeBundle:photo:index.html.twig',
+            'show' => 'GMPhototequeBundle:photo:show.html.twig',
+            'edit' => 'GMPhototequeBundle:photo:edit.html.twig',
         );
         return $listTemplates[$template];
     }

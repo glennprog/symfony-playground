@@ -1,16 +1,34 @@
-{% extends 'base.html.twig' %}
-
-{% block body %}
-    <h1>Photo creation</h1>
-
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <input type="submit" value="Create" />
-    {{ form_end(form) }}
-
-    <ul>
-        <li>
-            <a href="{{ path('photo_index') }}">Back to the list</a>
-        </li>
-    </ul>
+{% extends 'GMPhototequeBundle::layout_GMPhototequeBundle.html.twig' %}
+{% block app_main_content %}
+    <div class="container">
+        <h1 class="h1-app">{{'Add photo'|trans}}</h1>
+        <div class="safe-margin-action">
+            {{ form_start(form) }}
+            <div class="row full-margin-m">
+                <div class="col">
+                    {{ form_label(form.name, 'Name', {'label_attr': {'class': 'sub-label-app-sm'}}) }}
+                    {{ form_errors(form.name)}}
+                    {{ form_widget(form.name, {'attr': {'class': 'input-app input-app-border', 'required':'true', 'autocomplete':'off'} }) }}
+                </div>
+            </div>
+            <div class="row full-margin-m">
+                <div class="col">
+                    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'sub-label-app-sm'}}) }}
+                    {{ form_errors(form.description) }}
+                    {{ form_widget(form.description, {'attr': {'class': 'text-input-app text-input-app-border', 'autocomplete':'off'} }) }}
+                </div>
+            </div> 
+            <div class="row full-margin-m">
+                <div class="col">
+                    <input class="btn btn-outline-info main-default-btn" type="submit" value="Save" />
+                </div>
+                <div class="col">
+                    <a class="float-right text-dark back-list-xl" href="{{ path('photo_index') }}">Go to the list
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}
