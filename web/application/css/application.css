@@ -104,7 +104,7 @@ h1, h2{
 
 .input-app-border{
     border-bottom-style: solid;
-    border-width: 2px;
+    border-width: 1px;
     border-color: lightgray;
 }
 
@@ -174,6 +174,27 @@ h1, h2{
 }
 
 
+/*##################### Create/Edit action :      ##############*/
+.main-default-btn{
+    width: var(--main-btn-width);
+    height: auto;
+}
+
+.create-action{
+    background-color: #17a2b8;/*#389986;*/
+    color: white;
+    padding: 8px 11px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.create-action:hover{
+    text-decoration: none;
+    padding: 14px 25px;
+    transition-duration: 0.5s;
+}
+
+
 /*##################### Others :      #####################*/
 
 
@@ -187,6 +208,11 @@ h1, h2{
     margin-bottom : 100px;
 }
 
+
+.date-datepicker-boxsize{
+    width: 130px;
+    text-align: center;
+}
 
 
 

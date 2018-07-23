@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new GM\QuestionAnswersBundle\GMQuestionAnswersBundle(),
             new GM\PhototequeBundle\GMPhototequeBundle(),
             new FOS\UserBundle\FOSUserBundle(),
+            new GM\VideothequeBundle\GMVideothequeBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

@@ -65,6 +65,18 @@ class MessageGenerator
         return $messages[$index];
     }
 
+    public function Msg_Action_FAIL(){
+        $messages = [
+            'Action denied for this action',
+            'You have not the right to this run action',
+            'You are not allowed to this action',
+        ];
+
+        $index = array_rand($messages);
+
+        return $messages[$index];
+    }
+
     public function getTokenStorage(){
 		return $this->tokenStorage;
 	}

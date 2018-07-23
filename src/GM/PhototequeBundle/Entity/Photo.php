@@ -42,7 +42,7 @@ class Photo
     * @Assert\Length(
     *      min = 3,
     *      max = 50,
-    *      minMessage = "Nam must be at least {{ limit }} characters long",
+    *      minMessage = "Name must be at least {{ limit }} characters long",
     *      maxMessage = "Name cannot be longer than {{ limit }} characters"
     * )
     */
@@ -71,7 +71,7 @@ class Photo
     /**
      * Constructor
      */
-    public function __construct(Owner $owner )
+    public function __construct(Owner $owner)
     {
         $this->create_date = new \DateTime("now");
         $this->update_date = new \DateTime("now"); 
@@ -237,6 +237,16 @@ class Photo
     public function getOwner()
     {
         return $this->owner;
+    }
+
+    public function isOwner($id){
+
+        if($this->getOwner()->getId() === $id){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     public function whoIAm(){

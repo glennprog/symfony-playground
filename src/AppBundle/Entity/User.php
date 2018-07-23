@@ -73,6 +73,19 @@ class User extends FosUSER
     */
     protected $photos;
 
+    /**
+    * @var Collection
+    *
+    * @ORM\OneToMany(targetEntity="GM\VideothequeBundle\Entity\Categorie", cascade={"remove"}, mappedBy="owner")
+    */
+    protected $videotheque_categories;
+
+    /**
+    * @var Collection
+    *
+    * @ORM\OneToMany(targetEntity="GM\VideothequeBundle\Entity\Film", cascade={"remove"}, mappedBy="owner")
+    */
+    protected $videotheque_films;
 
     /**
      * Get id
@@ -83,7 +96,6 @@ class User extends FosUSER
     {
         return $this->id;
     }
-
 
     /**
      * Set guid

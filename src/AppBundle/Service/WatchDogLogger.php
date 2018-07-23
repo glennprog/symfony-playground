@@ -42,7 +42,7 @@ class WatchDogLogger
             $this->setIdUserHandled(0);
         }
         else{
-            $this->setIdUserHandled(1); /** To Do : Have to develop the stuff to retrieve user id */
+            $this->setIdUserHandled($this->getTokenStorage()->getToken()->getUser()->getId()); /** To Do : Have to develop the stuff to retrieve user id */
         }
         $this->setObjHandled($objHandled);
         $this->setIdObjHandled($idObjHandled);

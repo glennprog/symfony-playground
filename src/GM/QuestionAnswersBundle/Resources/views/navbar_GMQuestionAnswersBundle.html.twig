@@ -13,21 +13,20 @@
                 <a class="nav-link" href="{{ path('homeapp') }}"><i class="fas fa-home"></i> {{ 'Home'|trans }}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('question_index') }}">{{ 'Question list'|trans }}</a>
+                <a class="nav-link" href="{{ path('question_index') }}"><i class="fas fa-list-ul"></i> {{ 'Question list'|trans }}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('question_new') }}">{{ 'Create Answer'|trans }}</a>
+                <a class="nav-link" href="{{ path('question_new') }}"><i class="fas fa-plus-circle"></i> {{ 'Create Answer'|trans }}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('answer_index') }}">{{ 'Answer list'|trans }}</a>
+                <a class="nav-link" href="{{ path('answer_index') }}"><i class="fas fa-list-ul"></i> {{ 'Answer list'|trans }}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('answer_new') }}">{{ 'Create Answer'|trans }}</a>
+                <a class="nav-link" href="{{ path('answer_new') }}"><i class="fas fa-plus-circle"></i> {{ 'Create Answer'|trans }}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('fos_user_profile_show') }}"><i class="fas fa-user"></i> {{ 'Mon Profile'|trans }}</a>
+                <a class="nav-link" href="{{ path('fos_user_profile_show') }}"><i class="fas fa-user"></i> {{app.user.username}}</a>
             </li>
-
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('fos_user_security_logout') }}"><i class="fas fa-power-off"></i> {{ 'Déconnexion'|trans }}</a>
             </li>

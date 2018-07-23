@@ -2,6 +2,10 @@ app:
     resource: '@AppBundle/Controller/'
     type: annotation
 
+gm_videotheque:
+    resource: "@GMVideothequeBundle/Resources/config/routing.yml"
+    prefix:   /videotheque
+
 gm_phototeque:
     resource: "@GMPhototequeBundle/Resources/config/routing.yml"
     prefix:   /

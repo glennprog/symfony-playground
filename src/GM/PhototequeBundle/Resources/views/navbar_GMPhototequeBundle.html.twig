@@ -13,15 +13,14 @@
                 <a class="nav-link" href="{{ path('homeapp') }}"><i class="fas fa-home"></i> {{ 'Home'|trans }}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('photo_index') }}">{{ 'Photo list'|trans }}</a>
+                <a class="nav-link" href="{{ path('photo_index') }}"><i class="fas fa-list-ul"></i> {{ 'Photo list'|trans }}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('photo_new') }}">{{ 'Add Photo'|trans }}</a>
+                <a class="nav-link" href="{{ path('photo_new') }}"><i class="fas fa-plus-circle"></i> {{ 'Add Photo'|trans }}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('fos_user_profile_show') }}"><i class="fas fa-user"></i> {{ 'Mon Profile'|trans }}</a>
+                <a class="nav-link" href="{{ path('fos_user_profile_show') }}"><i class="fas fa-user"></i> {{app.user.username}}</a>
             </li>
-
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('fos_user_security_logout') }}"><i class="fas fa-power-off"></i> {{ 'Déconnexion'|trans }}</a>
             </li>

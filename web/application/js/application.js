@@ -38,4 +38,10 @@ $(document).ready(function () {
         window.location = $(this).data("href");
     });
 
+    $( ".date-datepicker" ).datepicker({
+        pickTime:false,
+        dateFormat: 'yy/mm/dd'
+    });
+
+
 });

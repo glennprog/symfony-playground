@@ -1,0 +1,30 @@
+film_index:
+    path:     /
+    defaults: { _controller: "GMVideothequeBundle:Film:index" }
+    methods:  GET
+
+film_show:
+    path:     /{id}/show
+    defaults: { _controller: "GMVideothequeBundle:Film:show" }
+    methods:  GET
+    requirements:
+        id: '\d+'
+
+film_new:
+    path:     /new
+    defaults: { _controller: "GMVideothequeBundle:Film:new" }
+    methods:  [GET, POST]
+
+film_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "GMVideothequeBundle:Film:edit" }
+    methods:  [GET, POST]
+    requirements:
+        id: '\d+'
+
+film_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "GMVideothequeBundle:Film:delete" }
+    methods:  DELETE
+    requirements:
+        id: '\d+'

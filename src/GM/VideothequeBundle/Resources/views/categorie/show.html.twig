@@ -1,0 +1,64 @@
+{% extends 'GMVideothequeBundle::layout.html.twig' %}
+
+{% block app_main_content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="h1-app">Catégorie : {{categorie.nom}} </h1>
+            </div>
+        </div>
+    
+        <div class="row">
+            <div class="col">
+                <table class="table table-sm">
+                    <tbody>
+                        <tr>
+                            <th>Id</th>
+                            <td>{{ categorie.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Guid</th>
+                            <td>{{ categorie.guid }}</td>
+                        </tr>
+                        <tr>
+                            <th>Create_date</th>
+                            <td>{% if categorie.createdate %}{{ categorie.createdate|date('Y-m-d H:i:s') }}{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Update_date</th>
+                            <td>{% if categorie.updatedate %}{{ categorie.updatedate|date('Y-m-d H:i:s') }}{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Name</th>
+                            <td>{{ categorie.nom }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container container-action border-bottom">
+        <div class="row">
+            <div class="col">
+                <a class="text-dark link-no-decoration" href="{{ path('categorie_edit', { 'id': categorie.id }) }}"><i class="fas fa-edit"></i> Edit</a>
+            </div>
+        </div>
+
+        {% if delete_form is defined %}
+        <div class="row">
+            <div class="col">
+                {{ form_start(delete_form) }}
+                    <i class="far fa-trash-alt"></i> <input class="bg-danger text-white border border-danger" type="submit" value="Delete">
+                {{ form_end(delete_form) }}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col">
+                <a class="text-dark link-no-decoration" href="{{ path('categorie_index') }}"><i class="fas fa-arrow-left"></i> Back to the list</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
