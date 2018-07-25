@@ -8,28 +8,36 @@
             <div class="row full-margin-m">
                 <div class="col">
                     {{ form_label(form.categorie, 'Catégorie du film', {'label_attr': {'class': 'sub-label-app-sm'}}) }}
-                    {{ form_errors(form.categorie) }}
+                    <div class="error-output-app">
+                        {{ form_errors(form.categorie) }}
+                    </div>
                     {{ form_widget(form.categorie, {'attr': {'class': 'text-input-app text-input-app-border', 'autocomplete':'off'} }) }}
                 </div>
             </div>
             <div class="row full-margin-m">
                 <div class="col">
                     {{ form_label(form.titre, 'Nom', {'label_attr': {'class': 'sub-label-app-sm'}}) }}
+                    <div class="error-output-app">
                     {{ form_errors(form.titre)}}
+                    </div>
                     {{ form_widget(form.titre, {'attr': {'class': 'input-app input-app-border', 'autocomplete':'off', 'required':'true'} }) }}
                 </div>
             </div>
             <div class="row full-margin-m">
                 <div class="col">
                     {{ form_label(form.description, 'Description', {'label_attr': {'class': 'sub-label-app-sm'}}) }}
+                    <div class="error-output-app">
                     {{ form_errors(form.description) }}
+                    </div>
                     {{ form_widget(form.description, {'attr': {'class': 'text-input-app text-input-app-border', 'autocomplete':'off'} }) }}
                 </div>
             </div>
             <div class="row full-margin-m">
                 <div class="col">
                     {{ form_label(form.date_sortie, 'Date de sortie (yy/mm/dd)', {'label_attr': {'class': 'sub-label-app-sm'}}) }}
+                    <div class="error-output-app">
                     {{ form_errors(form.date_sortie) }}
+                    </div>
                     {{ form_widget(form.date_sortie, {'attr': {'class': 'input-app input-app-border date-datepicker date-datepicker-boxsize', 'autocomplete':'off'} }) }}
                 </div>
             </div>

@@ -59,13 +59,15 @@ class CategorieController extends Controller
         }
         else if($categorie->isOwner($this->getUser()->getId() )){
             $categories = $categorie_handler->onReadBy('owner',$this->getUser()->getId(),'GMVideothequeBundle:Categorie');
+            $film_handler = $this->get('film_handler');
+            $films = $film_handler->getFilmsOfCategorieForUser($this->getUser()->getId(), $id);
         }
         else{
             $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
             $request->getSession()->getFlashBag()->add("warning", $msgGen);
             return $this->redirectToRoute('categorie_index');
         }
-        return $this->render($this->getTwig('show'), array('categorie' => $categorie, 'delete_form' => $this->getDeleteFormById($id)->createView()));
+        return $this->render($this->getTwig('show'), array('films'=>$films, 'categorie' => $categorie, 'delete_form' => $this->getDeleteFormById($id)->createView()));
     }
 
     /**
@@ -92,7 +94,7 @@ class CategorieController extends Controller
     /**
      * Deletes only one categorie entity. By Id.
      */
-    public function deleteAction($id, Categorie $categorie){
+    public function deleteAction(Request $request, $id, Categorie $categorie){
         $this->securityGuardianAccess();
         if($categorie->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_AMDIN') ){
             $this->get('categorie_handler')->OnDelete($categorie, "Deleting a categorie entity with id = ".$id);
@@ -123,5 +125,12 @@ class CategorieController extends Controller
 
     public function securityGuardianAccess($role = 'ROLE_USER'){
         $this->denyAccessUnlessGranted($role, null, 'Unable to access this page!');
+    }
+
+
+    public function delete_allAction(){
+        $em = $this->getDoctrine()->getManager();
+        $this->get('categorie_handler')->onDeleteAll($this->getUser()->getId(), $batch_size = 20);
+        return $this->redirectToRoute('categorie_index');
     }
 }

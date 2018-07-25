@@ -35,9 +35,11 @@ class BaseHandler
         return $entities;
     }
 
-    public function onCreate($entityObj, $formTypeEntityClass){
+    public function onCreate($entityObj, $formTypeEntityClass, array $optionForm = array()){
         $this->setEntityObj($entityObj);
-        $this->setForm($this->getFormManager()->createForm($formTypeEntityClass, $this->getEntityObj(), array(), 'create')); // Create the new form of entity created above, and set the form in the form attribute of Entity Handler
+        
+        $this->setForm($this->getFormManager()->createForm($formTypeEntityClass, $this->getEntityObj(), $optionForm, 'create')); // Create the new form of entity created above, and set the form in the form attribute of Entity Handler
+        
         $this->getForm()->handleRequest($this->getRequestStack()->getCurrentRequest()); // Attach the request on the form of handler
         if ($this->getForm()->isSubmitted() && $this->getForm()->isValid()) { // Test the submittion and validation of the form beforme try to save the data in the database
             $this->getEntityManager()->persist($this->getForm()->getData()); // Get the entity manager and persist 
@@ -49,9 +51,9 @@ class BaseHandler
         return false; // Return false if no submittion or validation form failed.
     }
 
-    public function onUpdate($entityObj, $formTypeEntityClass){
+    public function onUpdate($entityObj, $formTypeEntityClass, array $optionForm = array()){
         $this->setEntityObj($entityObj);
-        $this->setForm($this->getFormManager()->createForm($formTypeEntityClass, $this->getEntityObj(), array(), 'update')); // Create the edit form of entity created above, and set the form in the form attribute of Enity Handler
+        $this->setForm($this->getFormManager()->createForm($formTypeEntityClass, $this->getEntityObj(), $optionForm, 'update')); // Create the edit form of entity created above, and set the form in the form attribute of Enity Handler
         $this->getForm()->handleRequest($this->getRequestStack()->getCurrentRequest()); // Attach the request on the form of handler
         if ($this->getForm()->isSubmitted() && $this->getForm()->isValid()) { // Test the submittion and validation of the form beforme try to save the data in the database
             $resultInsertData = $this->getEntityManager()->flush(); // Try saving data in the data base;

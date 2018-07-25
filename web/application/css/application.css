@@ -7,6 +7,7 @@
     --main-color-1: #17a2b8;
     --main-color-2: #96d9e4;/*rgb(45, 166, 223);*//*rgb(54, 166, 218);*/
     --main-color-3: #ababab;
+    --main-color-4: #d42626;
     --main-h1-color: #ababab;
     --main-h1-font-size: 21px;
     --main-h2-font-size: 18px;
@@ -180,17 +181,29 @@ h1, h2{
     height: auto;
 }
 
-.create-action{
-    background-color: #17a2b8;/*#389986;*/
-    color: white;
-    padding: 8px 11px;
+.link-button-main{
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+    background-color: #c7c7c7a3;/*#4e8f99;*//*#17a2b8;*//*#389986;*/
     text-align: center;
+    text-decoration: none;
+    width: 210px;
+    height: 30px;
+    padding: 4px;
+}
+
+.link-button-main:hover{
     text-decoration: none;
 }
 
 .create-action:hover{
-    text-decoration: none;
-    padding: 14px 25px;
+    background-color: var(--main-color-1);
+    transition-duration: 0.5s;
+}
+
+.delete-action:hover{
+    background-color: var(--main-color-4);
     transition-duration: 0.5s;
 }
 
@@ -213,6 +226,13 @@ h1, h2{
     width: 130px;
     text-align: center;
 }
+
+.error-output-app{
+    color : rgb(214, 54, 54);
+    font-style: italic;
+    
+}
+
 
 
 

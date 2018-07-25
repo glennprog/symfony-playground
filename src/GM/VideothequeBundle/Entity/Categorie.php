@@ -38,8 +38,8 @@ class Categorie
     private $update_date;
 
     /**
-    * @ORM\Column(type="string", nullable=false)
-    * @Assert\NotNull()
+    * @ORM\Column(type="string", nullable=false, unique=false)
+    * @Assert\NotNull(message="Field is mandatory.")
     */
     protected $nom;
 

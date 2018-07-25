@@ -28,3 +28,8 @@ categorie_delete:
     methods:  DELETE
     requirements:
         id: '\d+'
+
+categorie_delete_all:
+    path:     /all/delete
+    defaults: { _controller: "GMVideothequeBundle:Categorie:delete_all" }
+    methods:  [GET, POST]

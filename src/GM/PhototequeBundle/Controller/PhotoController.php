@@ -84,7 +84,7 @@ class PhotoController extends Controller
     /**
      * Deletes only one photo entity. By Id.
      */
-    public function deleteAction($id, Photo $photo){
+    public function deleteAction(Request $request, $id, Photo $photo){
         $this->securityGuardianAccess();
         if($photo->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_AMDIN') ){
             $this->get('photo_handler')->OnDelete($photo, "Deleting a photo entity with id = ".$id);

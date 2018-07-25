@@ -35,7 +35,9 @@
     <div class="row full-margin-m">
       <div class="col">
          {{ form_label(form.current_password, 'Mot de passe actuel : ', {'label_attr': {'class': 'sub-label-app-sm'}}) }}
+         <div class="error-output-app">
          {{ form_errors(form.current_password) }}
+         </div>
          {{ form_widget(form.current_password, {'attr': {'class': 'input-app input-app-border', 'required':'true', 'autocomplete':'off'} }) }}
         </div>
     </div>

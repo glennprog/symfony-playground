@@ -8,27 +8,32 @@
             <thead>
                 <tr class="bg-info">
                     <th>Id</th>
-                    <th>Guid</th>
+                    <th>categorie</th>
                     <th>Titre</th>
                     <th>Description</th>
-                    <th>Date_sortie</th>
+                    <th>Date de sortie</th>
                 </tr>
             </thead>
             <tbody>
             {% for film in films %}
                 <tr class="clickable-row" data-href="{{ path('film_show', { 'id': film.id }) }}">
                     <td><a href="{{ path('film_show', { 'id': film.id }) }}">{{ film.id }}</a></td>
-                    <td>{{ film.guid }}</td>
+                    <td>{{ film.categorie }}</td>
                     <td>{{ film.titre }}</td>
                     <td>{{ film.description }}</td>
-                    <td>{% if film.datesortie %}{{ film.datesortie|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    <td>{% if film.datesortie %}{{ film.datesortie|date('Y-m-d') }}{% endif %}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
         <div class="row">
             <div class="col">
-                <a class="text-dark create-action" href="{{ path('film_new') }}"><i class="fas fa-plus-square"></i> Ajouter une film</a>
+                <a class="text-dark link-button-main create-action" href="{{ path('film_new') }}"><i class="fas fa-plus-square"></i> Ajouter une film</a>
+            </div>
+        </div>
+        <div class="row margin-top-s">
+            <div class="col">
+                <a class="text-dark link-button-main delete-action" href="{{ path('film_delete_all') }}"><i class="fas fa-trash"></i> Supprimer tous</a>
             </div>
         </div>
     </div>

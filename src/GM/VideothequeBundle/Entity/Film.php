@@ -48,13 +48,13 @@ class Film
 
     /**
     * @ORM\Column(type="text", nullable=false)
-    * @Assert\NotNull()
+    * @Assert\NotNull(message="Field is mandatory")
     */
     protected $description;
 
     /** 
      * @ORM\Column(type="date", nullable=false)
-     *  @Assert\NotNull()
+     *  @Assert\NotNull(message="Field is mandatory.")
      */
     protected $date_sortie;
 
@@ -62,7 +62,7 @@ class Film
     * 
     * @ORM\ManyToOne(targetEntity="GM\VideothequeBundle\Entity\Categorie", inversedBy="films")
     * @ORM\JoinColumn(name="categorie_id", referencedColumnName="id", nullable=false)
-    * @Assert\NotNull()
+    * @Assert\NotNull(message="Catagorie should not be empty. Create a first Category before it.")
     */
     protected $categorie;
 
@@ -70,7 +70,7 @@ class Film
     * 
     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="videotheque_films")
     * @ORM\JoinColumn(name="owner_user_id", referencedColumnName="id", nullable=false)
-    * @Assert\NotNull()
+    * @Assert\NotNull(message="Owner should not be null.")
     */
     protected $owner;
     

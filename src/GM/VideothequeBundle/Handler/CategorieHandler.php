@@ -28,4 +28,16 @@ class CategorieHandler extends BaseHandler
         return true;
     }
 
+    public function onDeleteAll($owner_user_id = null, $batch_size = 20){
+        $reposiroty = 'GMVideothequeBundle:Categorie';
+        $result = $this->getEntityManager()->getRepository($reposiroty)->onDeleteAll($owner_user_id, $batch_size);
+        if($result == true){
+            $this->SetFlashBag($this->getMsgGenerator()->Msg_DeleteDB_OK());
+        }
+        else{
+            $this->SetFlashBag($this->getMsgGenerator()->Msg_DeleteDB_NONE(), 'info');
+        }
+        return $result;
+    }
+
 }

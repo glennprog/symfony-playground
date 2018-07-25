@@ -28,3 +28,8 @@ film_delete:
     methods:  DELETE
     requirements:
         id: '\d+'
+
+film_delete_all:
+    path:     /all/delete
+    defaults: { _controller: "GMVideothequeBundle:Film:delete_all" }
+    methods:  [GET, POST]

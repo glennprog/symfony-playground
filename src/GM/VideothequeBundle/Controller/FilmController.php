@@ -38,7 +38,8 @@ class FilmController extends Controller
    {
        $this->securityGuardianAccess();
        $film_handler = $this->get('film_handler');
-       if ($film_handler->onCreate(new Film($this->getUser()), FilmType::class)) {
+       $optionForm = array('owner_user_id' => $this->getUser()->getId());
+       if ($film_handler->onCreate(new Film($this->getUser()), FilmType::class, $optionForm)) {
            return $this->redirectToRoute('film_show', array('id' => $film_handler->getEntityObj()->getId()));
        }
        return $this->render($this->getTwig('new'), array('form' => $film_handler->getForm()->createView()));
@@ -72,25 +73,26 @@ class FilmController extends Controller
     */
    public function editAction(Request $request, Film $film, $id)
    {
-       $this->securityGuardianAccess();
-       if($film->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_AMDIN') ){
-           $film_handler = $this->get('film_handler');
-           if ($film_handler->onUpdate($film, FilmType::class)) {
+        $this->securityGuardianAccess();
+        if($film->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_AMDIN') ){
+            $optionForm = array('owner_user_id' => $this->getUser()->getId());
+            $film_handler = $this->get('film_handler');
+            if ($film_handler->onUpdate($film, FilmType::class, $optionForm)) {
                return $this->redirectToRoute('film_edit', array('id' => $film->getId()));
-           }
-           return $this->render($this->getTwig('edit'), array('film' => $film, 'edit_form' => $film_handler->getForm()->createView(), 'delete_form' => $this->getDeleteFormById($id)->createView()));
-       }
+            }
+            return $this->render($this->getTwig('edit'), array('film' => $film, 'edit_form' => $film_handler->getForm()->createView(), 'delete_form' => $this->getDeleteFormById($id)->createView()));
+        }
        else{
            $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
            $request->getSession()->getFlashBag()->add("warning", $msgGen);
            return $this->redirectToRoute('film_index');
-       }
+        }
    }
 
    /**
     * Deletes only one film entity. By Id.
     */
-   public function deleteAction($id, Film $film){
+   public function deleteAction(Request $request, $id, Film $film){
        $this->securityGuardianAccess();
        if($film->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_AMDIN') ){
            $this->get('film_handler')->OnDelete($film, "Deleting a film entity with id = ".$id);
@@ -122,4 +124,10 @@ class FilmController extends Controller
    public function securityGuardianAccess($role = 'ROLE_USER'){
        $this->denyAccessUnlessGranted($role, null, 'Unable to access this page!');
    }
+
+    public function delete_allAction(){
+        $em = $this->getDoctrine()->getManager();
+        $this->get('film_handler')->onDeleteAll($this->getUser()->getId(), $batch_size = 20);
+        return $this->redirectToRoute('film_index');
+    }
 }

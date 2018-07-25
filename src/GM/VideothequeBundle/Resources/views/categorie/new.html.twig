@@ -8,7 +8,9 @@
             <div class="row full-margin-m">
                 <div class="col">
                     {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'sub-label-app-sm'}}) }}
+                    <div class="error-output-app">
                     {{ form_errors(form.nom)}}
+                    </div>
                     {{ form_widget(form.nom, {'attr': {'class': 'input-app input-app-border', 'autocomplete':'off', 'required':'true'} }) }}
                 </div>
             </div>

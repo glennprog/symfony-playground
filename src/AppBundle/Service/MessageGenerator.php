@@ -53,6 +53,18 @@ class MessageGenerator
         return $messages[$index];
     }
 
+    public function Msg_DeleteDB_NONE(){
+        $messages = [
+            'Nothing to delete.',
+            'No data to delete in the database',
+            'Zero data for deleting',
+        ];
+
+        $index = array_rand($messages);
+
+        return $messages[$index];
+    }
+
     public function Msg_ActionAdmin_FAIL(){
         $messages = [
             'Admin action denied for this action',
@@ -70,6 +82,17 @@ class MessageGenerator
             'Action denied for this action',
             'You have not the right to this run action',
             'You are not allowed to this action',
+        ];
+
+        $index = array_rand($messages);
+
+        return $messages[$index];
+    }
+
+    public function Msg_DeleteDB_Profile_OK(){
+        $messages = [
+            'Your profile is completly deleted in this application.',
+            'Profile deleting sucessfully.',
         ];
 
         $index = array_rand($messages);
