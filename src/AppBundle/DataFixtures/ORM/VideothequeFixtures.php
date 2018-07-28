@@ -1003,25 +1003,15 @@ class VideothequeFixtures extends Fixture implements ContainerAwareInterface
     public function load(ObjectManager $manager)
     {
         // Creation des utilisateurs (User)
-        /*
-        $amountUser = 55;
+        //$amountUser = 55;
+        $amountUser = 5;
         for ($i=0; $i < $amountUser ; $i++) { 
             $this->createUser($manager);
         }
-        */
-
-        /*
-        // Creation des Catégorie (Categorie) et des films (Film)
-        $amountCategory = 50;
-        $amountFilm= 4; // => 230 films in total
-        for ($i=0; $i < $amountUser ; $i++) { 
-            $this->createCategorieAndFilm($manager, $amountFilm);
-        }
-        */
-
         
         // Creation des Catégorie (Categorie) et des films (Film)
-        $amountCategory = 50;
+        //$amountCategory = 50;
+        $amountCategory = 10;
         $amountFilm= 4; // => 230 films in total
         for ($i=0; $i < $amountCategory ; $i++) { 
             $this->createCategorieAndFilm($manager, $amountFilm);

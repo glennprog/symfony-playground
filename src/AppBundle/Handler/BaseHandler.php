@@ -30,8 +30,8 @@ class BaseHandler
         $this->setFormManager($formManager);
     }
 
-    public function onReadBy($readBy = 'id', $attrVal = null, $reposiroty = null){
-        $entities = $this->getEntityManager()->getRepository($reposiroty)->onReadBy($readBy, $attrVal);
+    public function onReadBy($readBy = array(), $reposiroty = null, $page = 1, $count = 10, $orderBy = null){
+        $entities = $this->getEntityManager()->getRepository($reposiroty)->onReadBy($readBy, $page, $count, $orderBy);
         return $entities;
     }
 

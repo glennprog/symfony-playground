@@ -16,7 +16,7 @@
             </thead>
             <tbody>
             {% for film in films %}
-                <tr class="clickable-row" data-href="{{ path('film_show', { 'id': film.id }) }}">
+                <tr class="gm-clickable-row" data-href="{{ path('film_show', { 'id': film.id }) }}">
                     <td><a href="{{ path('film_show', { 'id': film.id }) }}">{{ film.id }}</a></td>
                     <td>{{ film.categorie }}</td>
                     <td>{{ film.titre }}</td>
@@ -35,6 +35,12 @@
             <div class="col">
                 <a class="text-dark link-button-main delete-action" href="{{ path('film_delete_all') }}"><i class="fas fa-trash"></i> Supprimer tous</a>
             </div>
+        </div>
+
+        <div class = "container margin-top-s paginator">
+            {% if paginator is defined %}
+                {{dump(paginator)}}
+            {% endif %}
         </div>
     </div>
 {% endblock %}

@@ -8,7 +8,6 @@
     --main-color-2: #96d9e4;/*rgb(45, 166, 223);*//*rgb(54, 166, 218);*/
     --main-color-3: #ababab;
     --main-color-4: #d42626;
-    --main-color-5: #f1f1f1;
     --main-h1-color: #ababab;
     --main-h1-font-size: 21px;
     --main-h2-font-size: 18px;
@@ -220,20 +219,69 @@ h1, h2{
 
 
 /*##################### Paginator :      ###################*/
+.paginator-button-main{
+    /*
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+    */
+    background-color: #c7c7c7a3;/*#4e8f99;*//*#17a2b8;*//*#389986;*/
+    text-decoration: none;
+    width: 100px;
+    height: 30px;
+    
+}
+
+.paginator-button-main:hover{
+    background-color: var(--main-color-1);
+    text-decoration: none;
+}
+
+.paginator-button-main-prev{
+    margin-right :28px;
+}
+
+.paginator-button-main-next{
+    margin-left :0px;
+}
+
+.paginator-page{
+    width: 100px;/*232px;*/
+    text-align: center;
+    font-size: 17px;
+
+}
+
+.paginator-page-total{
+    color: #6c757d;
+    text-align: center;
+    /*font-size: 17px;*/
+}
+
+.paginator-record-to-read{
+    color: #6c757d; /*rgb(131, 129, 129);*/
+    text-align: center;
+   
+    /*line-height: 2.3;*/
+}
+
+
+
 
 .flex-container {
     display: flex;
     flex-wrap: nowrap;
-    background-color: rgba(151, 213, 241, 0.89);/*DodgerBlue;*/
-    height: 50px;
-    align-items: center;
-    justify-content: center;
+    background-color: DodgerBlue;
 }
 
 .flex-container > div {
-    line-height: 1.6;
-    font-size: 14px;
-    /*color: #6c757d; *//*rgb(131, 129, 129);*/
+    background-color: #f1f1f1;
+    color:#787777;
+    width: 100px;
+    margin: 10px;
+    text-align: center;
+    line-height: 30px;
+    font-size: 16px;
 }
 
 /* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
@@ -243,90 +291,18 @@ h1, h2{
         justify-content: center;
         align-items: center;
     }
-}
-
-.paginator-container-total-entities{
-    margin-left: 30px; 
-}
-
-.paginator-container-total-delete{
-    margin-left: 30px; 
-}
-
-.paginator-container-total-delete:hover{
-    text-decoration: none;
-}
-
-
-/* NEXT **/
-.paginator-container-prev{
-    margin-right: 30px;
-}
-
-.paginator-prev-fast{
-    margin-right: 10px;
-}
-
-.paginator-next-fast{
-    margin-left: 10px;
-}
-
-.paginator-prev:hover, .paginator-prev-fast:hover, .paginator-next:hover, .paginator-next-fast:hover{
-    text-decoration: none;
-}
-/*
-.paginator-container-prev:hover,{
-    text-decoration: none;
-}
-
-.paginator-next:hover{
-    text-decoration: none;
-}
-
-.paginator-container-prev{
-    margin-right: 12px;
-}
-*/
-
-
-/* INPUT **/  
-.paginator-container-page{
-    margin-left: 30px; 
-}
-
-.paginator-container-page > input{
-    width: 100px;
-    text-align: center;
-}
-
-.paginator-container-page-total > span{
-    margin-left: 7px;
-}
-
-.paginator-container-next_record_to_read{
-    margin-left: 30px; 
-}
-
-.paginator-container-count{
-    margin-left: 30px;
-}
-
-.paginator-container-count > select{
-    width: 100px;
-    height: auto;
-    /*background-color: rgb(214, 199, 199);*/
-}
-
-.paginator-current-page{
-    background-color: #17a2b8;
-    color: white;
+    .flex-container > div {
+        width: 50%;
+        
+    }
 }
 
 
 
-.table-included-paginator{
-    margin-bottom: 0px;
-}
+
+
+
+
 /*##################### Others :      #####################*/
 
 

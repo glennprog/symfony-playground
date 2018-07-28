@@ -80,7 +80,7 @@
             </thead>
             <tbody>
             {% for film in films %}
-                <tr class="clickable-row" data-href="{{ path('film_show', { 'id': film.id }) }}">
+                <tr class="gm-clickable-row" data-href="{{ path('film_show', { 'id': film.id }) }}">
                     <td><a href="{{ path('film_show', { 'id': film.id }) }}">{{ film.id }}</a></td>
                     <td>{{ film.guid }}</td>
                     <td>{{ film.titre }}</td>

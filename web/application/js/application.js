@@ -2,46 +2,50 @@ $(document).ready(function () {
     //console.log( "ready!" );
     //console.log("application");
 
-    //###################### Usefull variables //########################
+    //###################### Mandatory variables //######################
     var pathname = window.location.pathname;
 
-    //###################### Current nav item (nav bar) handle //########
-    // For dynamic page
-    $('.navbar-nav > li > a[href="'+pathname+'"]').parent().addClass('active');
-    /* For static page
-    $('.navbar-nav a').on('click', function () {
-        $('.navbar-nav').find('li.active').removeClass('active');
-        $(this).parent('li').addClass('active');
-        console.log(this);
-    });
-    */
+    //###################### Usefull variables //########################
 
-    //###################### handle register button (nav bar) handle //##
-    $("#registration_at_login_form").on('click', function(){
-        window.location.href = $("#registration_at_login_form").data( "href"); 
+
+    //###################### Paginator Handler //########################
+    $("#paginator_container_count_id").change(function () {
+        var count_select = $(this).val();
+        var page_input = $("#paginator_container_page_id").val();
+        ajaxCallPaginator(pathname, { "count": count_select, "page": page_input, "orderBy": null });
     });
 
-    //###################### Custom alert handle //######################
-    var close = document.getElementsByClassName("gm-closebtn");
-    var i;
+    $("#paginator_container_page_id").change(function () {
+        var page_input = $(this).val();
+        var count_select = $("#paginator_container_count_id").val();
+        ajaxCallPaginator(pathname, { "count": count_select, "page": page_input, "orderBy": null });
+    });
 
-    for (i = 0; i < close.length; i++) {
-        close[i].onclick = function () {
-            var div = this.parentElement;
-            div.style.opacity = "0";
-            setTimeout(function () { div.style.display = "none"; }, 600);
-        }
+    function ajaxCallPaginator(url, data) {
+        $.ajax({
+            url: url,
+            method: "post",
+            data: data
+        }).done(function (msg) {
+            refreshCategorie(msg);
+            update_paginator_route(msg["paginator"]);
+        });
     }
 
-    //###################### CLickable row handle //######################
-    $(".clickable-row").click(function() {
-        window.location = $(this).data("href");
-    });
-
-    $( ".date-datepicker" ).datepicker({
-        pickTime:false,
-        dateFormat: 'yy/mm/dd'
-    });
-
-
+    function refreshCategorie(msg) {
+        categorie_size = Object.size(msg.categories);
+        $("#categories_tbody  tr").remove();
+        var categorie = null;
+        var data_href = "/app_dev.php/videotheque/categorie/region_id/show";
+        for (let index = 0; index < categorie_size; index++) {
+            var categorie = msg.categories[index];
+            $("<tr class='gm-clickable-row' data-href='" + data_href.replace("region_id", categorie.id) + "'>" +
+                '<td><a href=' + data_href.replace("region_id", categorie.id) + '>' + categorie.id + '</a></td>' +
+                '<td>' + categorie.nom + '</td>' +
+                "</tr>").appendTo("#categories_tbody");
+            $(".gm-clickable-row").click(function () {
+                window.location = $(this).data("href");
+            });
+        }
+    }
 });

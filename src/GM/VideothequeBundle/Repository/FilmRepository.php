@@ -10,6 +10,7 @@ namespace GM\VideothequeBundle\Repository;
  */
 class FilmRepository extends \Doctrine\ORM\EntityRepository
 {
+    /*
     public function onReadBy($readBy = 'id', $attrVal = null){ // put array option which contains ()
         $this->_em->getConnection()->getConfiguration()->setSQLLogger(null); 
         if ($readBy == 'all'){
@@ -19,6 +20,27 @@ class FilmRepository extends \Doctrine\ORM\EntityRepository
         $films = $this->getEntityManager()->getRepository('GMVideothequeBundle:Film')->findBy(array($readBy => $attrVal));
         return $films;
     }
+    */
+
+
+    public function onReadBy($criteria = array(), $page = 1, $count = 10, $orderBy = null){ // put array option which contains ()
+        $init_read = false;
+        if($page < 1 || $count < 1){
+            $init_read = true;
+        }
+        $limit = ($init_read) ? 1 :  $count;
+        $offset = ($init_read) ? 1 : ($count * $page) - $count; // $count($page - 1)
+        $init_read = false;
+        $categories = $this->getEntityManager()->getRepository('GMVideothequeBundle:Film')
+            ->findBy(
+                $criteria,
+                $orderBy,
+                $limit,
+                $offset
+            );
+        return $categories;
+    }
+
 
     public function getFilmsOfCategorieForUser($owner_user_id = null, $categorieId = null){ // put array option which contains () 
         $this->_em->getConnection()->getConfiguration()->setSQLLogger(null); 

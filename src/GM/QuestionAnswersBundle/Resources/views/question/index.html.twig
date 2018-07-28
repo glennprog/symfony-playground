@@ -13,7 +13,7 @@
             </thead>
             <tbody>
             {% for question in questions %}
-                <tr class="clickable-row" data-href="{{ path('question_show', { 'id': question.id }) }}">
+                <tr class="gm-clickable-row" data-href="{{ path('question_show', { 'id': question.id }) }}">
                     <td><a href="{{ path('question_show', { 'id': question.id }) }}">{{ question.id }}</a></td>
                     <td>{{ question.wording }}</td>
                 </tr>

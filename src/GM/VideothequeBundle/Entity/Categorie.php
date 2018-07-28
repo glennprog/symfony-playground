@@ -7,13 +7,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 use AppBundle\Service\GuidGenerator;
 use AppBundle\Entity\User as Owner;
 
+use JsonSerializable;
+
+
 /**
  * Categorie
  *
  * @ORM\Table(name="categorie")
  * @ORM\Entity(repositoryClass="GM\VideothequeBundle\Repository\CategorieRepository")
  */
-class Categorie
+class Categorie implements JsonSerializable
 {
     /**
      * @var int
@@ -262,4 +265,29 @@ class Categorie
         $format = "%s\n";
         return sprintf($format, $this->nom);
     }
+
+    public function jsonSerialize() // For choosing what will be seriali
+    {
+        return array(
+            'id'=> $this->id,
+            'guid' => $this->guid,
+            'create_date' => $this->create_date,
+            'update_date'=> $this->update_date,
+            'nom' => $this->nom,
+            'films' => $this->films,
+            'owner'=> $this->owner,
+        );
+    }
+
+    /* Be aware of security issue
+    function getJsonData(){
+        $var = get_object_vars($this);
+        foreach ($var as &$value) {
+            if (is_object($value) && method_exists($value,'getJsonData')) {
+                $value = $value->getJsonData();
+            }
+        }
+        return $var;
+    }
+    */
 }

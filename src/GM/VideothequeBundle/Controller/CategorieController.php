@@ -5,6 +5,8 @@ namespace GM\VideothequeBundle\Controller;
 use GM\VideothequeBundle\Entity\Categorie;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use GM\VideothequeBundle\Form\CategorieType;
 
@@ -18,18 +20,29 @@ class CategorieController extends Controller
      * Lists all categorie entities.
      *
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $this->securityGuardianAccess();
+        $paginatorAttributes = $this->get('paginator')->getPaginatorAttributes($request); 
         $categorie_handler = $this->get('categorie_handler');
         if($this->get('security.authorization_checker')->isGranted('ROLE_AMDIN')){
-            $categories = $categorie_handler->onReadBy('all',null,'GMVideothequeBundle:Categorie');
+            $criteria = array(); // It means all data
+            $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie', $paginatorAttributes['page'], $paginatorAttributes['count'], $paginatorAttributes['orderBy']);
         }
         else{
-            $categories = $categorie_handler->onReadBy('owner',$this->getUser()->getId(),'GMVideothequeBundle:Categorie');
-            //$categories = $categorie_handler->onReadBy('all',null,'GMVideothequeBundle:Categorie');
+            $criteria = array('owner'=>$this->getUser()->getId());
+            $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie', $paginatorAttributes['page'], $paginatorAttributes['count'], $paginatorAttributes['orderBy']);
+            $paginator = $categorie_handler->paginator($paginatorAttributes['page'], $paginatorAttributes['count'], null, count($categories), $criteria);
         }
-        return $this->render($this->getTwig('index'), array('categories' => $categories));
+
+        if($request->isXMLHttpRequest()){
+            $paginatorAttributes = $this->get('paginator')->getPaginatorAttributes($request);
+            return new JsonResponse(array(
+                'categories' => $categories,
+                'paginator' => $paginator,
+            ));
+        }
+        return $this->render($this->getTwig('index'), array('categories' => $categories, 'paginator' => $paginator));
     }
 
     /**
@@ -55,10 +68,12 @@ class CategorieController extends Controller
         $this->securityGuardianAccess();
         $categorie_handler = $this->get('categorie_handler');
         if($this->get('security.authorization_checker')->isGranted('ROLE_AMDIN')){
-            $categories = $categorie_handler->onReadBy('id',$id,'GMVideothequeBundle:Categorie');
+            $criteria = array('id' => $id);
+            $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie');
         }
         else if($categorie->isOwner($this->getUser()->getId() )){
-            $categories = $categorie_handler->onReadBy('owner',$this->getUser()->getId(),'GMVideothequeBundle:Categorie');
+            $criteria = array('owner'=>$this->getUser()->getId(), 'id' => $id);
+            $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie');
             $film_handler = $this->get('film_handler');
             $films = $film_handler->getFilmsOfCategorieForUser($this->getUser()->getId(), $id);
         }

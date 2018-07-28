@@ -1,0 +1,46 @@
+            <div class = "margin-bottom-s paginator">
+                {% if paginator is defined %}
+                <div class="flex-container">
+                    <div class="paginator-container-prev">
+                        <a id="paginator_prev" class="text-dark paginator-prev" 
+                            href="{{path('categorie_index', { 'page': paginator['previous_page'], 'count': paginator['count'] }) }}"><i class="fas fa-backward"></i> {{'Reculer'|trans}}
+                        </a>
+                    </div>
+                    <div class="paginator-container-next">
+                        <a id="paginator_next" class="text-dark paginator-next" 
+                            href="{{path('categorie_index', { 'page': paginator['next_page'], 'count': paginator['count'] }) }}">{{'Avancer'|trans}}  <i class="fas fa-forward"></i>
+                        </a>
+                    </div>
+                    <div class="paginator-container-count">
+                        <span>max par page : </span>
+                        <select name="paginator_container_count" id="paginator_container_count_id">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                        </select>
+                    </div>
+                    <div class="paginator-container-page">
+                        <input type="text" name="paginator_container_page_id" id="paginator_container_page_id" placeholder="Entrer le numéro de la page" value = {{paginator['current_page']}}>
+                    </div>
+                    <div class="paginator-container-page-total">
+                        {% if paginator['current_page'] <= paginator['total_page'] %}
+                            <span>sur {{paginator['total_page']}} page{{ (paginator['total_entities']) > 0 ? 's' : ''}}</span>
+                        {% else %}
+                            <span>sur # page{{ (paginator['total_entities']) > 0 ? 's' : ''}}</span>
+                        {% endif %}
+                    </div>
+                    <div class="paginator-container-next_record_to_read">
+                        {% if paginator['next_record_to_read'] != null %}
+                            <span>{{'Reste à lire'|trans}} : {{paginator['next_record_to_read']}}</span>
+                        {% else %}
+                            <span>{{'Reste à lire : zéro'|trans}}</span>
+                        {% endif %}
+                    </div>
+                    <div class="paginator-container-total-entities">
+                        <span>{{'Total global'|trans}} : {{paginator['total_entities']}}</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>

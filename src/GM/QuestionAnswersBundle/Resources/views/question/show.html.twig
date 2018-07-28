@@ -61,7 +61,7 @@
         </thead>
         <tbody>
         {% for answer in answers %}
-            <tr class="clickable-row" data-href="{{ path('answer_show', { 'id': answer.id }) }}">
+            <tr class="gm-clickable-row" data-href="{{ path('answer_show', { 'id': answer.id }) }}">
                 <td><a href="{{ path('answer_show', { 'id': answer.id }) }}">{{ answer.id }}</a></td>
                 <td>{{ answer.wording }}</td>
             </tr>

@@ -137,6 +137,15 @@ Tous le contenu n'est pas renseigné, il sera mis à jour bientôt.
     - Connexion google [à faire]
     - Connexion facebook [à faire]
 
+- Système de pagination (performant)
+    - traitement serveur
+    - traitement front (beau style, template différent disponible)
+
+- Recupération des paramètre d'une url en javascript 
+- Modification des paramètre d'une url en javascript
+- Custom methode de lecture de la taille d'un objet (vu comme array)
+- Ajax methode pour meilleur expérience utilisateur
+- Serialization d'entity pour utilisation avec json_decode
 
 Mise à jour du contenus bientôt
 

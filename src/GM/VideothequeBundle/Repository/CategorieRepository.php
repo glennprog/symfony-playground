@@ -3,6 +3,7 @@
 namespace GM\VideothequeBundle\Repository;
 
 use GM\VideothequeBundle\Entity\Categorie;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * CategorieRepository
@@ -12,7 +13,8 @@ use GM\VideothequeBundle\Entity\Categorie;
  */
 class CategorieRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function onReadBy($readBy = 'id', $attrVal = null){ // put array option which contains ()
+    /*
+    public function onReadBy($readBy = 'id', $attrVal = null, $page, $count){ // put array option which contains ()
         $this->_em->getConnection()->getConfiguration()->setSQLLogger(null);
         if ($readBy == 'all'){
             $categories = $this->getEntityManager()->getRepository('GMVideothequeBundle:Categorie')->findAll();
@@ -20,6 +22,35 @@ class CategorieRepository extends \Doctrine\ORM\EntityRepository
         }
         $categories = $this->getEntityManager()->getRepository('GMVideothequeBundle:Categorie')->findBy(array($readBy => $attrVal));
         return $categories;
+    }
+    */
+
+    public function onReadBy($criteria = array(), $page = 1, $count = 10, $orderBy = null){ // put array option which contains ()
+        $init_read = false;
+        if($page < 1 || $count < 1){
+            $init_read = true;
+        }
+        $limit = ($init_read) ? 1 :  $count;
+        $offset = ($init_read) ? 1 : ($count * $page) - $count; // $count($page - 1)
+        $init_read = false;
+        $categories = $this->getEntityManager()->getRepository('GMVideothequeBundle:Categorie')
+            ->findBy(
+                $criteria,
+                $orderBy,
+                $limit,
+                $offset
+            );
+        return $categories;
+    }
+
+    public function maxCategorie(array $criteria = null){
+        $owner_user_id = $criteria['owner'];
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('count(categorie.id)');
+        $qb->from('GMVideothequeBundle:Categorie','categorie')->where("categorie.owner = :owner_user_id");
+        $qb->setParameter('owner_user_id', $owner_user_id);
+        $maxCategorie = $qb->getQuery()->getSingleScalarResult();
+        return $maxCategorie;
     }
 
     public function onDeleteAll($owner_user_id, $batch_size = 20){

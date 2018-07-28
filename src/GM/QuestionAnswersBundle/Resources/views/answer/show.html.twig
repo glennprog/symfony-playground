@@ -64,13 +64,13 @@
 
         {% if answer.question is iterable %}
             {% for question in answer.question %}
-                <tr class="clickable-row" data-href="{{ path('question_show', { 'id': question.id }) }}">
+                <tr class="gm-clickable-row" data-href="{{ path('question_show', { 'id': question.id }) }}">
                     <td><a href="{{ path('question_show', { 'id': question.id }) }}">{{ question.id }}</a></td>
                     <td>{{ question.wording }}</td>
                 </tr>
             {% endfor %}
         {% else %}
-                <tr class="clickable-row" data-href="{{ path('question_show', { 'id': answer.question.id }) }}">
+                <tr class="gm-clickable-row" data-href="{{ path('question_show', { 'id': answer.question.id }) }}">
                     <td><a href="{{ path('question_show', { 'id': answer.question.id }) }}">{{ answer.question.id }}</a></td>
                     <td>{{ answer.question.wording }}</td>
                 </tr>

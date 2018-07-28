@@ -65,6 +65,13 @@ services:
             class: AppBundle\Service\WatchDogLogger
             arguments: ["@request_stack", "@doctrine.orm.entity_manager", "@security.token_storage","@security.authorization_checker", "@message_generator"]
 
+    paginator:
+            class: AppBundle\Service\Paginator
+            arguments: ["@request_stack"]
+
     #base_handler:
     #        class: AppBundle\Service\BaseHandler
     #        arguments: ["@request_stack", "@doctrine.orm.entity_manager", "@watchdoglogger", "@message_generator", "@form_manager"]
+
+
+    

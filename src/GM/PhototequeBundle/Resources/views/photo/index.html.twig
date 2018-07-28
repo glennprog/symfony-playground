@@ -17,7 +17,7 @@
             </thead>
             <tbody>
             {% for photo in photos %}
-                <tr class="clickable-row" data-href="{{ path('photo_show', { 'id': photo.id }) }}">
+                <tr class="gm-clickable-row" data-href="{{ path('photo_show', { 'id': photo.id }) }}">
                     <td><a href="{{ path('photo_show', { 'id': photo.id }) }}">{{ photo.id }}</a></td>
                     <td>{{ photo.guid }}</td>
                     <td>{% if photo.createdate %}{{ photo.createdate|date('Y-m-d H:i:s') }}{% endif %}</td>

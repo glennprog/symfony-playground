@@ -17,15 +17,21 @@ class FilmController extends Controller
     * Lists all film entities.
     *
     */
-   public function indexAction()
+   public function indexAction(Request $request)
    {
        $this->securityGuardianAccess();
+       $paginatorAttributes = $this->getPaginatorAttributes($request);
+       $page = $paginatorAttributes['page'];
+       $count = $paginatorAttributes['count'];
+       $orderBy = $paginatorAttributes['orderBy'];
        $film_handler = $this->get('film_handler');
        if($this->get('security.authorization_checker')->isGranted('ROLE_AMDIN')){
-           $films = $film_handler->onReadBy('all',null,'GMVideothequeBundle:Film');
+        $criteria = array();
+        $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film', $page, $count, $orderBy);
        }
        else{
-           $films = $film_handler->onReadBy('owner',$this->getUser()->getId(),'GMVideothequeBundle:Film');
+            $criteria = array('owner'=>$this->getUser()->getId());
+            $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film', $page, $count, $orderBy);
        }
        return $this->render($this->getTwig('index'), array('films' => $films));
    }
@@ -54,10 +60,12 @@ class FilmController extends Controller
        $this->securityGuardianAccess();
        $film_handler = $this->get('film_handler');
        if($this->get('security.authorization_checker')->isGranted('ROLE_AMDIN')){
-           $films = $film_handler->onReadBy('id',$id,'GMVideothequeBundle:Film');
+        $criteria = array('id' => $id);
+        $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film');
        }
        else if($film->isOwner($this->getUser()->getId() )){
-           $films = $film_handler->onReadBy('owner',$this->getUser()->getId(),'GMVideothequeBundle:Film');
+        $criteria = array('owner'=>$this->getUser()->getId(), 'id' => $id);
+        $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film');
        }
        else{
            $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
@@ -129,5 +137,39 @@ class FilmController extends Controller
         $em = $this->getDoctrine()->getManager();
         $this->get('film_handler')->onDeleteAll($this->getUser()->getId(), $batch_size = 20);
         return $this->redirectToRoute('film_index');
+    }
+
+    public function getPaginatorAttributes(Request $request){
+        if($request->query->get('page') != null){
+            $page = $request->query->get('page');
+        }
+        elseif($request->attributes->get('page') != null){
+            $page = $request->attributes->get('page');
+        }
+        else{
+            $page = 1;
+        }
+
+        if($request->query->get('count') != null){
+            $count = $request->query->get('count');
+        }
+        elseif($request->attributes->get('count') != null){
+            $count = $request->attributes->get('count');
+        }
+        else{
+            $count = 4;
+        }
+
+        if($request->query->get('orderBy') != null){
+            $orderBy = $request->query->get('orderBy');
+        }
+        elseif($request->attributes->get('orderBy') != null){
+            $orderBy = $request->attributes->get('orderBy');
+        }
+        else{
+            $orderBy = null;
+        }
+
+        return array('page' => $page, 'count' => $count, 'orderBy' => $orderBy);
     }
 }
