@@ -49,8 +49,8 @@ class CategorieRepository extends \Doctrine\ORM\EntityRepository
         $qb->select('count(categorie.id)');
         $qb->from('GMVideothequeBundle:Categorie','categorie')->where("categorie.owner = :owner_user_id");
         $qb->setParameter('owner_user_id', $owner_user_id);
-        $maxCategorie = $qb->getQuery()->getSingleScalarResult();
-        return $maxCategorie;
+        $maxCategories = $qb->getQuery()->getSingleScalarResult();
+        return $maxCategories;
     }
 
     public function onDeleteAll($owner_user_id, $batch_size = 20){

@@ -48,9 +48,9 @@ class FilmHandler extends BaseHandler
 
 
 
-    public function maxCategorie(array $criteria = null){
+    public function maxFilms(array $criteria = null){
         $reposiroty = 'GMVideothequeBundle:Film';
-        $result = $this->getEntityManager()->getRepository($reposiroty)->maxCategorie($criteria);
+        $result = $this->getEntityManager()->getRepository($reposiroty)->maxFilms($criteria);
         return $result;
     }
 
@@ -62,7 +62,7 @@ class FilmHandler extends BaseHandler
         }
         $count = ($init_read) ? 1 : $count;
         $page = ($init_read) ? 1 : $page; // $count($page - 1)
-        $total = ($total != null) ? $total : $this->maxCategorie($criteria);
+        $total = ($total != null) ? $total : $this->maxFilms($criteria);
         $paginator['count'] = $count;
         $paginator['total_page'] = intval(ceil($total / $count));
         //$paginator['current_page'] = ($init_read || $page > $paginator['total_page']) ? 1 : $page;

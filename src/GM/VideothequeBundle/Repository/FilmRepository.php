@@ -2,6 +2,8 @@
 
 namespace GM\VideothequeBundle\Repository;
 
+use GM\VideothequeBundle\Entity\Film;
+
 /**
  * FilmRepository
  *
@@ -39,6 +41,16 @@ class FilmRepository extends \Doctrine\ORM\EntityRepository
                 $offset
             );
         return $categories;
+    }
+
+    public function maxFilms(array $criteria = null){
+        $owner_user_id = $criteria['owner'];
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('count(film.id)');
+        $qb->from('GMVideothequeBundle:Film','film')->where("film.owner = :owner_user_id");
+        $qb->setParameter('owner_user_id', $owner_user_id);
+        $maxFilms = $qb->getQuery()->getSingleScalarResult();
+        return $maxFilms;
     }
 
 

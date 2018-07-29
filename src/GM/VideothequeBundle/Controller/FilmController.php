@@ -20,7 +20,7 @@ class FilmController extends Controller
    public function indexAction(Request $request)
    {
        $this->securityGuardianAccess();
-       $paginatorAttributes = $this->getPaginatorAttributes($request);
+       $paginatorAttributes = $this->get('paginator')->getPaginatorAttributes($request); 
        $page = $paginatorAttributes['page'];
        $count = $paginatorAttributes['count'];
        $orderBy = $paginatorAttributes['orderBy'];
@@ -32,8 +32,9 @@ class FilmController extends Controller
        else{
             $criteria = array('owner'=>$this->getUser()->getId());
             $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film', $page, $count, $orderBy);
+            $paginator = $film_handler->paginator($paginatorAttributes['page'], $paginatorAttributes['count'], null, count($films), $criteria);
        }
-       return $this->render($this->getTwig('index'), array('films' => $films));
+       return $this->render($this->getTwig('index'), array('films' => $films, "paginator" => $paginator));
    }
 
    /**
@@ -137,39 +138,5 @@ class FilmController extends Controller
         $em = $this->getDoctrine()->getManager();
         $this->get('film_handler')->onDeleteAll($this->getUser()->getId(), $batch_size = 20);
         return $this->redirectToRoute('film_index');
-    }
-
-    public function getPaginatorAttributes(Request $request){
-        if($request->query->get('page') != null){
-            $page = $request->query->get('page');
-        }
-        elseif($request->attributes->get('page') != null){
-            $page = $request->attributes->get('page');
-        }
-        else{
-            $page = 1;
-        }
-
-        if($request->query->get('count') != null){
-            $count = $request->query->get('count');
-        }
-        elseif($request->attributes->get('count') != null){
-            $count = $request->attributes->get('count');
-        }
-        else{
-            $count = 4;
-        }
-
-        if($request->query->get('orderBy') != null){
-            $orderBy = $request->query->get('orderBy');
-        }
-        elseif($request->attributes->get('orderBy') != null){
-            $orderBy = $request->attributes->get('orderBy');
-        }
-        else{
-            $orderBy = null;
-        }
-
-        return array('page' => $page, 'count' => $count, 'orderBy' => $orderBy);
     }
 }

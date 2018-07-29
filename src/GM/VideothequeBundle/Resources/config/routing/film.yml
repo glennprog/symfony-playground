@@ -1,7 +1,12 @@
 film_index:
     path:     /
-    defaults: { _controller: "GMVideothequeBundle:Film:index" }
+    defaults: { _controller: "GMVideothequeBundle:Film:index", page: 1, count: 5, orderBy: null }
     methods:  GET
+
+film_pagination:
+    path:     /page/{page}
+    defaults: { _controller: "GMVideothequeBundle:Film:index", page: 1, count: 5, orderBy: null}
+    methods:  [GET, POST]
 
 film_show:
     path:     /{id}/show
