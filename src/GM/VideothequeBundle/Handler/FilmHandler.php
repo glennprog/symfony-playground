@@ -45,38 +45,4 @@ class FilmHandler extends BaseHandler
         }
         return $result;
     }
-
-
-
-    public function maxFilms(array $criteria = null){
-        $reposiroty = 'GMVideothequeBundle:Film';
-        $result = $this->getEntityManager()->getRepository($reposiroty)->maxFilms($criteria);
-        return $result;
-    }
-
-
-    public function paginator($page, $count, $total = null, $currentTotalReading, array $criteria = null){
-        $init_read = false;
-        if($page < 1 || $count < 1){
-            $init_read = true;
-        }
-        $count = ($init_read) ? 1 : $count;
-        $page = ($init_read) ? 1 : $page; // $count($page - 1)
-        $total = ($total != null) ? $total : $this->maxFilms($criteria);
-        $paginator['count'] = $count;
-        $paginator['total_page'] = intval(ceil($total / $count));
-        //$paginator['current_page'] = ($init_read || $page > $paginator['total_page']) ? 1 : $page;
-        $paginator['current_page'] = ($init_read) ? 1 : $page;
-        /*
-        if(($page * $count) > $total && $page > 1){
-            $paginator['current_page'] = null;
-        }
-        */
-        $paginator['previous_page'] = ($paginator['current_page'] > 1) && ($paginator['current_page'] <= $paginator['total_page']) ? ($paginator['current_page'] - 1) : null;
-        $paginator['next_page'] = ($total - ($page * $count) > 0) ? ($page + 1) : null;
-        $paginator['next_record_to_read'] = ($paginator['next_page'] != null) ? ($total - ($count * $page)) : null;
-        $init_read = false;
-        $paginator['total_entities'] = $total;
-        return $paginator;
-    }
 }

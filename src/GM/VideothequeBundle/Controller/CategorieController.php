@@ -24,19 +24,24 @@ class CategorieController extends Controller
     {
         $this->securityGuardianAccess();
         $paginatorAttributes = $this->get('paginator')->getPaginatorAttributes($request); 
+        $page = $paginatorAttributes['page'];
+        $count = $paginatorAttributes['count'];
+        $orderBy = $paginatorAttributes['orderBy'];
         $categorie_handler = $this->get('categorie_handler');
         if($this->get('security.authorization_checker')->isGranted('ROLE_AMDIN')){
             $criteria = array(); // It means all data
-            $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie', $paginatorAttributes['page'], $paginatorAttributes['count'], $paginatorAttributes['orderBy']);
+            $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie', $page, $count, $orderBy);
         }
         else{
             $criteria = array('owner'=>$this->getUser()->getId());
-            $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie', $paginatorAttributes['page'], $paginatorAttributes['count'], $paginatorAttributes['orderBy']);
-            $paginator = $categorie_handler->paginator($paginatorAttributes['page'], $paginatorAttributes['count'], null, count($categories), $criteria);
+            $maxCategoriesEntities = $categorie_handler->maxEntities($criteria, 'GMVideothequeBundle:Categorie');
+            $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie', $page, $count, $orderBy);
+            $paginator_categories = $this->get('paginator')->paginator($page, $count, $maxCategoriesEntities, count($categories), $criteria, $this->getRoute('index'), "categories");
+            $paginator = array(
+                "categories" => $paginator_categories
+            );
         }
-
         if($request->isXMLHttpRequest()){
-            $paginatorAttributes = $this->get('paginator')->getPaginatorAttributes($request);
             return new JsonResponse(array(
                 'categories' => $categories,
                 'paginator' => $paginator,
@@ -70,19 +75,56 @@ class CategorieController extends Controller
         if($this->get('security.authorization_checker')->isGranted('ROLE_AMDIN')){
             $criteria = array('id' => $id);
             $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie');
+
+            /*
+            $criteria = array();
+            $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film', $page, $count, $orderBy);
+            */
         }
         else if($categorie->isOwner($this->getUser()->getId() )){
             $criteria = array('owner'=>$this->getUser()->getId(), 'id' => $id);
             $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie');
+
+
+            // Get film
+
+            $paginatorAttributes = $this->get('paginator')->getPaginatorAttributes($request); 
+            $page = $paginatorAttributes['page'];
+            $count = $paginatorAttributes['count'];
+            $orderBy = $paginatorAttributes['orderBy'];
+
             $film_handler = $this->get('film_handler');
-            $films = $film_handler->getFilmsOfCategorieForUser($this->getUser()->getId(), $id);
+            $criteria = array('owner'=>$this->getUser()->getId(), 'categorie'=> $id);
+            $maxfilmsEntities = $film_handler->maxEntities($criteria, 'GMVideothequeBundle:Film');
+            $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film', $page, $count, $orderBy);
+
+            $route = array(
+                'route_name' => 'categorie_show',
+                'params' => array('id' => $id)
+            );
+
+            $paginator_films = $this->get('paginator')->paginator($page, $count, $maxfilmsEntities, count($films), $criteria, $route, "films");
+            $paginator = array(
+                "films" => $paginator_films
+            );
+
+            if($request->isXMLHttpRequest()){
+                return new JsonResponse(array(
+                    'films' => $films,
+                    'paginator' => $paginator,
+                    'categories' => $categories,
+                ));
+            }
+
+            //$film_handler = $this->get('film_handler');
+            //$films = $film_handler->getFilmsOfCategorieForUser($this->getUser()->getId(), $id);
         }
         else{
             $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
             $request->getSession()->getFlashBag()->add("warning", $msgGen);
             return $this->redirectToRoute('categorie_index');
         }
-        return $this->render($this->getTwig('show'), array('films'=>$films, 'categorie' => $categorie, 'delete_form' => $this->getDeleteFormById($id)->createView()));
+        return $this->render($this->getTwig('show'), array('films'=>$films, 'paginator' => $paginator, 'categorie' => $categorie, 'delete_form' => $this->getDeleteFormById($id)->createView()));
     }
 
     /**
@@ -136,6 +178,16 @@ class CategorieController extends Controller
             'edit' => 'GMVideothequeBundle:categorie:edit.html.twig',
         );
         return $listTemplates[$template];
+    }
+
+    public function getRoute($template = 'index'){
+        $listRoutes = array(
+            'new' => 'categorie_new',
+            'index' => 'categorie_index',
+            'show' => 'categorie_show',
+            'edit' => 'categorie_edit',
+        );
+        return $listRoutes[$template];
     }
 
     public function securityGuardianAccess($role = 'ROLE_USER'){

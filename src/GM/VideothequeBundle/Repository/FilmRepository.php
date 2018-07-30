@@ -43,14 +43,23 @@ class FilmRepository extends \Doctrine\ORM\EntityRepository
         return $categories;
     }
 
-    public function maxFilms(array $criteria = null){
-        $owner_user_id = $criteria['owner'];
-        $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->select('count(film.id)');
-        $qb->from('GMVideothequeBundle:Film','film')->where("film.owner = :owner_user_id");
-        $qb->setParameter('owner_user_id', $owner_user_id);
-        $maxFilms = $qb->getQuery()->getSingleScalarResult();
-        return $maxFilms;
+    public function maxEntities(array $criteria = null){
+        if($criteria != null){
+            $owner_user_id = $criteria['owner'];
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('count(film.id)');
+            $qb->from('GMVideothequeBundle:Film','film')->where("film.owner = :owner_user_id");
+            $qb->setParameter('owner_user_id', $owner_user_id);
+            $maxFilms = $qb->getQuery()->getSingleScalarResult();
+            return $maxFilms;
+        }
+        else{
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('count(film.id)');
+            $qb->from('GMVideothequeBundle:Film','film');
+            $maxFilms = $qb->getQuery()->getSingleScalarResult();
+            return $maxFilms;
+        }
     }
 
 

@@ -62,34 +62,38 @@
         </div>
     </div>
 
-    <h2 class="h2-app margin-top-m">Film associés à la catégrorie</h2>
-    {% if films|length == 0 %}
-        <p>Aucun films disponibles dans cette catégrorie.</p>
-        <a class="text-dark link-button-main" href="{{ path('film_new') }}"><i class="fas fa-plus-square"></i> Ajouter un films</a>
-    {% else %}
-    <table class="table table-dark table-bordered table-hover table-sm">
-        <caption>Film associés à la catégrorie</caption>
-            <thead>
-                <tr class="bg-info">
-                    <th>Id</th>
-                    <th>Guid</th>
-                    <th>Titre</th>
-                    <th>Description</th>
-                    <th>Date_sortie</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for film in films %}
-                <tr class="gm-clickable-row" data-href="{{ path('film_show', { 'id': film.id }) }}">
-                    <td><a href="{{ path('film_show', { 'id': film.id }) }}">{{ film.id }}</a></td>
-                    <td>{{ film.guid }}</td>
-                    <td>{{ film.titre }}</td>
-                    <td>{{ film.description }}</td>
-                    <td>{% if film.datesortie %}{{ film.datesortie|date('Y-m-d H:i:s') }}{% endif %}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-    </table>
+    {% if films is defined %}
+        <h2 class="h2-app margin-top-m">Film associés à la catégrorie</h2>
+        {% if films|length == 0 %}
+            <p>Aucun films disponibles dans cette catégrorie.</p>
+            <a class="text-dark link-button-main" href="{{ path('film_new') }}"><i class="fas fa-plus-square"></i> Ajouter un films</a>
+        {% else %}
+            <table class="table table-dark table-bordered table-hover table-sm table-included-paginator">
+                    <thead>
+                        <tr class="bg-info">
+                            <th>Id</th>
+                            <th>Guid</th>
+                            <th>Titre</th>
+                            <th>Description</th>
+                            <th>Date_sortie</th>
+                        </tr>
+                    </thead>
+                    <tbody id="films_tbody">
+                    {% for film in films %}
+                        <tr class="gm-clickable-row" data-href="{{ path('film_show', { 'id': film.id }) }}">
+                            <td><a href="{{ path('film_show', { 'id': film.id }) }}">{{ film.id }}</a></td>
+                            <td>{{ film.guid }}</td>
+                            <td>{{ film.titre }}</td>
+                            <td>{{ film.description }}</td>
+                            <td>{% if film.datesortie %}{{ film.datesortie|date('Y-m-d H:i:s') }}{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+            </table>
+            {% if paginator is defined %}
+                    {% include 'paginator/template_paginator_multiple_gm.html.twig' with {'paginator' : paginator["films"] } only %}
+            {% endif %}
+        {% endif %}
     {% endif %}
 
 {% endblock %}

@@ -5,6 +5,8 @@ namespace GM\VideothequeBundle\Controller;
 use GM\VideothequeBundle\Entity\Film;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use GM\VideothequeBundle\Form\FilmType;
 
@@ -31,9 +33,19 @@ class FilmController extends Controller
        }
        else{
             $criteria = array('owner'=>$this->getUser()->getId());
+            $maxfilmsEntities = $film_handler->maxEntities($criteria, 'GMVideothequeBundle:Film');
             $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film', $page, $count, $orderBy);
-            $paginator = $film_handler->paginator($paginatorAttributes['page'], $paginatorAttributes['count'], null, count($films), $criteria);
+            $paginator_films = $this->get('paginator')->paginator($page, $count, $maxfilmsEntities, count($films), $criteria, $this->getRoute('index'), "films");
+            $paginator = array(
+                "films" => $paginator_films
+            );
        }
+       if($request->isXMLHttpRequest()){
+            return new JsonResponse(array(
+                'films' => $films,
+                'paginator' => $paginator,
+            ));
+        }
        return $this->render($this->getTwig('index'), array('films' => $films, "paginator" => $paginator));
    }
 
@@ -129,6 +141,16 @@ class FilmController extends Controller
        );
        return $listTemplates[$template];
    }
+
+   public function getRoute($template = 'index'){
+    $listRoutes = array(
+        'new' => 'film_new',
+        'index' => 'film_index',
+        'show' => 'film_show',
+        'edit' => 'film_edit',
+    );
+    return $listRoutes[$template];
+}
 
    public function securityGuardianAccess($role = 'ROLE_USER'){
        $this->denyAccessUnlessGranted($role, null, 'Unable to access this page!');

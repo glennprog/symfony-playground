@@ -3,7 +3,6 @@
 namespace GM\VideothequeBundle\Repository;
 
 use GM\VideothequeBundle\Entity\Categorie;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * CategorieRepository
@@ -13,18 +12,6 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  */
 class CategorieRepository extends \Doctrine\ORM\EntityRepository
 {
-    /*
-    public function onReadBy($readBy = 'id', $attrVal = null, $page, $count){ // put array option which contains ()
-        $this->_em->getConnection()->getConfiguration()->setSQLLogger(null);
-        if ($readBy == 'all'){
-            $categories = $this->getEntityManager()->getRepository('GMVideothequeBundle:Categorie')->findAll();
-            return $categories;
-        }
-        $categories = $this->getEntityManager()->getRepository('GMVideothequeBundle:Categorie')->findBy(array($readBy => $attrVal));
-        return $categories;
-    }
-    */
-
     public function onReadBy($criteria = array(), $page = 1, $count = 10, $orderBy = null){ // put array option which contains ()
         $init_read = false;
         if($page < 1 || $count < 1){
@@ -43,14 +30,23 @@ class CategorieRepository extends \Doctrine\ORM\EntityRepository
         return $categories;
     }
 
-    public function maxCategorie(array $criteria = null){
-        $owner_user_id = $criteria['owner'];
-        $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->select('count(categorie.id)');
-        $qb->from('GMVideothequeBundle:Categorie','categorie')->where("categorie.owner = :owner_user_id");
-        $qb->setParameter('owner_user_id', $owner_user_id);
-        $maxCategories = $qb->getQuery()->getSingleScalarResult();
-        return $maxCategories;
+    public function maxEntities(array $criteria = null){ // Max Category regarding criteria
+        if($criteria != null){
+            $owner_user_id = $criteria['owner'];
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('count(categorie.id)');
+            $qb->from('GMVideothequeBundle:Categorie','categorie')->where("categorie.owner = :owner_user_id");
+            $qb->setParameter('owner_user_id', $owner_user_id);
+            $maxCategories = $qb->getQuery()->getSingleScalarResult();
+            return $maxCategories;
+        }
+        else{
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('count(categorie.id)');
+            $qb->from('GMVideothequeBundle:Categorie','categorie');
+            $maxCategories = $qb->getQuery()->getSingleScalarResult();
+            return $maxCategories;
+        }
     }
 
     public function onDeleteAll($owner_user_id, $batch_size = 20){

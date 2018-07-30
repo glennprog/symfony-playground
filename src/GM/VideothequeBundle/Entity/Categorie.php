@@ -278,7 +278,6 @@ class Categorie implements JsonSerializable
             'owner'=> $this->owner,
         );
     }
-
     /* Be aware of security issue
     function getJsonData(){
         $var = get_object_vars($this);

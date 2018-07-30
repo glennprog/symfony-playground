@@ -67,7 +67,7 @@ services:
 
     paginator:
             class: AppBundle\Service\Paginator
-            arguments: ["@request_stack"]
+            arguments: ["@request_stack", "@router"]
 
     #base_handler:
     #        class: AppBundle\Service\BaseHandler

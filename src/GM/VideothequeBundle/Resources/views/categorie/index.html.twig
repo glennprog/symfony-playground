@@ -18,7 +18,9 @@
             {% endfor %}
             </tbody>
         </table>
-        {% include 'paginator/template_paginator_gm.html.twig' %}
+        {% if paginator is defined %}
+            {% include 'paginator/template_paginator_multiple_gm.html.twig' with {'paginator' : paginator["categories"] } only %}
+        {% endif %}
         <div class="row margin-top-m">
             <div class="col">
                 <a class="text-dark link-button-main create-action" href="{{ path('categorie_new') }}"><i class="fas fa-plus-square"></i> Ajouter une categorie</a>

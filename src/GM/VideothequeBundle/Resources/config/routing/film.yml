@@ -1,7 +1,7 @@
 film_index:
     path:     /
     defaults: { _controller: "GMVideothequeBundle:Film:index", page: 1, count: 5, orderBy: null }
-    methods:  GET
+    methods:  [GET, POST]
 
 film_pagination:
     path:     /page/{page}

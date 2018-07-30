@@ -10,8 +10,8 @@ categorie_pagination:
 
 categorie_show:
     path:     /{id}/show
-    defaults: { _controller: "GMVideothequeBundle:Categorie:show" }
-    methods:  GET
+    defaults: { _controller: "GMVideothequeBundle:Categorie:show"}
+    methods:  [GET, POST]
     requirements:
         id: '\d+'
 

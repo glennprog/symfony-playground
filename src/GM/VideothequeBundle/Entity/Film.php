@@ -15,7 +15,7 @@ use JsonSerializable;
  * @ORM\Table(name="film")
  * @ORM\Entity(repositoryClass="GM\VideothequeBundle\Repository\FilmRepository")
  */
-class Film /* implements JsonSerializable */
+class Film implements JsonSerializable
 {
     /**
      * @var int
@@ -317,7 +317,6 @@ class Film /* implements JsonSerializable */
         return sprintf($format, $this->titre);
     }
 
-    /*
     public function jsonSerialize()
     {
         return array(
@@ -332,17 +331,17 @@ class Film /* implements JsonSerializable */
             'owner'=> $this->owner,
         );
     }
-    */
 
+    /*
     function getJsonData(){
         $var = get_object_vars($this);
         dump($var);
         foreach ($var as &$value) {
             if (is_object($value) && method_exists($value,'getJsonData')) {
-                
-                //$value = $value->getJsonData();
+                $value = $value->getJsonData();
             }
         }
         return $var;
     }
+    */
 }
