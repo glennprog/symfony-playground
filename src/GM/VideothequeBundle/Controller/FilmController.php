@@ -27,22 +27,18 @@ class FilmController extends Controller
        $count = $paginatorAttributes['count'];
        $orderBy = $paginatorAttributes['orderBy'];
        $film_handler = $this->get('film_handler');
-       if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
-        $criteria = array();
+
+        $criteria = array('owner'=>$this->getUser()->getId());
+        $maxfilmsEntities = $film_handler->maxEntities($criteria, 'GMVideothequeBundle:Film');
         $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film', $page, $count, $orderBy);
-       }
-       else{
-            $criteria = array('owner'=>$this->getUser()->getId());
-            $maxfilmsEntities = $film_handler->maxEntities($criteria, 'GMVideothequeBundle:Film');
-            $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film', $page, $count, $orderBy);
-            $route = array(
-                'route_name' => $this->getRoute('index'),
-            );
-            $paginator_films = $this->get('paginator')->paginator($page, $count, $maxfilmsEntities, count($films), $criteria, $route, "films");
-            $paginator = array(
-                "films" => $paginator_films
-            );
-       }
+        $route = array(
+            'route_name' => $this->getRoute('index'),
+        );
+        $paginator_films = $this->get('paginator')->paginator($page, $count, $maxfilmsEntities, count($films), $criteria, $route, "films");
+        $paginator = array(
+            "films" => $paginator_films
+        );
+
        if($request->isXMLHttpRequest()){
             return new JsonResponse(array(
                 'films' => $films,
@@ -75,13 +71,9 @@ class FilmController extends Controller
    {
        $this->securityGuardianAccess();
        $film_handler = $this->get('film_handler');
-       if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
-        $criteria = array('id' => $id);
-        $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film');
-       }
-       else if($film->isOwner($this->getUser()->getId() )){
-        $criteria = array('owner'=>$this->getUser()->getId(), 'id' => $id);
-        $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film');
+       if($film->isOwner($this->getUser()->getId() )){
+            $criteria = array('owner'=>$this->getUser()->getId(), 'id' => $id);
+            $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film');
        }
        else{
            $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
@@ -98,7 +90,7 @@ class FilmController extends Controller
    public function editAction(Request $request, Film $film, $id)
    {
         $this->securityGuardianAccess();
-        if($film->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ){
+        if($film->isOwner($this->getUser()->getId())){
             $optionForm = array('owner_user_id' => $this->getUser()->getId());
             $film_handler = $this->get('film_handler');
             if ($film_handler->onUpdate($film, FilmType::class, $optionForm)) {
@@ -118,7 +110,7 @@ class FilmController extends Controller
     */
    public function deleteAction(Request $request, $id, Film $film){
        $this->securityGuardianAccess();
-       if($film->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ){
+       if($film->isOwner($this->getUser()->getId()) ){
            $this->get('film_handler')->OnDelete($film, "Deleting a film entity with id = ".$id);
            return $this->redirectToRoute('film_index');
        }
