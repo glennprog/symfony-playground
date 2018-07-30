@@ -28,15 +28,26 @@ class CategorieController extends Controller
         $count = $paginatorAttributes['count'];
         $orderBy = $paginatorAttributes['orderBy'];
         $categorie_handler = $this->get('categorie_handler');
-        if($this->get('security.authorization_checker')->isGranted('ROLE_AMDIN')){
+        if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
             $criteria = array(); // It means all data
             $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie', $page, $count, $orderBy);
+            $maxCategoriesEntities = $categorie_handler->maxEntities($criteria, 'GMVideothequeBundle:Categorie');
+            $route = array(
+                'route_name' => $this->getRoute('index'),
+            );
+            $paginator_categories = $this->get('paginator')->paginator($page, $count, $maxCategoriesEntities, count($categories), $criteria, $route, "categories");
+            $paginator = array(
+                "categories" => $paginator_categories
+            );
         }
         else{
             $criteria = array('owner'=>$this->getUser()->getId());
             $maxCategoriesEntities = $categorie_handler->maxEntities($criteria, 'GMVideothequeBundle:Categorie');
             $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie', $page, $count, $orderBy);
-            $paginator_categories = $this->get('paginator')->paginator($page, $count, $maxCategoriesEntities, count($categories), $criteria, $this->getRoute('index'), "categories");
+            $route = array(
+                'route_name' => $this->getRoute('index'),
+            );
+            $paginator_categories = $this->get('paginator')->paginator($page, $count, $maxCategoriesEntities, count($categories), $criteria, $route, "categories");
             $paginator = array(
                 "categories" => $paginator_categories
             );
@@ -72,10 +83,26 @@ class CategorieController extends Controller
     {
         $this->securityGuardianAccess();
         $categorie_handler = $this->get('categorie_handler');
-        if($this->get('security.authorization_checker')->isGranted('ROLE_AMDIN')){
+        if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
             $criteria = array('id' => $id);
             $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie');
 
+            // Get film
+            $paginatorAttributes = $this->get('paginator')->getPaginatorAttributes($request); 
+            $page = $paginatorAttributes['page'];
+            $count = $paginatorAttributes['count'];
+            $orderBy = $paginatorAttributes['orderBy'];
+            $film_handler = $this->get('film_handler');
+            $criteria = array('categorie'=> $id);
+            $maxFilmsDansUneCategorie = $film_handler->maxFilmsDansUneCategorie($criteria, 'GMVideothequeBundle:Film');
+            $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film', $page, $count, $orderBy);
+            $route = array(
+                'route_name' => 'categorie_index',
+            );
+            $paginator_films = $this->get('paginator')->paginator($page, $count, $maxFilmsDansUneCategorie, count($films), $criteria, $route, "films");
+            $paginator = array(
+                "films" => $paginator_films
+            );
             /*
             $criteria = array();
             $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film', $page, $count, $orderBy);
@@ -85,29 +112,22 @@ class CategorieController extends Controller
             $criteria = array('owner'=>$this->getUser()->getId(), 'id' => $id);
             $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie');
 
-
             // Get film
-
             $paginatorAttributes = $this->get('paginator')->getPaginatorAttributes($request); 
             $page = $paginatorAttributes['page'];
             $count = $paginatorAttributes['count'];
             $orderBy = $paginatorAttributes['orderBy'];
-
             $film_handler = $this->get('film_handler');
             $criteria = array('owner'=>$this->getUser()->getId(), 'categorie'=> $id);
-            $maxfilmsEntities = $film_handler->maxEntities($criteria, 'GMVideothequeBundle:Film');
+            $maxFilmsDansUneCategorie = $film_handler->maxFilmsDansUneCategorie($criteria, 'GMVideothequeBundle:Film');
             $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film', $page, $count, $orderBy);
-
             $route = array(
-                'route_name' => 'categorie_show',
-                'params' => array('id' => $id)
+                'route_name' => 'categorie_index',
             );
-
-            $paginator_films = $this->get('paginator')->paginator($page, $count, $maxfilmsEntities, count($films), $criteria, $route, "films");
+            $paginator_films = $this->get('paginator')->paginator($page, $count, $maxFilmsDansUneCategorie, count($films), $criteria, $route, "films");
             $paginator = array(
                 "films" => $paginator_films
             );
-
             if($request->isXMLHttpRequest()){
                 return new JsonResponse(array(
                     'films' => $films,
@@ -115,9 +135,6 @@ class CategorieController extends Controller
                     'categories' => $categories,
                 ));
             }
-
-            //$film_handler = $this->get('film_handler');
-            //$films = $film_handler->getFilmsOfCategorieForUser($this->getUser()->getId(), $id);
         }
         else{
             $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
@@ -134,7 +151,7 @@ class CategorieController extends Controller
     public function editAction(Request $request, Categorie $categorie, $id)
     {
         $this->securityGuardianAccess();
-        if($categorie->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_AMDIN') ){
+        if($categorie->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ){
             $categorie_handler = $this->get('categorie_handler');
             if ($categorie_handler->onUpdate($categorie, CategorieType::class)) {
                 return $this->redirectToRoute('categorie_edit', array('id' => $categorie->getId()));
@@ -153,7 +170,7 @@ class CategorieController extends Controller
      */
     public function deleteAction(Request $request, $id, Categorie $categorie){
         $this->securityGuardianAccess();
-        if($categorie->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_AMDIN') ){
+        if($categorie->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ){
             $this->get('categorie_handler')->OnDelete($categorie, "Deleting a categorie entity with id = ".$id);
             return $this->redirectToRoute('categorie_index');
         }

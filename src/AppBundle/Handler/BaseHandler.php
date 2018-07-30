@@ -80,13 +80,6 @@ class BaseHandler
         return true;
     }
 
-
-    public function maxEntities(array $criteria = null, $entityForRepository){
-        $reposiroty = $entityForRepository;
-        $result = $this->getEntityManager()->getRepository($reposiroty)->maxEntities($criteria);
-        return $result;
-    }
-
     public function setRequestStack($requestStack){
         return $this->requestStack = $requestStack;
     }

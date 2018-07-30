@@ -44,6 +44,10 @@ class FilmRepository extends \Doctrine\ORM\EntityRepository
     }
 
     public function maxEntities(array $criteria = null){
+        // TO DO, criteria for max entity
+        // SELECT count(*) FROM `film` where owner_user_id = 8 and categorie_id = 277;
+        //'SELECT count(*) FROM region_table_name where region_param_i region_operator_condition_i region_param_i_value'
+        //$query = 'SELECT count(*) FROM region_table_name where region_param_i = region_param_i_value'; 
         if($criteria != null){
             $owner_user_id = $criteria['owner'];
             $qb = $this->getEntityManager()->createQueryBuilder();
@@ -62,19 +66,31 @@ class FilmRepository extends \Doctrine\ORM\EntityRepository
         }
     }
 
-
-    public function getFilmsOfCategorieForUser($owner_user_id = null, $categorieId = null){ // put array option which contains () 
-        $this->_em->getConnection()->getConfiguration()->setSQLLogger(null); 
-        $films = $this->createQueryBuilder('f')
-        ->where("f.owner = :owner_user_id")
-        ->andWhere('f.categorie = :categorieId')
-        ->setParameter('owner_user_id', $owner_user_id)
-        ->setParameter('categorieId', $categorieId)
-        ->orderBy('f.titre', 'ASC')
-        ->getQuery()
-        ->getResult()
-        ;
-        return $films;
+    public function maxFilmsDansUneCategorie(array $criteria = null){
+        // SELECT count(id) FROM `film` where owner_user_id = 8 and categorie_id = 277;
+        //'SELECT count(*) FROM region_table_name where region_param_i region_operator_condition_i region_param_i_value'
+        //$query = 'SELECT count(*) FROM region_table_name where region_param_i = region_param_i_value';
+        if( isset($criteria['owner']) && $criteria != null){
+            $owner_user_id = $criteria['owner'];
+            $categorie_id = $criteria['categorie'];
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('count(film.id)');
+            $qb->from('GMVideothequeBundle:Film','film')->where("film.owner = :owner_user_id")->andWhere("film.categorie = :categorie_id");
+            $qb->setParameter('owner_user_id', $owner_user_id);
+            $qb->setParameter('categorie_id', $categorie_id);
+            $maxFilms = $qb->getQuery()->getSingleScalarResult();
+            return $maxFilms;
+        }
+        else{
+            dump($criteria);
+            $categorie_id = $criteria['categorie'];
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('count(film.id)');
+            $qb->from('GMVideothequeBundle:Film','film')->andWhere("film.categorie = :categorie_id");
+            $qb->setParameter('categorie_id', $categorie_id);
+            $maxFilms = $qb->getQuery()->getSingleScalarResult();
+            return $maxFilms;
+        }
     }
 
     public function onDeleteAll($owner_user_id, $batch_size = 20){

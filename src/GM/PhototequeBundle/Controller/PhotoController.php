@@ -21,7 +21,7 @@ class PhotoController extends Controller
     public function indexAction(){
         $this->securityGuardianAccess();
         $photo_handler = $this->get('photo_handler');
-        if($this->get('security.authorization_checker')->isGranted('ROLE_AMDIN')){
+        if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
             $photos = $photo_handler->onReadBy('all',null,'GMPhototequeBundle:Photo');
         }
         else{
@@ -48,7 +48,7 @@ class PhotoController extends Controller
     public function showAction($id, Photo $photo, Request $request){ // Benefits of Controller mechanic for retrieving photo entity directly in parameters.
         $this->securityGuardianAccess();
         $photo_handler = $this->get('photo_handler');
-        if($this->get('security.authorization_checker')->isGranted('ROLE_AMDIN')){
+        if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
             $photos = $photo_handler->onReadBy('id',$id,'GMPhototequeBundle:Photo');
         }
         else if($photo->isOwner($this->getUser()->getId() )){
@@ -67,7 +67,7 @@ class PhotoController extends Controller
      */
     public function editAction($id, Photo $photo, Request $request){
         $this->securityGuardianAccess();
-        if($photo->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_AMDIN') ){
+        if($photo->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ){
             $photo_handler = $this->get('photo_handler');
             if ($photo_handler->onUpdate($photo, PhotoType::class)) {
                 return $this->redirectToRoute('photo_edit', array('id' => $photo->getId()));
@@ -86,7 +86,7 @@ class PhotoController extends Controller
      */
     public function deleteAction(Request $request, $id, Photo $photo){
         $this->securityGuardianAccess();
-        if($photo->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_AMDIN') ){
+        if($photo->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ){
             $this->get('photo_handler')->OnDelete($photo, "Deleting a photo entity with id = ".$id);
             return $this->redirectToRoute('photo_index');
         }

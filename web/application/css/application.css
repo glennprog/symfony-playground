@@ -218,7 +218,6 @@ h1, h2{
     transition-duration: 0.5s;
 }
 
-
 /*##################### Paginator :      ###################*/
 
 .flex-container {
@@ -330,6 +329,10 @@ h1, h2{
 /*##################### Others :      #####################*/
 
 
+table{
+    font-size: 13px;
+}
+
 .margin-top-bottom-sx{
     margin-top : 10px;
     margin-bottom : 10px;
@@ -351,10 +354,6 @@ h1, h2{
     font-style: italic;
     
 }
-
-
-
-
 
 .safe-margin-action{
     margin-top : 27px;

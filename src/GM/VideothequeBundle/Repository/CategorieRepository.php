@@ -31,6 +31,7 @@ class CategorieRepository extends \Doctrine\ORM\EntityRepository
     }
 
     public function maxEntities(array $criteria = null){ // Max Category regarding criteria
+
         if($criteria != null){
             $owner_user_id = $criteria['owner'];
             $qb = $this->getEntityManager()->createQueryBuilder();

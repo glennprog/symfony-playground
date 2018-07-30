@@ -27,7 +27,7 @@ class FilmController extends Controller
        $count = $paginatorAttributes['count'];
        $orderBy = $paginatorAttributes['orderBy'];
        $film_handler = $this->get('film_handler');
-       if($this->get('security.authorization_checker')->isGranted('ROLE_AMDIN')){
+       if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
         $criteria = array();
         $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film', $page, $count, $orderBy);
        }
@@ -35,7 +35,10 @@ class FilmController extends Controller
             $criteria = array('owner'=>$this->getUser()->getId());
             $maxfilmsEntities = $film_handler->maxEntities($criteria, 'GMVideothequeBundle:Film');
             $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film', $page, $count, $orderBy);
-            $paginator_films = $this->get('paginator')->paginator($page, $count, $maxfilmsEntities, count($films), $criteria, $this->getRoute('index'), "films");
+            $route = array(
+                'route_name' => $this->getRoute('index'),
+            );
+            $paginator_films = $this->get('paginator')->paginator($page, $count, $maxfilmsEntities, count($films), $criteria, $route, "films");
             $paginator = array(
                 "films" => $paginator_films
             );
@@ -72,7 +75,7 @@ class FilmController extends Controller
    {
        $this->securityGuardianAccess();
        $film_handler = $this->get('film_handler');
-       if($this->get('security.authorization_checker')->isGranted('ROLE_AMDIN')){
+       if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
         $criteria = array('id' => $id);
         $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film');
        }
@@ -95,7 +98,7 @@ class FilmController extends Controller
    public function editAction(Request $request, Film $film, $id)
    {
         $this->securityGuardianAccess();
-        if($film->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_AMDIN') ){
+        if($film->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ){
             $optionForm = array('owner_user_id' => $this->getUser()->getId());
             $film_handler = $this->get('film_handler');
             if ($film_handler->onUpdate($film, FilmType::class, $optionForm)) {
@@ -115,7 +118,7 @@ class FilmController extends Controller
     */
    public function deleteAction(Request $request, $id, Film $film){
        $this->securityGuardianAccess();
-       if($film->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_AMDIN') ){
+       if($film->isOwner($this->getUser()->getId()) || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ){
            $this->get('film_handler')->OnDelete($film, "Deleting a film entity with id = ".$id);
            return $this->redirectToRoute('film_index');
        }

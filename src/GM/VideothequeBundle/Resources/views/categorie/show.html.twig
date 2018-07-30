@@ -72,7 +72,7 @@
                     <thead>
                         <tr class="bg-info">
                             <th>Id</th>
-                            <th>Guid</th>
+                            <th>Catégorie</th>
                             <th>Titre</th>
                             <th>Description</th>
                             <th>Date_sortie</th>
@@ -82,10 +82,10 @@
                     {% for film in films %}
                         <tr class="gm-clickable-row" data-href="{{ path('film_show', { 'id': film.id }) }}">
                             <td><a href="{{ path('film_show', { 'id': film.id }) }}">{{ film.id }}</a></td>
-                            <td>{{ film.guid }}</td>
+                            <td>{{ film.categorie }}</td>
                             <td>{{ film.titre }}</td>
                             <td>{{ film.description }}</td>
-                            <td>{% if film.datesortie %}{{ film.datesortie|date('Y-m-d H:i:s') }}{% endif %}</td>
+                            <td>{% if film.datesortie %}{{ film.datesortie|date('Y-m-d') }}{% endif %}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
