@@ -71,7 +71,6 @@
             <table class="table table-dark table-bordered table-hover table-sm table-included-paginator">
                     <thead>
                         <tr class="bg-info">
-                            <th>Id</th>
                             <th>Catégorie</th>
                             <th>Titre</th>
                             <th>Description</th>
@@ -81,7 +80,6 @@
                     <tbody id="films_tbody">
                     {% for film in films %}
                         <tr class="gm-clickable-row" data-href="{{ path('film_show', { 'id': film.id }) }}">
-                            <td><a href="{{ path('film_show', { 'id': film.id }) }}">{{ film.id }}</a></td>
                             <td>{{ film.categorie }}</td>
                             <td>{{ film.titre }}</td>
                             <td>{{ film.description }}</td>

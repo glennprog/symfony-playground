@@ -5,14 +5,12 @@
         <table id="categories" class="table table-dark table-bordered table-hover table-sm table-included-paginator">
             <thead>
                 <tr class="bg-info">
-                    <th>Id</th>
                     <th>Nom</th>
                 </tr>
             </thead>
             <tbody id="categories_tbody">
             {% for categorie in categories %}
                 <tr class="gm-clickable-row" data-href="{{ path('categorie_show', { 'id': categorie.id }) }}">
-                    <td><a href="{{ path('categorie_show', { 'id': categorie.id }) }}">{{ categorie.id }}</a></td>
                     <td>{{ categorie.nom }}</td>
                 </tr>
             {% endfor %}

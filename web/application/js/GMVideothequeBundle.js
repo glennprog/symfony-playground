@@ -85,7 +85,6 @@ $(document).ready(function () {
         for (let index = 0; index < categorie_size; index++) {
             var categorie = msg.categories[index];
             $("<tr class='gm-clickable-row' data-href='" + data_href.replace("region_id", categorie.id) + "'>" +
-                '<td><a href=' + data_href.replace("region_id", categorie.id) + '>' + categorie.id + '</a></td>' +
                 '<td>' + categorie.nom + '</td>' +
                 "</tr>").appendTo("#categories_tbody");
             $(".gm-clickable-row").click(function () {
@@ -138,7 +137,6 @@ $(document).ready(function () {
             var film = msg.films[index];
             $(
                 "<tr class='gm-clickable-row' data-href='" + data_href.replace("region_id", film.id) + "'>" +
-                '<td><a href=' + data_href.replace("region_id", film.id) + '>' + film.id + '</a></td>' +
                 '<td>' + film.categorie.nom + '</td>' +
                 '<td>' + film.titre + '</td>' +
                 '<td>' + film.description + '</td>' +

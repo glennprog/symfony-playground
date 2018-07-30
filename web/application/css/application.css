@@ -328,9 +328,13 @@ h1, h2{
 }
 /*##################### Others :      #####################*/
 
-
 table{
-    font-size: 13px;
+    font-size: 14px;
+}
+
+table th{
+    text-align: center;
+    font-size: 16px;
 }
 
 .margin-top-bottom-sx{
