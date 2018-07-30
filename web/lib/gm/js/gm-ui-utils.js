@@ -2,9 +2,6 @@ $(document).ready(function () {
     //###################### Mandatory variables //######################
     var pathname_gm_ui_utils = window.location.pathname;
 
-    //###################### Usefull variables //########################
-
-
     //###################### Custom alert handle //######################
     var gm_closebtn = document.getElementsByClassName("gm-closebtn");
     var gm_closebtn_index;
