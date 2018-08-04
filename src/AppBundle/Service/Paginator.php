@@ -15,6 +15,7 @@ class Paginator
         $this->router = $router;
     }
 
+    /*
     public function getPaginatorAttributes(){
         $request = $this->getRequestStack()->getCurrentRequest();
         if($request->isXMLHttpRequest()){
@@ -24,7 +25,12 @@ class Paginator
             if($orderBy =="" || $orderBy == null){
                 $orderBy = null;
             }
-            return array('page' => $page, 'count' => $count, 'orderBy' => $orderBy);
+            $searchBy = $request->request->get('searchBy');
+            if($orderBy =="" || $orderBy == null){
+                $orderBy = null;
+            }
+            
+            return array('page' => $page, 'count' => $count, 'orderBy' => $orderBy, 'searchBy' => $searchBy);
         }
         if($request->query->get('page') != null){
             $page = $request->query->get('page');
@@ -46,6 +52,7 @@ class Paginator
             $count = 5;
         }
 
+        
         if($request->query->get('orderBy') != null){
             $orderBy = $request->query->get('orderBy');
         }
@@ -56,7 +63,88 @@ class Paginator
             $orderBy = null;
         }
 
-        return array('page' => $page, 'count' => $count, 'orderBy' => $orderBy);
+        
+            if($request->query->get('searchBy') != null){
+                $searchBy = $request->query->get('searchBy');
+            }
+            elseif($request->attributes->get('searchBy') != null){
+                $searchBy = $request->attributes->get('searchBy');
+            }
+            elseif ($request->request->get('searchBy') != null) {
+                $searchBy = $request->request->get('searchBy');
+            }
+            else{
+                $searchBy = null;
+            }
+            
+
+        return array('page' => $page, 'count' => $count, 'orderBy' => $orderBy, 'searchBy' => $searchBy);
+    }
+    */
+
+    public function getPaginatorAttributes(){
+        $request = $this->getRequestStack()->getCurrentRequest();
+        if($request->isXMLHttpRequest()){
+            $page = $request->request->get('page');
+            $count = $request->request->get('count');
+            $orderBy = $request->request->get('orderBy');
+            if($orderBy =="" || $orderBy == null){
+                $orderBy = null;
+            }
+            $searchBy = $request->request->get('searchBy');
+            if($searchBy =="" || $searchBy == null){
+                $searchBy = null;
+            }
+            
+            return array('page' => $page, 'count' => $count, 'orderBy' => $orderBy, 'searchBy' => $searchBy);
+        }
+        if($request->query->get('page') != null){
+            $page = $request->query->get('page');
+        }
+        elseif($request->attributes->get('page') != null){
+            $page = $request->attributes->get('page');
+        }
+        else{
+            $page = 1;
+        }
+
+        if($request->query->get('count') != null){
+            $count = $request->query->get('count');
+        }
+        elseif($request->attributes->get('count') != null){
+            $count = $request->attributes->get('count');
+        }
+        else{
+            $count = 5;
+        }
+
+        
+        if($request->query->get('orderBy') != null){
+            $orderBy = $request->query->get('orderBy');
+        }
+        elseif($request->attributes->get('orderBy') != null){
+            $orderBy = $request->attributes->get('orderBy');
+        }
+        else{
+            $orderBy = null;
+        }
+
+        
+            if($request->query->get('searchBy') != null){
+                $searchBy = $request->query->get('searchBy');
+            }
+            elseif($request->attributes->get('searchBy') != null){
+                $searchBy = $request->attributes->get('searchBy');
+            }
+            elseif ($request->request->get('searchBy') != null) {
+                $searchBy = $request->request->get('searchBy');
+            }
+            else{
+                $searchBy = null;
+            }
+            
+
+        return array('page' => $page, 'count' => $count, 'orderBy' => $orderBy, 'searchBy' => $searchBy);
     }
 
     public function paginator($page, $count, $total = null, $currentTotalReading, array $criteria = null, $route, $entityNameHandled){

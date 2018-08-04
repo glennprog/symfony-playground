@@ -5,11 +5,11 @@
         <h1 class="h1-app">Liste des films</h1>
         <table id="films" class="table table-dark table-bordered table-hover table-sm table-included-paginator">
             <thead>
-                <tr class="bg-info">
-                    <th>categorie</th>
-                    <th>Titre</th>
-                    <th>Description</th>
-                    <th>Date de sortie</th>
+                <tr class="bg-info" data-entity="films">
+                    <th class="th-sortable" data-sort="categorie"><i class="fas fa-sort-up ui-sort"></i>categorie</th>
+                    <th class="th-sortable" data-sort="titre"><i class="fas fa-sort ui-sort"></i>Titre</th>
+                    <th class="th-sortable" data-sort="description"><i class="fas fa-sort ui-sort"></i>Description</th>
+                    <th class="th-sortable" data-sort="date_sortie"><i class="fas fa-sort ui-sort"></i>Date de sortie</th>
                 </tr>
             </thead>
             <tbody id="films_tbody">
@@ -37,4 +37,6 @@
             </div>
         </div>
     </div>
+
+
 {% endblock %}

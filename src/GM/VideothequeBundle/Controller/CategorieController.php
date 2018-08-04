@@ -27,15 +27,31 @@ class CategorieController extends Controller
         $page = $paginatorAttributes['page'];
         $count = $paginatorAttributes['count'];
         $orderBy = $paginatorAttributes['orderBy'];
-        $categorie_handler = $this->get('categorie_handler');
+        $searchBy = $paginatorAttributes['searchBy'];
 
-        $criteria = array('owner'=>$this->getUser()->getId());
+        $categorie_handler = $this->get('categorie_handler');
+        $criteria  = array('owner'=>$this->getUser()->getId());        
+        if($searchBy != null){
+            foreach ($searchBy as $key => $value) {
+                if($searchBy[$key] != "" && $searchBy[$key] != null){
+                    $criteria[$key] = $value;
+                }
+            }
+        }
+
+        dump($criteria);
+        dump($paginatorAttributes);
+
         $maxCategoriesEntities = $categorie_handler->maxEntities($criteria, 'GMVideothequeBundle:Categorie');
+
         $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie', $page, $count, $orderBy);
+
         $route = array(
             'route_name' => $this->getRoute('index'),
         );
+
         $paginator_categories = $this->get('paginator')->paginator($page, $count, $maxCategoriesEntities, count($categories), $criteria, $route, "categories");
+        
         $paginator = array(
             "categories" => $paginator_categories
         );

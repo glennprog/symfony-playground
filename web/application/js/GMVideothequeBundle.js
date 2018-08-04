@@ -2,17 +2,12 @@ $(document).ready(function () {
 
     var pathname = window.location.pathname;
 
+    var orderBy = {};
+    var search_data = {};
+    //orderBy['id'] = 'ASC';
+
     //###################### Paginator Handler : Categories //########################
-    function ajaxGetCategories(url, data) {
-        $.ajax({
-            url: url,
-            method: "post",
-            data: data
-        }).done(function (msg) {
-            refreshCategorieTable(msg);
-            update_paginator_route(msg["paginator"], "categories");
-        });
-    }
+
 
     function paginatorCategories(params) {
         var params_size = Object.size(params);
@@ -34,7 +29,7 @@ $(document).ready(function () {
             page_input = 1;
             count_select = $("#paginator_container_count_id_categories").val();
         }
-        ajaxGetCategories(pathname, { "count": count_select, "page": page_input, "orderBy": null });
+        ajaxGetCategories(pathname, { "count": count_select, "page": page_input, "orderBy": orderBy });
     }
 
     // prev fast
@@ -68,13 +63,13 @@ $(document).ready(function () {
     $("#paginator_categories").find('#paginator_container_count_id_categories').change(function () {
         var count_select = $(this).val();
         var page_input = $("#paginator_container_page_id_categories").val();
-        ajaxGetCategories(pathname, { "count": count_select, "page": page_input, "orderBy": null });
+        ajaxGetCategories(pathname, { "count": count_select, "page": page_input, "orderBy": orderBy });
     });
 
     $("#paginator_container_page_id_categories").change(function () {
         var page_input = $(this).val();
         var count_select = $("#paginator_container_count_id_categories").val();
-        ajaxGetCategories(pathname, { "count": count_select, "page": page_input, "orderBy": null });
+        ajaxGetCategories(pathname, { "count": count_select, "page": page_input, "orderBy": orderBy });
     });
 
     function refreshCategorieTable(msg) {
@@ -125,7 +120,7 @@ $(document).ready(function () {
             page_input = 1;
             count_select = $("#paginator_container_count_id_films").val();
         }
-        ajaxGetFilms(pathname, { "count": count_select, "page": page_input, "orderBy": null });
+        ajaxGetFilms(pathname, { "count": count_select, "page": page_input, "orderBy": orderBy });
     }
 
     function refreshFilmTable(msg) {
@@ -180,12 +175,100 @@ $(document).ready(function () {
     $("#paginator_films").find('#paginator_container_count_id_films').change(function () {
         var count_select = $(this).val();
         var page_input = $("#paginator_container_page_id_films").val();
-        ajaxGetFilms(pathname, { "count": count_select, "page": page_input, "orderBy": null });
+        ajaxGetFilms(pathname, { "count": count_select, "page": page_input, "orderBy": orderBy });
     });
 
     $("#paginator_container_page_id_films").change(function () {
         var page_input = $(this).val();
         var count_select = $("#paginator_container_count_id_films").val();
-        ajaxGetFilms(pathname, { "count": count_select, "page": page_input, "orderBy": null });
+        ajaxGetFilms(pathname, { "count": count_select, "page": page_input, "orderBy": orderBy });
     });
+
+
+    $("#categories .th-sortable").click(function () {
+        var col_name = $(this).attr('data-sort');
+        orderBy = {};
+        var page_input = $("#paginator_container_page_id_categories").val();
+        var count_select = $("#paginator_container_count_id_categories").val();
+        var searchBy = $("#search_container_data_categories").val();
+        search_data['nom'] = searchBy;
+
+        var th_parent = $(this).parent();
+        var current_className = "";
+        current_className = $(this).find(".ui-sort").attr('class');
+        var sort_child = th_parent.find(".fa-sort-up, .fa-sort-down");
+        for (let index = 0; index < sort_child.length; index++) {
+            var className = sort_child[index].className;
+            className = className.replace("fa-sort-up", "fa-sort");
+            className = className.replace("fa-sort-down", "fa-sort");
+            sort_child[index].className = className;
+        }
+        element = $(this).find(".ui-sort");
+        if (current_className.indexOf("sort-up") != -1) {
+            element.removeClass();
+            element.addClass("fas fa-sort-down ui-sort");
+            orderBy[col_name] = "ASC";
+        }
+        else{
+           element.removeClass();
+           element.addClass("fas fa-sort-up ui-sort");
+           orderBy[col_name] = "DESC";
+        }
+        ajaxGetCategories(pathname, { "count": count_select, "page": page_input, "orderBy": orderBy, 'searchBy': search_data });
+    });
+
+    $("#films .th-sortable").click(function () {
+        var col_name = $(this).attr('data-sort');
+        orderBy = {};
+        var page_input = $("#paginator_container_page_id_films").val();
+        var count_select = $("#paginator_container_count_id_films").val();
+        var th_parent = $(this).parent();
+        var current_className = "";
+        current_className = $(this).find(".ui-sort").attr('class');
+        var sort_child = th_parent.find(".fa-sort-up, .fa-sort-down");
+        for (let index = 0; index < sort_child.length; index++) {
+            var className = sort_child[index].className;
+            className = className.replace("fa-sort-up", "fa-sort");
+            className = className.replace("fa-sort-down", "fa-sort");
+            sort_child[index].className = className;
+        }
+        element = $(this).find(".ui-sort");
+        if (current_className.indexOf("sort-up") != -1) {
+            element.removeClass();
+            element.addClass("fas fa-sort-down ui-sort");
+            orderBy[col_name] = "ASC";
+        }
+        else{
+           element.removeClass();
+           element.addClass("fas fa-sort-up ui-sort");
+           orderBy[col_name] = "DESC";
+        }
+        ajaxGetFilms(pathname, { "count": count_select, "page": page_input, "orderBy": orderBy });
+    });
+
+    $("#search_container_data_categories").change(function () {
+        var columsSearch = $(this).attr('data-search');
+        columsSearchTab = columsSearch.split(';');
+        for (let index = 0; index < columsSearchTab.length; index++) {
+            const element = columsSearchTab[index];
+            search_data[element] = $(this).val();
+        }
+        console.log(search_data);
+        var page_input = $("#paginator_container_page_id_categories").val();
+        var count_select = $("#paginator_container_count_id_categories").val();
+        ajaxGetCategories(pathname, { "count": count_select, "page": page_input, "orderBy": orderBy , "searchBy":search_data});
+    });
+
+    function ajaxGetCategories(url, data) {
+        console.log(data);
+        $.ajax({
+            url: url,
+            method: "post",
+            data: data
+        }).done(function (msg) {
+            refreshCategorieTable(msg);
+            update_paginator_route(msg["paginator"], "categories");
+        });
+    }
+
 });

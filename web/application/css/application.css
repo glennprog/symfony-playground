@@ -333,9 +333,18 @@ table{
 }
 
 table th{
-    text-align: center;
-    font-size: 16px;
+    /*text-align: center;*/
+    font-size: 18px;
 }
+
+th i{
+    margin-right: 10px;
+}
+
+th .fa-sort{
+    color: #bfbfbf;
+}
+
 
 .margin-top-bottom-sx{
     margin-top : 10px;
@@ -375,4 +384,33 @@ table th{
     border-color: #dee2e670;
 }
 
+
+
+
+.search-container-data-input{
+    width: 50%;
+    text-align: center;
+}
+
+.search-container-data{
+    text-align: center;
+}
+
+.flex-search-container-data {
+    display: flex;
+    flex-wrap: nowrap;
+    background-color: rgba(151, 213, 241, 0.89);/*DodgerBlue;*/
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.flex-search-container-data > div {
+    line-height: 1.6;
+    font-size: 14px;
+    width: 100%;
+    
+    /*color: #6c757d; *//*rgb(131, 129, 129);*/
+}
 

@@ -31,6 +31,9 @@ class BaseHandler
     }
 
     public function onReadBy($readBy = array(), $reposiroty = null, $page = 1, $count = 10, $orderBy = null){
+        if($orderBy == null){
+            $orderBy = array('id' => 'ASC');
+        }
         $entities = $this->getEntityManager()->getRepository($reposiroty)->onReadBy($readBy, $page, $count, $orderBy);
         return $entities;
     }

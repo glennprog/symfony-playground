@@ -1,11 +1,19 @@
 {% extends 'GMVideothequeBundle::layout.html.twig' %}
+
 {% block app_main_content %}
     <div class="container">
         <h1 class="h1-app">Categorie des films</h1>
+
+        <div class="flex-search-container-data">
+            <div class="search-container-data margin-top-m margin-bottom-m">
+                    Recherche : <input type="text" class="search-container-data-input" data-search="nom;id" name="search_container_data_categories" id="search_container_data_categories" placeholder="Recherche ...">
+            </div>
+        </div>
+
         <table id="categories" class="table table-dark table-bordered table-hover table-sm table-included-paginator">
             <thead>
-                <tr class="bg-info">
-                    <th>Nom</th>
+                <tr class="bg-info" data-entity="categories">
+                    <th class="th-sortable" data-sort="nom"><i class="fas fa-sort-up ui-sort"></i>Nom</th>
                 </tr>
             </thead>
             <tbody id="categories_tbody">

@@ -12,6 +12,14 @@ use GM\VideothequeBundle\Entity\Categorie;
  */
 class CategorieRepository extends \Doctrine\ORM\EntityRepository
 {
+
+
+    public function BuildQuery($pseudoCriteria = null){
+        if ($pseudoCriteria != null) {
+            // code...
+        }
+    }
+
     public function onReadBy($criteria = array(), $page = 1, $count = 10, $orderBy = null){ // put array option which contains ()
         $init_read = false;
         if($page < 1 || $count < 1){
@@ -31,13 +39,20 @@ class CategorieRepository extends \Doctrine\ORM\EntityRepository
     }
 
     public function maxEntities(array $criteria = null){ // Max Category regarding criteria
-
         if($criteria != null){
-            $owner_user_id = $criteria['owner'];
             $qb = $this->getEntityManager()->createQueryBuilder();
-            $qb->select('count(categorie.id)');
-            $qb->from('GMVideothequeBundle:Categorie','categorie')->where("categorie.owner = :owner_user_id");
-            $qb->setParameter('owner_user_id', $owner_user_id);
+            $qb->select('count(c.id)');
+            $qb->from('GMVideothequeBundle:Categorie','c');
+            $index = 0;
+            foreach ($criteria as $key => $value) {
+                if($index < 1){
+                    $qb->where("c.".$key." = '".$value."'");
+                }
+                else{
+                    $qb->andWhere("c.".$key." = '".$value."'");
+                }
+                $index++;
+            }
             $maxCategories = $qb->getQuery()->getSingleScalarResult();
             return $maxCategories;
         }
