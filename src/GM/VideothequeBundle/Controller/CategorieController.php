@@ -16,21 +16,113 @@ use GM\VideothequeBundle\Form\CategorieType;
  */
 class CategorieController extends Controller
 {
+
+    public function indexAction(Request $request)
+    {
+        // Calling of security Guardian
+        $this->securityGuardianAccess();
+
+        // Get Paginator attributes
+        $paginatorPageCount = $this->get('paginator')->getPaginatorPageCount($request); //dump($paginatorPageCount);
+
+        // Get entity Manager
+        $entityManager = $this->getDoctrine()->getManager();
+
+        // Get Categories with rich embeded criteria-v3
+        $criteria = array(
+            'entity_class' => array(
+                'class' => 'GMVideothequeBundle:Categorie',/*Categorie::class,*/
+                'alias' => 'c',
+            ),
+            'criteria-select' => array('id', 'nom'),
+            'criteria-from' => array(
+                'class' => Categorie::class,/*'GMVideothequeBundle:Categorie',*/
+                'alias' => 'c',
+            ),
+            'criteria-where' => array(
+                array(
+                    'criterias' => array(
+                        array(
+                            'column' => array(
+                                'name' => 'owner',
+                                'value' => $this->getUser()->getId(),  
+                            ),
+                            'operator' => array(
+                                'affectation' => '=',
+                                'condition' => null
+                            ),
+                        ),
+                    ),
+                    'criterias-condition' => null // as it's first part of where
+                ),
+                /*
+                array(
+                    'criterias' => array(
+                        array(
+                            'column' => array(
+                                'name' => 'nom',
+                                'value' => 'Animation',
+                            ),
+                            'operator' => array(
+                                'affectation' => '=',
+                                'condition' => null,
+                            ),
+                        ),
+                        array(
+                            'column' => array(
+                                'name' => 'id',
+                                'value' => 'Animation', 
+                            ),
+                            'operator' => array(
+                                'affectation' => '=',
+                                'condition' => 'or',
+                            )
+                        )
+                    ),
+                    'criterias-condition' => 'and'
+                ),
+                */
+            ),
+            'pagination' => $paginatorPageCount
+        );
+
+        $categorie = $entityManager->getRepository('GMVideothequeBundle:Categorie')->findByCriterias(
+            $criteria
+        );
+        dump($categorie);
+
+        // Get maximum of Categorie regarding criteria
+        $categorie_max_by_criteria = $entityManager->getRepository('GMVideothequeBundle:Categorie')->maxEntitiesByCriterias(
+            $criteria
+        );
+        dump($categorie_max_by_criteria);
+
+        // Get Paginator Attributes
+        $paginator = $this->get('paginator')->getPaginatorAttributes(
+            $paginatorPageCount, 
+            $categorie_max_by_criteria, 
+            $route = array('route_name' => $this->getRoute('index')),
+            $entityNameHandled = 'Categorie'
+        );
+        dump($paginator);
+
+        return new Response();
+    }
     /**
      * Lists all categorie entities.
      *
      */
-    public function indexAction(Request $request)
+    public function LindexAction(Request $request)
     {
         $this->securityGuardianAccess();
         $paginatorAttributes = $this->get('paginator')->getPaginatorAttributes($request); 
         $page = $paginatorAttributes['page'];
         $count = $paginatorAttributes['count'];
-        $orderBy = $paginatorAttributes['orderBy'];
-        $searchBy = $paginatorAttributes['searchBy'];
 
         $categorie_handler = $this->get('categorie_handler');
-        $criteria  = array('owner'=>$this->getUser()->getId());        
+        $criteria  = array('owner'=>$this->getUser()->getId());   
+
+        /*
         if($searchBy != null){
             foreach ($searchBy as $key => $value) {
                 if($searchBy[$key] != "" && $searchBy[$key] != null){
@@ -38,31 +130,37 @@ class CategorieController extends Controller
                 }
             }
         }
+        */
 
-        dump($criteria);
-        dump($paginatorAttributes);
 
-        $maxCategoriesEntities = $categorie_handler->maxEntities($criteria, 'GMVideothequeBundle:Categorie');
+        $criteria_v2 = array(
+            array('owner' => 8, 'operator_affectation' => '=', 'operator_condition' => 'and'),
+            array('nom' => 'Animation', 'operator_affectation' => '=', 'operator_condition' => 'or'),
+            array('id' => 'Animation', 'operator_affectation' => '=', 'operator_condition' => 'or')
+        );
 
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $query = $entityManager->getRepository('GMVideothequeBundle:Categorie')->buildWhereCriteria(null, $criteria_v2, $paginatorAttributes);
+        dump($query);
+
+
+        //$maxCategoriesEntities = $categorie_handler->maxEntities($criteria, 'GMVideothequeBundle:Categorie');
         $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie', $page, $count, $orderBy);
-
         $route = array(
             'route_name' => $this->getRoute('index'),
         );
-
         $paginator_categories = $this->get('paginator')->paginator($page, $count, $maxCategoriesEntities, count($categories), $criteria, $route, "categories");
-        
         $paginator = array(
             "categories" => $paginator_categories
         );
-
         if($request->isXMLHttpRequest()){
             return new JsonResponse(array(
                 'categories' => $categories,
-                'paginator' => $paginator,
+                /*'paginator' => $paginator,*/
             ));
         }
-        return $this->render($this->getTwig('index'), array('categories' => $categories, 'paginator' => $paginator));
+    return $this->render($this->getTwig('index'), array('categories' => $categories, /*'paginator' => $paginator*/));
     }
 
     /**

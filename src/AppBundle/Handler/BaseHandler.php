@@ -30,7 +30,7 @@ class BaseHandler
         $this->setFormManager($formManager);
     }
 
-    public function onReadBy($readBy = array(), $reposiroty = null, $page = 1, $count = 10, $orderBy = null){
+    public function LonReadBy($readBy = array(), $reposiroty = null, $page = 1, $count = 10, $orderBy = null){
         if($orderBy == null){
             $orderBy = array('id' => 'ASC');
         }

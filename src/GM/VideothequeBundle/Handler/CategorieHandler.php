@@ -19,8 +19,6 @@ class CategorieHandler extends BaseHandler
     protected $formManager;
     protected $form;
 
-
-
     public function __construct($requestStack, $em, $watchdoglogger, $msgGenerator, $formManager){
         parent::__construct($requestStack, $em, $watchdoglogger, $msgGenerator, $formManager);
     }
@@ -39,12 +37,6 @@ class CategorieHandler extends BaseHandler
         else{
             $this->SetFlashBag($this->getMsgGenerator()->Msg_DeleteDB_NONE(), 'info');
         }
-        return $result;
-    }
-
-    public function maxEntities(array $criteria = null, $entityForRepository){
-        $reposiroty = $entityForRepository;
-        $result = $this->getEntityManager()->getRepository($reposiroty)->maxEntities($criteria);
         return $result;
     }
 

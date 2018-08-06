@@ -1,11 +1,11 @@
 categorie_index:
     path:     /
-    defaults: { _controller: "GMVideothequeBundle:Categorie:index", page: 1, count: 5, orderBy: null}
+    defaults: { _controller: "GMVideothequeBundle:Categorie:index", page: 1, count: 5}
     methods:  [GET, POST]
 
 categorie_pagination:
     path:     /page/{page}
-    defaults: { _controller: "GMVideothequeBundle:Categorie:index", page: 1, count: 5, orderBy: null}
+    defaults: { _controller: "GMVideothequeBundle:Categorie:index", page: 1, count: 5}
     methods:  [GET, POST]
 
 categorie_show:

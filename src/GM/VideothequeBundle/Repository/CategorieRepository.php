@@ -13,14 +13,12 @@ use GM\VideothequeBundle\Entity\Categorie;
 class CategorieRepository extends \Doctrine\ORM\EntityRepository
 {
 
+    public function getOffsetLimit(array $criteria_pagination = null){
+        // Get pagination elements
+        $page = $criteria_pagination['page'];
+        $count = $criteria_pagination['count'];
 
-    public function BuildQuery($pseudoCriteria = null){
-        if ($pseudoCriteria != null) {
-            // code...
-        }
-    }
-
-    public function onReadBy($criteria = array(), $page = 1, $count = 10, $orderBy = null){ // put array option which contains ()
+        // Process pagination variables and set the limit and offset
         $init_read = false;
         if($page < 1 || $count < 1){
             $init_read = true;
@@ -28,41 +26,130 @@ class CategorieRepository extends \Doctrine\ORM\EntityRepository
         $limit = ($init_read) ? 1 :  $count;
         $offset = ($init_read) ? 1 : ($count * $page) - $count; // $count($page - 1)
         $init_read = false;
-        $categories = $this->getEntityManager()->getRepository('GMVideothequeBundle:Categorie')
-            ->findBy(
-                $criteria,
-                $orderBy,
-                $limit,
-                $offset
-            );
-        return $categories;
+
+        dump("offset = " . $offset);
+        dump("limit = " . $limit);
+
+        return array('limit'=>$limit, 'offset'=>$offset);
     }
 
-    public function maxEntities(array $criteria = null){ // Max Category regarding criteria
-        if($criteria != null){
-            $qb = $this->getEntityManager()->createQueryBuilder();
-            $qb->select('count(c.id)');
-            $qb->from('GMVideothequeBundle:Categorie','c');
-            $index = 0;
-            foreach ($criteria as $key => $value) {
-                if($index < 1){
-                    $qb->where("c.".$key." = '".$value."'");
-                }
-                else{
-                    $qb->andWhere("c.".$key." = '".$value."'");
-                }
-                $index++;
+    public function buildQueryByCriterias(array $criteria = null){        
+        // Get the entity class for setting repository by entity manager
+        $entityClass = $criteria['entity_class']['class'];
+        
+        // Get the entity Alias
+        $entityAlias = $criteria['entity_class']['alias'];
+
+        // Build select query
+        $querySelect_all_flag = false;
+        $querySelect = "select";
+        foreach ($criteria['criteria-select'] as $criteria_select) {
+            if($criteria_select == '*'){
+                $querySelect_all_flag = true;
+                $querySelect .= " " . $entityAlias;
             }
-            $maxCategories = $qb->getQuery()->getSingleScalarResult();
-            return $maxCategories;
+            else if(stristr($criteria_select, "(") != false){
+                /* example
+                str = "COUNT(id)";
+                Match 1
+                Full match	0-9	`COUNT(id)`
+                Group 1.	0-6	`COUNT(`
+                Group 2.	6-8	`id`
+                Group 3.	8-9	`)`
+                */
+                $pattern = '/(.{1,}\()(.{1,})(\))/i';
+                $replacement = '${1} ' . $entityAlias . '.$2 $3';
+                $res = preg_replace($pattern, $replacement, $criteria_select);
+                $querySelect .= 
+                             " "
+                             . $res
+                             . ",";
+            }
+            else{
+                $querySelect .= 
+                             " "
+                             . $entityAlias
+                             . "."
+                             . $criteria_select
+                             . ",";
+            }
         }
-        else{
-            $qb = $this->getEntityManager()->createQueryBuilder();
-            $qb->select('count(categorie.id)');
-            $qb->from('GMVideothequeBundle:Categorie','categorie');
-            $maxCategories = $qb->getQuery()->getSingleScalarResult();
-            return $maxCategories;
+        if($querySelect_all_flag == false){
+            $querySelect = substr($querySelect, 0, -1);
         }
+
+        // Build from query
+        $queryFrom = "from";
+        $queryFrom .= " " . $criteria['criteria-from']['class']  . " " . $criteria['criteria-from']['alias'];
+
+        // Build and set where criteria : criteria-where
+        $queryWhere = "where";
+        foreach ($criteria['criteria-where'] as $criteria_where) {
+            if($criteria_where['criterias-condition'] == null){
+                $queryWhere .= " ( ";
+                for ($i=0; $i < count($criteria_where['criterias']); $i++) {
+                    $queryWhere .= 
+                        $entityAlias
+                        . "." 
+                        . $criteria_where['criterias'][$i]['column']['name'] 
+                        . " "
+                        . $criteria_where['criterias'][$i]['operator']['affectation']
+                        . " "
+                        . "'" 
+                        . $criteria_where['criterias'][$i]['column']['value'] . "'";
+                }
+            }
+            else{
+                $queryWhere .= $criteria_where['criterias-condition'] . " ( ";
+                for ($i=0; $i < count($criteria_where['criterias']); $i++) {
+                    if($criteria_where['criterias'][$i]['operator']['condition'] != null){
+                        $queryWhere .= 
+                                    " "
+                                    . $criteria_where['criterias'][$i]['operator']['condition']
+                                    . " ";
+                    }
+                    $queryWhere .= 
+                            $entityAlias
+                            . "." 
+                            . $criteria_where['criterias'][$i]['column']['name'] 
+                            . " "
+                            . $criteria_where['criterias'][$i]['operator']['affectation']
+                            . " "
+                            . "'" 
+                            . $criteria_where['criterias'][$i]['column']['value'] . "'";
+                }
+            }
+            $queryWhere .= " ) ";
+        }
+
+        // Build query
+        $query = $querySelect . " ". $queryFrom . " " . $queryWhere;
+        dump($query);
+
+        /**** Using pure DQL without setParameters function ****/
+        $query_em = $this->_em->createQuery($query);
+
+        // Return query built
+        return $query_em;
+    }
+
+    public function executeQuery($qb){
+        $resutl = $qb->getResult();
+        return $resutl;
+    }
+
+    public function findByCriterias(array $criteria = null){
+        $qb = $this->buildQueryByCriterias($criteria);
+        $offsetLimit = $this->getOffsetLimit($criteria['pagination']);
+        $result = $this->executeQuery($qb->setFirstResult($offsetLimit['offset'])->setMaxResults($offsetLimit['limit']));
+        return $result;
+    }
+
+    public function maxEntitiesByCriterias(array $criteria = null){
+        $criteria['criteria-select'] = array('count(id)');
+        $qb = $this->buildQueryByCriterias($criteria);
+        $result = $this->executeQuery($qb);
+        return $result[0]['1'];
     }
 
     public function onDeleteAll($owner_user_id, $batch_size = 20){
