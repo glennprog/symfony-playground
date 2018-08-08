@@ -61,8 +61,7 @@
             </div>
         </div>
     </div>
-
-    {% if films is defined %}
+    {% if films['result'] is defined %}
         <h2 class="h2-app margin-top-m">Film associés à la catégrorie</h2>
         {% if films|length == 0 %}
             <p>Aucun films disponibles dans cette catégrorie.</p>
@@ -78,7 +77,7 @@
                         </tr>
                     </thead>
                     <tbody id="films_tbody">
-                    {% for film in films %}
+                    {% for film in films['result'] %}
                         <tr class="gm-clickable-row" data-href="{{ path('film_show', { 'id': film.id }) }}">
                             <td>{{ film.categorie }}</td>
                             <td>{{ film.titre }}</td>
@@ -88,8 +87,8 @@
                     {% endfor %}
                     </tbody>
             </table>
-            {% if paginator is defined %}
-                    {% include 'paginator/template_paginator_multiple_gm.html.twig' with {'paginator' : paginator["films"] } only %}
+            {% if films['paginator'] is defined %}
+                    {% include 'paginator/template_paginator_multiple_gm.html.twig' with {'paginator' : films['paginator'] } only %}
             {% endif %}
         {% endif %}
     {% endif %}

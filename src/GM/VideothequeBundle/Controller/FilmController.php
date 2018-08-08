@@ -15,145 +15,172 @@ use GM\VideothequeBundle\Form\FilmType;
  *
  */
 class FilmController extends Controller
-{    /**
-    * Lists all film entities.
-    *
-    */
-   public function indexAction(Request $request)
-   {
-       $this->securityGuardianAccess();
-       $paginatorAttributes = $this->get('paginator')->getPaginatorAttributes($request); 
-       $page = $paginatorAttributes['page'];
-       $count = $paginatorAttributes['count'];
-       $orderBy = $paginatorAttributes['orderBy'];
-       $film_handler = $this->get('film_handler');
-
-        $criteria = array('owner'=>$this->getUser()->getId());
-        $maxfilmsEntities = $film_handler->maxEntities($criteria, 'GMVideothequeBundle:Film');
-        $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film', $page, $count, $orderBy);
-        $route = array(
-            'route_name' => $this->getRoute('index'),
-        );
-        $paginator_films = $this->get('paginator')->paginator($page, $count, $maxfilmsEntities, count($films), $criteria, $route, "films");
-        $paginator = array(
-            "films" => $paginator_films
-        );
-
-       if($request->isXMLHttpRequest()){
-            return new JsonResponse(array(
-                'films' => $films,
-                'paginator' => $paginator,
+{    
+    public function indexAction(Request $request)
+    {
+        $this->securityGuardianAccess(); // Calling of security Guardian
+        $criterias = $this->get('film_handler')->getCriterias();
+        $criterias['criteria-where'] = $this->getBaseCriterias_film();
+        $categories = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
+        return $this->render(
+            $this->get('film_handler')->getTwig('index'),
+            array(
+                'films' => $categories
             ));
-        }
-       return $this->render($this->getTwig('index'), array('films' => $films, "paginator" => $paginator));
-   }
+    }
 
-   /**
-    * Creates a new film entity.
-    *
-    */
-   public function newAction(Request $request)
-   {
-       $this->securityGuardianAccess();
-       $film_handler = $this->get('film_handler');
-       $optionForm = array('owner_user_id' => $this->getUser()->getId());
-       if ($film_handler->onCreate(new Film($this->getUser()), FilmType::class, $optionForm)) {
-           return $this->redirectToRoute('film_show', array('id' => $film_handler->getEntityObj()->getId()));
-       }
-       return $this->render($this->getTwig('new'), array('form' => $film_handler->getForm()->createView()));
-   }
-
-   /**
-    * Finds and displays a film entity.
-    *
-    */
-   public function showAction(Request $request, Film $film,  $id)
-   {
-       $this->securityGuardianAccess();
-       $film_handler = $this->get('film_handler');
-       if($film->isOwner($this->getUser()->getId() )){
-            $criteria = array('owner'=>$this->getUser()->getId(), 'id' => $id);
-            $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film');
-       }
-       else{
-           $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
-           $request->getSession()->getFlashBag()->add("warning", $msgGen);
-           return $this->redirectToRoute('film_index');
-       }
-       return $this->render($this->getTwig('show'), array('film' => $film, 'delete_form' => $this->getDeleteFormById($id)->createView()));
-   }
-
-   /**
-    * Displays a form to edit an existing film entity.
-    *
-    */
-   public function editAction(Request $request, Film $film, $id)
-   {
+    public function newAction(Request $request)
+    {
         $this->securityGuardianAccess();
-        if($film->isOwner($this->getUser()->getId())){
-            $optionForm = array('owner_user_id' => $this->getUser()->getId());
-            $film_handler = $this->get('film_handler');
-            if ($film_handler->onUpdate($film, FilmType::class, $optionForm)) {
-               return $this->redirectToRoute('film_edit', array('id' => $film->getId()));
+        $film = new Film($this->getUser());
+        $form = $this->get('form_manager')->createForm(FilmType::class, $film, array('owner_user_id' => $this->getUser()->getId()), 'create');
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($form->getData());
+            $resultInsertData = $em->flush();
+            $msgGen = $this->get('message_generator')->Msg_InsertionDB_OK();
+            $request->getSession()->getFlashBag()->add("success", $msgGen);
+            return $this->redirectToRoute('film_show', array('id' => $film->getId()));
+        }
+        return $this->render(
+            $this->get('film_handler')->getTwig('new'), 
+            array(
+                'form' => $form->createView()
+        ));
+    }
+
+    public function showAction(Request $request, Film $film,  $id)
+    {
+        $this->securityGuardianAccess(); // Calling of security Guardian
+        if($film->isOwner($this->getUser()->getId() )){ // Verify if request is allowed for the current user
+        }
+        else{
+            $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
+            $request->getSession()->getFlashBag()->add("warning", $msgGen);
+            return $this->redirectToRoute('film_index');
+        }
+        return $this->render(
+            $this->get('film_handler')->getTwig('show'), 
+            array(
+                'film' => $film, 
+                'delete_form' => $this->getDeleteFormById($id)->createView()
+            ));
+    }
+
+    public function editAction(Request $request, Film $film, $id)
+    {
+        $this->securityGuardianAccess();
+        if($film->isOwner($this->getUser()->getId()) ){
+
+            $editForm = $this->get('form_manager')->createForm(FilmType::class, $film, array('owner_user_id' => $this->getUser()->getId()), 'update');
+            $editForm->handleRequest($request);
+            if ($editForm->isSubmitted() && $editForm->isValid()) 
+            {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($editForm->getData());
+                $resultUpdateData = $em->flush();
+                $msgGen = $this->get('message_generator')->Msg_UpdateDB_OK();
+                $request->getSession()->getFlashBag()->add("success", $msgGen);
+                return $this->redirectToRoute('film_edit', array('id' => $film->getId()));
             }
-            return $this->render($this->getTwig('edit'), array('film' => $film, 'edit_form' => $film_handler->getForm()->createView(), 'delete_form' => $this->getDeleteFormById($id)->createView()));
+            return $this->render(
+                $this->get('film_handler')->getTwig('edit'), 
+                array(
+                    'film' => $film, 
+                    'edit_form' => $editForm->createView(), 
+                    'delete_form' => $this->getDeleteFormById($id)->createView()
+                ));
         }
-       else{
-           $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
-           $request->getSession()->getFlashBag()->add("warning", $msgGen);
-           return $this->redirectToRoute('film_index');
+        else{
+            $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
+            $request->getSession()->getFlashBag()->add("warning", $msgGen);
+            return $this->redirectToRoute('film_index');
         }
-   }
+    }
 
-   /**
-    * Deletes only one film entity. By Id.
-    */
-   public function deleteAction(Request $request, $id, Film $film){
-       $this->securityGuardianAccess();
-       if($film->isOwner($this->getUser()->getId()) ){
-           $this->get('film_handler')->OnDelete($film, "Deleting a film entity with id = ".$id);
-           return $this->redirectToRoute('film_index');
-       }
-       else{
-           $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
-           $request->getSession()->getFlashBag()->add("warning", $msgGen);
-           return $this->redirectToRoute('film_index');
-       }
-   }
-
-   public function getDeleteFormById($id){
-       $option_delete_form = array('action' => $this->generateUrl('film_delete', array('id' => $id)), 'method' => 'DELETE');
-       $delete_form = $this->get('form_manager')->createForm(FormType::class, new film($this->getUser()), $option_delete_form, 'delete');
-       return $delete_form;
-   }
-
-   public function getTwig($template = 'index'){
-       $listTemplates = array(
-           'new' => 'GMVideothequeBundle:film:new.html.twig',
-           'index' => 'GMVideothequeBundle:film:index.html.twig',
-           'show' => 'GMVideothequeBundle:film:show.html.twig',
-           'edit' => 'GMVideothequeBundle:film:edit.html.twig',
-       );
-       return $listTemplates[$template];
-   }
-
-   public function getRoute($template = 'index'){
-    $listRoutes = array(
-        'new' => 'film_new',
-        'index' => 'film_index',
-        'show' => 'film_show',
-        'edit' => 'film_edit',
-    );
-    return $listRoutes[$template];
-}
-
-   public function securityGuardianAccess($role = 'ROLE_USER'){
-       $this->denyAccessUnlessGranted($role, null, 'Unable to access this page!');
-   }
-
-    public function delete_allAction(){
-        $em = $this->getDoctrine()->getManager();
-        $this->get('film_handler')->onDeleteAll($this->getUser()->getId(), $batch_size = 20);
+    public function deleteAction(Request $request, $id, Film $film)
+    {
+        $criterias = $this->get('film_handler')->getCriterias();
+        $criterias['pagination']['enabled'] = false;
+        $criterias['criteria-where'] = $this->getBaseCriterias_film();
+        $criterias['criteria-where'][] = 
+                array(
+                    'criterias' => array(
+                        array(
+                                'column' => array(
+                                'name' => 'id',
+                                'value' => $id
+                            ),
+                            'operator' => array(
+                                'affectation' => '=',
+                                'condition' => null
+                            ),
+                        ),
+                    ),
+                    'criterias-condition' => 'and'
+                );
+        $delation_ok = $this->get('query_manager')->onDeleteByCriterias($criterias, $batch_size = 5);
+        if($delation_ok){
+            $msgGen = $this->get('message_generator')->Msg_DeleteDB_OK();
+            $request->getSession()->getFlashBag()->add("success", $msgGen);
+            
+        }
+        else{
+            $msgGen = $this->get('message_generator')->Msg_DeleteDB_NONE();
+            $request->getSession()->getFlashBag()->add("warning", $msgGen);
+        }
         return $this->redirectToRoute('film_index');
     }
+
+    public function delete_allAction(Request $request)
+    {
+        $criterias = $this->get('film_handler')->getCriterias();
+        $criteria['pagination']['enabled'] = false;
+        $criterias['criteria-where'] = $this->getBaseCriterias_film();
+        $delation_ok = $this->get('query_manager')->onDeleteByCriterias($criterias, $batch_size = 20);
+        if($delation_ok){
+            $msgGen = $this->get('message_generator')->Msg_DeleteDB_OK();
+            $request->getSession()->getFlashBag()->add("success", $msgGen);
+        }
+        else{
+            $msgGen = $this->get('message_generator')->Msg_DeleteDB_NONE();
+            $request->getSession()->getFlashBag()->add("warning", $msgGen);
+        }
+        return $this->redirectToRoute('film_index');
+    }
+
+    public function getDeleteFormById($id){
+        $option_delete_form = array('action' => $this->generateUrl('film_delete', array('id' => $id)), 'method' => 'DELETE');
+        $delete_form = $this->get('form_manager')->createForm(FormType::class, new film($this->getUser()), $option_delete_form, 'delete');
+        return $delete_form;
+    }
+
+    public function securityGuardianAccess($role = 'ROLE_USER'){
+        $this->denyAccessUnlessGranted($role, null, 'Unable to access this page!');
+    }
+
+    public function getBaseCriterias_film()
+    {
+        $criteria = array( 
+            array(
+                'criterias' => array(
+                    array(
+                            'column' => array(
+                            'name' => 'owner',
+                            'value' => $this->getUser()->getId()
+                        ),
+                        'operator' => array(
+                            'affectation' => '=',
+                            'condition' => null
+                        ),
+                    ),
+                ),
+                'criterias-condition' => null
+            )
+        );
+        return $criteria;
+    }
+
 }

@@ -16,36 +16,104 @@ use GM\VideothequeBundle\Form\CategorieType;
  */
 class CategorieController extends Controller
 {
-
     public function indexAction(Request $request)
     {
-        // Calling of security Guardian
+        $this->securityGuardianAccess(); // Calling of security Guardian
+        $criterias = $this->get('categorie_handler')->getCriterias();
+        $criterias['criteria-where'] = $this->getBaseCriterias_categorie();
+        $categories = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
+        return $this->render(
+            $this->get('categorie_handler')->getTwig('index'), 
+            array(
+                'categories' => $categories
+            ));
+    }
+
+    public function showAction(Request $request, Categorie $categorie,  $id)
+    {
+        $this->securityGuardianAccess(); // Calling of security Guardian
+        if($categorie->isOwner($this->getUser()->getId() )){ // Verify if request is allowed for the current user
+            $FilmsParCategorie = $this->FilmsParCategorie($id);
+        }
+        else{
+            $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
+            $request->getSession()->getFlashBag()->add("warning", $msgGen);
+            return $this->redirectToRoute('categorie_index');
+        }
+        return $this->render(
+            $this->get('categorie_handler')->getTwig('show'), 
+            array(
+                'categorie' => $categorie, 
+                'delete_form' => $this->getDeleteFormById($id)->createView(),
+                'films' => $FilmsParCategorie
+            ));
+    }
+
+    public function newAction(Request $request)
+    {
         $this->securityGuardianAccess();
+        $categorie = new Categorie($this->getUser());
+        $form = $this->get('form_manager')->createForm(CategorieType::class, $categorie, array(), 'create');
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($form->getData());
+            $resultInsertData = $em->flush();
+            $msgGen = $this->get('message_generator')->Msg_InsertionDB_OK();
+            $request->getSession()->getFlashBag()->add("success", $msgGen);
+            return $this->redirectToRoute('categorie_show', array('id' => $categorie->getId()));
+        }
+        return $this->render(
+            $this->get('categorie_handler')->getTwig('new'), 
+            array(
+                'form' => $form->createView()
+            ));
+    }
 
-        // Get Paginator attributes
-        $paginatorPageCount = $this->get('paginator')->getPaginatorPageCount($request); //dump($paginatorPageCount);
+    public function editAction(Request $request, Categorie $categorie, $id)
+    {
+        $this->securityGuardianAccess();
+        if($categorie->isOwner($this->getUser()->getId()) ){
 
-        // Get entity Manager
-        $entityManager = $this->getDoctrine()->getManager();
+            $editForm = $this->get('form_manager')->createForm(CategorieType::class, $categorie, array(), 'update');
+            $editForm->handleRequest($request);
+            if ($editForm->isSubmitted() && $editForm->isValid()) 
+            {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($editForm->getData());
+                $resultUpdateData = $em->flush();
+                $msgGen = $this->get('message_generator')->Msg_UpdateDB_OK();
+                $request->getSession()->getFlashBag()->add("success", $msgGen);
+                return $this->redirectToRoute('categorie_edit', array('id' => $categorie->getId()));
+            }
+            return $this->render(
+                $this->get('categorie_handler')->getTwig('edit'), 
+                array(
+                    'categorie' => $categorie, 
+                    'edit_form' => $editForm->createView(), 
+                    'delete_form' => $this->getDeleteFormById($id)->createView()
+                ));
+        }
+        else{
+            $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
+            $request->getSession()->getFlashBag()->add("warning", $msgGen);
+            return $this->redirectToRoute('categorie_index');
+        }
+    }
 
-        // Get Categories with rich embeded criteria-v3
-        $criteria = array(
-            'entity_class' => array(
-                'class' => 'GMVideothequeBundle:Categorie',/*Categorie::class,*/
-                'alias' => 'c',
-            ),
-            'criteria-select' => array('id', 'nom'),
-            'criteria-from' => array(
-                'class' => Categorie::class,/*'GMVideothequeBundle:Categorie',*/
-                'alias' => 'c',
-            ),
-            'criteria-where' => array(
+    public function deleteAction(Request $request, $id, Categorie $categorie)
+    {
+        $criterias = $this->get('categorie_handler')->getCriterias();
+        $criterias['pagination']['enabled'] = false;
+        $criterias['criteria-where'] = $this->getBaseCriterias_categorie();
+        $criterias['criteria-where'][] = 
                 array(
                     'criterias' => array(
                         array(
-                            'column' => array(
-                                'name' => 'owner',
-                                'value' => $this->getUser()->getId(),  
+                                'column' => array(
+                                'name' => 'id',
+                                'value' => $id
                             ),
                             'operator' => array(
                                 'affectation' => '=',
@@ -53,244 +121,114 @@ class CategorieController extends Controller
                             ),
                         ),
                     ),
-                    'criterias-condition' => null // as it's first part of where
-                ),
-                /*
-                array(
-                    'criterias' => array(
-                        array(
-                            'column' => array(
-                                'name' => 'nom',
-                                'value' => 'Animation',
-                            ),
-                            'operator' => array(
-                                'affectation' => '=',
-                                'condition' => null,
-                            ),
-                        ),
-                        array(
-                            'column' => array(
-                                'name' => 'id',
-                                'value' => 'Animation', 
-                            ),
-                            'operator' => array(
-                                'affectation' => '=',
-                                'condition' => 'or',
-                            )
-                        )
-                    ),
                     'criterias-condition' => 'and'
-                ),
-                */
-            ),
-            'pagination' => $paginatorPageCount
-        );
-
-        $categorie = $entityManager->getRepository('GMVideothequeBundle:Categorie')->findByCriterias(
-            $criteria
-        );
-        dump($categorie);
-
-        // Get maximum of Categorie regarding criteria
-        $categorie_max_by_criteria = $entityManager->getRepository('GMVideothequeBundle:Categorie')->maxEntitiesByCriterias(
-            $criteria
-        );
-        dump($categorie_max_by_criteria);
-
-        // Get Paginator Attributes
-        $paginator = $this->get('paginator')->getPaginatorAttributes(
-            $paginatorPageCount, 
-            $categorie_max_by_criteria, 
-            $route = array('route_name' => $this->getRoute('index')),
-            $entityNameHandled = 'Categorie'
-        );
-        dump($paginator);
-
-        return new Response();
-    }
-    /**
-     * Lists all categorie entities.
-     *
-     */
-    public function LindexAction(Request $request)
-    {
-        $this->securityGuardianAccess();
-        $paginatorAttributes = $this->get('paginator')->getPaginatorAttributes($request); 
-        $page = $paginatorAttributes['page'];
-        $count = $paginatorAttributes['count'];
-
-        $categorie_handler = $this->get('categorie_handler');
-        $criteria  = array('owner'=>$this->getUser()->getId());   
-
-        /*
-        if($searchBy != null){
-            foreach ($searchBy as $key => $value) {
-                if($searchBy[$key] != "" && $searchBy[$key] != null){
-                    $criteria[$key] = $value;
-                }
-            }
-        }
-        */
-
-
-        $criteria_v2 = array(
-            array('owner' => 8, 'operator_affectation' => '=', 'operator_condition' => 'and'),
-            array('nom' => 'Animation', 'operator_affectation' => '=', 'operator_condition' => 'or'),
-            array('id' => 'Animation', 'operator_affectation' => '=', 'operator_condition' => 'or')
-        );
-
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $query = $entityManager->getRepository('GMVideothequeBundle:Categorie')->buildWhereCriteria(null, $criteria_v2, $paginatorAttributes);
-        dump($query);
-
-
-        //$maxCategoriesEntities = $categorie_handler->maxEntities($criteria, 'GMVideothequeBundle:Categorie');
-        $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie', $page, $count, $orderBy);
-        $route = array(
-            'route_name' => $this->getRoute('index'),
-        );
-        $paginator_categories = $this->get('paginator')->paginator($page, $count, $maxCategoriesEntities, count($categories), $criteria, $route, "categories");
-        $paginator = array(
-            "categories" => $paginator_categories
-        );
-        if($request->isXMLHttpRequest()){
-            return new JsonResponse(array(
-                'categories' => $categories,
-                /*'paginator' => $paginator,*/
-            ));
-        }
-    return $this->render($this->getTwig('index'), array('categories' => $categories, /*'paginator' => $paginator*/));
-    }
-
-    /**
-     * Creates a new categorie entity.
-     *
-     */
-    public function newAction(Request $request)
-    {
-        $this->securityGuardianAccess();
-        $categorie_handler = $this->get('categorie_handler');
-        if ($categorie_handler->onCreate(new Categorie($this->getUser()), CategorieType::class)) {
-            return $this->redirectToRoute('categorie_show', array('id' => $categorie_handler->getEntityObj()->getId()));
-        }
-        return $this->render($this->getTwig('new'), array('form' => $categorie_handler->getForm()->createView()));
-    }
-
-    /**
-     * Finds and displays a categorie entity.
-     *
-     */
-    public function showAction(Request $request, Categorie $categorie,  $id)
-    {
-        $this->securityGuardianAccess();
-        $categorie_handler = $this->get('categorie_handler');
-        if($categorie->isOwner($this->getUser()->getId() )){
-            $criteria = array('owner'=>$this->getUser()->getId(), 'id' => $id);
-            $categories = $categorie_handler->onReadBy($criteria,'GMVideothequeBundle:Categorie');
-            // Get film
-            $paginatorAttributes = $this->get('paginator')->getPaginatorAttributes($request); 
-            $page = $paginatorAttributes['page'];
-            $count = $paginatorAttributes['count'];
-            $orderBy = $paginatorAttributes['orderBy'];
-            $film_handler = $this->get('film_handler');
-            $criteria = array('owner'=>$this->getUser()->getId(), 'categorie'=> $id);
-            $maxFilmsDansUneCategorie = $film_handler->maxFilmsDansUneCategorie($criteria, 'GMVideothequeBundle:Film');
-            $films = $film_handler->onReadBy($criteria,'GMVideothequeBundle:Film', $page, $count, $orderBy);
-            $route = array(
-                'route_name' => 'categorie_index',
-            );
-            $paginator_films = $this->get('paginator')->paginator($page, $count, $maxFilmsDansUneCategorie, count($films), $criteria, $route, "films");
-            $paginator = array(
-                "films" => $paginator_films
-            );
-            if($request->isXMLHttpRequest()){
-                return new JsonResponse(array(
-                    'films' => $films,
-                    'paginator' => $paginator,
-                    'categories' => $categories,
-                ));
-            }
+                );
+        $delation_ok = $this->get('query_manager')->onDeleteByCriterias($criterias, $batch_size = 5);
+        if($delation_ok){
+            $msgGen = $this->get('message_generator')->Msg_DeleteDB_OK();
+            $request->getSession()->getFlashBag()->add("success", $msgGen);
+            
         }
         else{
-            $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
+            $msgGen = $this->get('message_generator')->Msg_DeleteDB_NONE();
             $request->getSession()->getFlashBag()->add("warning", $msgGen);
-            return $this->redirectToRoute('categorie_index');
         }
-        return $this->render($this->getTwig('show'), array('films'=>$films, 'paginator' => $paginator, 'categorie' => $categorie, 'delete_form' => $this->getDeleteFormById($id)->createView()));
+        return $this->redirectToRoute('categorie_index');
     }
 
-    /**
-     * Displays a form to edit an existing categorie entity.
-     *
-     */
-    public function editAction(Request $request, Categorie $categorie, $id)
+    public function delete_allAction(Request $request)
     {
-        $this->securityGuardianAccess();
-        if($categorie->isOwner($this->getUser()->getId()) ){
-            $categorie_handler = $this->get('categorie_handler');
-            if ($categorie_handler->onUpdate($categorie, CategorieType::class)) {
-                return $this->redirectToRoute('categorie_edit', array('id' => $categorie->getId()));
-            }
-            return $this->render($this->getTwig('edit'), array('categorie' => $categorie, 'edit_form' => $categorie_handler->getForm()->createView(), 'delete_form' => $this->getDeleteFormById($id)->createView()));
+        $criterias = $this->get('categorie_handler')->getCriterias();
+        $criteria['pagination']['enabled'] = false;
+        $criterias['criteria-where'] = $this->getBaseCriterias_categorie();
+        $delation_ok = $this->get('query_manager')->onDeleteByCriterias($criterias, $batch_size = 20);
+        if($delation_ok){
+            $msgGen = $this->get('message_generator')->Msg_DeleteDB_OK();
+            $request->getSession()->getFlashBag()->add("success", $msgGen);
         }
         else{
-            $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
+            $msgGen = $this->get('message_generator')->Msg_DeleteDB_NONE();
             $request->getSession()->getFlashBag()->add("warning", $msgGen);
-            return $this->redirectToRoute('categorie_index');
         }
+        return $this->redirectToRoute('categorie_index');
     }
 
-    /**
-     * Deletes only one categorie entity. By Id.
-     */
-    public function deleteAction(Request $request, $id, Categorie $categorie){
-        $this->securityGuardianAccess();
-        if($categorie->isOwner($this->getUser()->getId()) ){
-            $this->get('categorie_handler')->OnDelete($categorie, "Deleting a categorie entity with id = ".$id);
-            return $this->redirectToRoute('categorie_index');
-        }
-        else{
-            $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
-            $request->getSession()->getFlashBag()->add("warning", $msgGen);
-            return $this->redirectToRoute('categorie_index');
-        }
-    }
-
-    public function getDeleteFormById($id){
+    public function getDeleteFormById($id)
+    {
         $option_delete_form = array('action' => $this->generateUrl('categorie_delete', array('id' => $id)), 'method' => 'DELETE');
         $delete_form = $this->get('form_manager')->createForm(FormType::class, new categorie($this->getUser()), $option_delete_form, 'delete');
         return $delete_form;
-    }
-
-    public function getTwig($template = 'index'){
-        $listTemplates = array(
-            'new' => 'GMVideothequeBundle:categorie:new.html.twig',
-            'index' => 'GMVideothequeBundle:categorie:index.html.twig',
-            'show' => 'GMVideothequeBundle:categorie:show.html.twig',
-            'edit' => 'GMVideothequeBundle:categorie:edit.html.twig',
-        );
-        return $listTemplates[$template];
-    }
-
-    public function getRoute($template = 'index'){
-        $listRoutes = array(
-            'new' => 'categorie_new',
-            'index' => 'categorie_index',
-            'show' => 'categorie_show',
-            'edit' => 'categorie_edit',
-        );
-        return $listRoutes[$template];
     }
 
     public function securityGuardianAccess($role = 'ROLE_USER'){
         $this->denyAccessUnlessGranted($role, null, 'Unable to access this page!');
     }
 
+    public function getBaseCriterias_categorie()
+    {
+        $criteria = array( 
+            array(
+                'criterias' => array(
+                    array(
+                            'column' => array(
+                            'name' => 'owner',
+                            'value' => $this->getUser()->getId()
+                        ),
+                        'operator' => array(
+                            'affectation' => '=',
+                            'condition' => null
+                        ),
+                    ),
+                ),
+                'criterias-condition' => null
+            )
+        );
+        return $criteria;
+    }
 
-    public function delete_allAction(){
-        $em = $this->getDoctrine()->getManager();
-        $this->get('categorie_handler')->onDeleteAll($this->getUser()->getId(), $batch_size = 20);
-        return $this->redirectToRoute('categorie_index');
+    public function getBaseCriterias_film()
+    {
+        $criteria = array( 
+            array(
+                'criterias' => array(
+                    array(
+                            'column' => array(
+                            'name' => 'owner',
+                            'value' => $this->getUser()->getId()
+                        ),
+                        'operator' => array(
+                            'affectation' => '=',
+                            'condition' => null
+                        ),
+                    ),
+                ),
+                'criterias-condition' => null
+            )
+        );
+        return $criteria;
+    }
+    
+    public function FilmsParCategorie($categorieID)
+    {
+        $criterias = $this->get('film_handler')->getCriterias();
+            $criterias['criteria-where'] = $this->getBaseCriterias_film();
+            $criterias['criteria-where'][] = 
+                array(
+                    'criterias' => array(
+                        array(
+                                'column' => array(
+                                'name' => 'categorie',
+                                'value' => $categorieID
+                            ),
+                            'operator' => array(
+                                'affectation' => '=',
+                                'condition' => null
+                            ),
+                        ),
+                    ),
+                    'criterias-condition' => 'and'
+                );    
+        $films = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
+        return $films;
     }
 }

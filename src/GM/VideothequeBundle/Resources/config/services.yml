@@ -5,8 +5,8 @@ services:
 
      categorie_handler:
          class: GM\VideothequeBundle\Handler\CategorieHandler
-         arguments: ["@request_stack", "@doctrine.orm.entity_manager", "@watchdoglogger", "@message_generator", "@form_manager"]
+         arguments: []
 
      film_handler:
          class: GM\VideothequeBundle\Handler\FilmHandler
-         arguments: ["@request_stack", "@doctrine.orm.entity_manager", "@watchdoglogger", "@message_generator", "@form_manager"]
+         arguments: []

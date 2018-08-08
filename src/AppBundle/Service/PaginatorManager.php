@@ -5,7 +5,7 @@ namespace AppBundle\Service;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class Paginator
+class PaginatorManager
 {
     protected $requestStack;
     protected $router;
@@ -85,7 +85,6 @@ class Paginator
             array(
             'page' => $paginator['total_page'], 
             'count' => $paginator['count']));
-
         $paginator["entity"] = $entityNameHandled;
         $paginator["paginator_prev"] = $paginator_prev;
         $paginator["paginator_prev_fast"] = $paginator_prev_fast;

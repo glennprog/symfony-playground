@@ -17,15 +17,15 @@
                 </tr>
             </thead>
             <tbody id="categories_tbody">
-            {% for categorie in categories %}
+            {% for categorie in categories['result'] %}
                 <tr class="gm-clickable-row" data-href="{{ path('categorie_show', { 'id': categorie.id }) }}">
                     <td>{{ categorie.nom }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
-        {% if paginator is defined %}
-            {% include 'paginator/template_paginator_multiple_gm.html.twig' with {'paginator' : paginator["categories"] } only %}
+        {% if categories['paginator'] is defined %}
+            {% include 'paginator/template_paginator_multiple_gm.html.twig' with {'paginator' : categories['paginator'] } only %}
         {% endif %}
         <div class="row margin-top-m">
             <div class="col">
