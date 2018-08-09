@@ -73,6 +73,10 @@ services:
             class: AppBundle\Service\QueryManager
             arguments: ["@doctrine.orm.entity_manager", "@paginator_manager"]
 
+    search_engine_manager:
+            class: AppBundle\Service\SearchEngineManager
+            arguments: ["@request_stack"]
+
     #base_handler:
     #        class: AppBundle\Service\BaseHandler
     #        arguments: ["@request_stack", "@doctrine.orm.entity_manager", "@watchdoglogger", "@message_generator", "@form_manager"]

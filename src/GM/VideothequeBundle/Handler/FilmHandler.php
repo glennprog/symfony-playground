@@ -17,7 +17,7 @@ class FilmHandler
                 'pagination' => array(
                     'enabled' => true,
                     'entity-name' => 'Film',
-                    'route' => array('route_name' => $this->getRoute('index')), // Get route pagination
+                    'route' => array('route_name' => $this->getRoute('index'), 'params' => null), // Get route pagination
                 ),
                 'entity_class' => array(
                     'class' => Film::class,

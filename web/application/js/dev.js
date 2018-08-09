@@ -217,6 +217,41 @@ $(document).ready(function () {
         ajaxGetCategories(pathname, { "count": count_select, "page": page_input, "orderBy": orderBy, 'searchBy': search_data });
     });
 
+    function getPaginatorAttributes(){
+        var paginator_page_input = $("#paginator_container_page_" + paginator_entity).val();
+        if(paginator_page_input == ""){
+            paginator_page_input = 1;
+            $("#paginator_container_page_" + paginator_entity).val(1);
+        }
+        console.log("page selected = " + paginator_page_input);
+
+        var paginator_count_select = $("#paginator_container_count_" + paginator_entity).val();
+        console.log("count selected = " + paginator_count_select);
+        
+        var paginator_prev_fast = $("#paginator_prev_fast_" + paginator_entity)[0].getAttribute('href');
+        paginator_prev_fast = replaceParamsPageCount(paginator_prev_fast, paginator_page_input, paginator_count_select);
+        console.log("paginator_prev_fast = " + paginator_prev_fast);
+        
+        var paginator_prev = $("#paginator_prev_" + paginator_entity)[0].getAttribute('href'); 
+        paginator_prev = replaceParamsPageCount(paginator_prev, paginator_page_input, paginator_count_select);
+        if(paginator_prev == ""){
+            paginator_prev = null;
+        }
+        console.log("paginator_prev = " + paginator_prev);
+
+        var paginator_next = $("#paginator_next_" + paginator_entity)[0].getAttribute('href');
+        paginator_next = replaceParamsPageCount(paginator_next, paginator_page_input, paginator_count_select);
+        if(paginator_next == ""){
+            paginator_next = null;
+        }
+        console.log("paginator_next = " + paginator_next);
+
+        var paginator_next_fast_ = $("#paginator_next_fast_" + paginator_entity)[0].getAttribute('href');
+        paginator_next_fast_ = replaceParamsPageCount(paginator_next_fast_, paginator_page_input, paginator_count_select);
+        console.log("paginator_next_fast_ = " + paginator_next_fast_);
+
+    }
+
     $("#films .th-sortable").click(function () {
         var col_name = $(this).attr('data-sort');
         orderBy = {};

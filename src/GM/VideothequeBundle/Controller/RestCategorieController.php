@@ -14,30 +14,27 @@ use GM\VideothequeBundle\Form\CategorieType;
  * Categorie controller.
  *
  */
-class CategorieController extends Controller
+class RestCategorieController extends Controller
 {
     public function indexAction(Request $request)
     {
         $this->securityGuardianAccess(); // Calling of security Guardian
         $criterias = $this->get('categorie_handler')->getCriterias();
+        $criterias['pagination']['route']['route_name'] = ( $this->get('categorie_handler')->getRoute('rest_index') );
         $criterias['criteria-where'] = $this->getBaseCriterias_categorie();
-        
-        $criterias['pagination']['route']['route_name'] = ( $this->get('categorie_handler')->getRoute('rest_index') ); // Using API to call json data
-        $categories = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
 
-        /*
-        // Use this control if you don't use REST API to all json data.
-        if ($request->isXmlHttpRequest() ) { //|| $request->query->get('showJson') == 1
-            $delete_all_categories_url = $this->generateUrl('rest_categorie_delete_all');
-            return new JsonResponse(array('data' => array('test' => true, 'categories' => $categories, 'delete_all_categories_url' => $delete_all_categories_url), 'msg' => 'OK', 'status' => 200));
+        $searchByCriterias = $this->get('search_engine_manager')->getCriterias();
+        if($searchByCriterias != null){
+            $criterias['criteria-where'][]= $searchByCriterias;
         }
-        */
+        dump($searchByCriterias);
+        dump($criterias);
 
-        return $this->render(
-            $this->get('categorie_handler')->getTwig('index'), 
-            array(
-                'categories' => $categories
-            ));
+        $categories = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
+        $delete_all_categories_url = $this->generateUrl('rest_categorie_delete_all');
+        
+        //return new Response();
+        return new JsonResponse(array('data' => array('categories' => $categories, 'delete_all_categories_url' => $delete_all_categories_url), 'msg' => 'OK', 'status' => 200));
     }
 
     public function showAction(Request $request, Categorie $categorie,  $id)
@@ -48,69 +45,20 @@ class CategorieController extends Controller
         }
         else{
             $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
-            $request->getSession()->getFlashBag()->add("warning", $msgGen);
-            return $this->redirectToRoute('categorie_index');
+            return new JsonResponse(array('data' => null, 'msg' => $msgGen, 'status' => 404));
         }
-        return $this->render(
-            $this->get('categorie_handler')->getTwig('show'), 
-            array(
-                'categorie' => $categorie, 
-                'delete_form' => $this->getDeleteFormById($id)->createView(),
+        $delete_categorie_url = $this->generateUrl('rest_categorie_delete', array('id' => $id));
+        
+        //return new Response();
+        return new JsonResponse(array(
+            'data' => array(
+                'categorie' => $categorie, 'delete_categorie' => $delete_categorie_url, 
                 'films' => $FilmsParCategorie
-            ));
-    }
-
-    public function newAction(Request $request)
-    {
-        $this->securityGuardianAccess();
-        $categorie = new Categorie($this->getUser());
-        $form = $this->get('form_manager')->createForm(CategorieType::class, $categorie, array(), 'create');
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) 
-        {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($form->getData());
-            $resultInsertData = $em->flush();
-            $msgGen = $this->get('message_generator')->Msg_InsertionDB_OK();
-            $request->getSession()->getFlashBag()->add("success", $msgGen);
-            return $this->redirectToRoute('categorie_show', array('id' => $categorie->getId()));
-        }
-        return $this->render(
-            $this->get('categorie_handler')->getTwig('new'), 
-            array(
-                'form' => $form->createView()
-            ));
-    }
-
-    public function editAction(Request $request, Categorie $categorie, $id)
-    {
-        $this->securityGuardianAccess();
-        if($categorie->isOwner($this->getUser()->getId()) ){
-
-            $editForm = $this->get('form_manager')->createForm(CategorieType::class, $categorie, array(), 'update');
-            $editForm->handleRequest($request);
-            if ($editForm->isSubmitted() && $editForm->isValid()) 
-            {
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($editForm->getData());
-                $resultUpdateData = $em->flush();
-                $msgGen = $this->get('message_generator')->Msg_UpdateDB_OK();
-                $request->getSession()->getFlashBag()->add("success", $msgGen);
-                return $this->redirectToRoute('categorie_edit', array('id' => $categorie->getId()));
-            }
-            return $this->render(
-                $this->get('categorie_handler')->getTwig('edit'), 
-                array(
-                    'categorie' => $categorie, 
-                    'edit_form' => $editForm->createView(), 
-                    'delete_form' => $this->getDeleteFormById($id)->createView()
-                ));
-        }
-        else{
-            $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
-            $request->getSession()->getFlashBag()->add("warning", $msgGen);
-            return $this->redirectToRoute('categorie_index');
-        }
+            ),
+                'msg' => 'OK', 
+                'status' => 200
+            )
+        );
     }
 
     public function deleteAction(Request $request, $id, Categorie $categorie)
@@ -137,14 +85,13 @@ class CategorieController extends Controller
         $delation_ok = $this->get('query_manager')->onDeleteByCriterias($criterias, $batch_size = 5);
         if($delation_ok){
             $msgGen = $this->get('message_generator')->Msg_DeleteDB_OK();
-            $request->getSession()->getFlashBag()->add("success", $msgGen);
+            return new JsonResponse(array('data' => null, 'msg' => $msgGen, 'status' => 200));
             
         }
         else{
             $msgGen = $this->get('message_generator')->Msg_DeleteDB_NONE();
-            $request->getSession()->getFlashBag()->add("warning", $msgGen);
+            return new JsonResponse(array('data' => null, 'msg' => $msgGen, 'status' => 404));
         }
-        return $this->redirectToRoute('categorie_index');
     }
 
     public function delete_allAction(Request $request)
@@ -155,20 +102,12 @@ class CategorieController extends Controller
         $delation_ok = $this->get('query_manager')->onDeleteByCriterias($criterias, $batch_size = 20);
         if($delation_ok){
             $msgGen = $this->get('message_generator')->Msg_DeleteDB_OK();
-            $request->getSession()->getFlashBag()->add("success", $msgGen);
+            return new JsonResponse(array('data' => null, 'msg' => $msgGen, 'status' => 200));
         }
         else{
             $msgGen = $this->get('message_generator')->Msg_DeleteDB_NONE();
-            $request->getSession()->getFlashBag()->add("warning", $msgGen);
+            return new JsonResponse(array('data' => null, 'msg' => $msgGen, 'status' => 404));
         }
-        return $this->redirectToRoute('categorie_index');
-    }
-
-    public function getDeleteFormById($id)
-    {
-        $option_delete_form = array('action' => $this->generateUrl('categorie_delete', array('id' => $id)), 'method' => 'DELETE');
-        $delete_form = $this->get('form_manager')->createForm(FormType::class, new categorie($this->getUser()), $option_delete_form, 'delete');
-        return $delete_form;
     }
 
     public function securityGuardianAccess($role = 'ROLE_USER'){
@@ -222,12 +161,12 @@ class CategorieController extends Controller
     public function FilmsParCategorie($categorieID)
     {
         $criterias = $this->get('film_handler')->getCriterias();
-        $criterias['pagination']['route'] = array(
+            $criterias['pagination']['route'] = array(
                 'route_name' => $this->get('categorie_handler')->getRoute('rest_show_film_par_categorie'), //rest_show_film_par_categorie
                 'params' => array('id' => $categorieID)
             );
-        $criterias['criteria-where'] = $this->getBaseCriterias_film();
-        $criterias['criteria-where'][] = 
+            $criterias['criteria-where'] = $this->getBaseCriterias_film();
+            $criterias['criteria-where'][] = 
                 array(
                     'criterias' => array(
                         array(
@@ -245,5 +184,27 @@ class CategorieController extends Controller
                 );    
         $films = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
         return $films;
+    }
+
+    public function showFilmParCategorieAction(Request $request, Categorie $categorie, $id, $page, $count)
+    {
+        $this->securityGuardianAccess(); // Calling of security Guardian
+        if($categorie->isOwner($this->getUser()->getId() )){ // Verify if request is allowed for the current user
+            $FilmsParCategorie = $this->FilmsParCategorie($id);
+        }
+        else{
+            $msgGen = $this->get('message_generator')->Msg_Action_FAIL();
+            return new JsonResponse(array('data' => null, 'msg' => $msgGen, 'status' => 404));
+        }
+        $delete_categorie_url = $this->generateUrl('rest_categorie_delete', array('id' => $id));
+        return new JsonResponse(array(
+            'data' => array(
+                'categorie' => $categorie, 'delete_categorie' => $delete_categorie_url, 
+                'films' => $FilmsParCategorie
+            ),
+                'msg' => 'OK', 
+                'status' => 200
+            )
+        );
     }
 }

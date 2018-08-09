@@ -17,7 +17,7 @@ class CategorieHandler
                 'pagination' => array(
                     'enabled' => true,
                     'entity-name' => 'Categorie',
-                    'route' => array('route_name' => $this->getRoute('index')), // Get route pagination
+                    'route' => array('route_name' => $this->getRoute('index'), 'params' => null), // Get route pagination
                 ),
                 'entity_class' => array(
                     'class' => Categorie::class,
@@ -45,6 +45,8 @@ class CategorieHandler
             'index' => 'categorie_index',
             'show' => 'categorie_show',
             'edit' => 'categorie_edit',
+            'rest_index' => 'rest_categorie_index',
+            'rest_show_film_par_categorie' => 'rest_show_film_par_categorie',
         );
         return $listRoutes[$template];
     }

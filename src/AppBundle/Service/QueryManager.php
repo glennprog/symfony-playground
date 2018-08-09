@@ -147,6 +147,7 @@ class QueryManager
     }
 
     public function executeQuery($qb){
+        dump($qb);
         $resutl = $qb->getResult();
         return $resutl;
     }

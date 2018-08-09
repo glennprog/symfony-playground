@@ -62,34 +62,41 @@ class PaginatorManager
         $init_read = false;
         $paginator['total_entities'] = $total;
 
-        $paginator_prev = $this->router->generate(
-            $route['route_name'], 
-            array(
-            'page' => $paginator['previous_page'],
-            'count' => $paginator['count']));
+        if($route['params'] != null){
+            foreach ($route['params'] as $key => $value) {
+                $routeParams[$key] = $value;
+            }
+        }
 
-        $paginator_prev_fast = $this->router->generate(
+        $routeParams['page'] = $paginator['previous_page'];
+        $routeParams['count'] = $paginator['count'];
+        $paginator["paginator_prev"] = ($paginator['previous_page'] == null) ? null : $this->router->generate(
             $route['route_name'], 
-            array(
-            'page' => 1,
-            'count' => $paginator['count']));
-        
-        $paginator_next = $this->router->generate(
-            $route['route_name'],
-            array(
-            'page' => $paginator['next_page'], 
-            'count' => $paginator['count']));
-        
-        $paginator_next_fast = $this->router->generate(
+            $routeParams
+        );
+
+        $routeParams['page'] = 1;
+        $routeParams['count'] = $paginator['count'];
+        $paginator["paginator_prev_fast"] = $this->router->generate(
             $route['route_name'], 
-            array(
-            'page' => $paginator['total_page'], 
-            'count' => $paginator['count']));
+            $routeParams
+        );
+ 
+        $routeParams['page'] = $paginator['next_page'];
+        $routeParams['count'] = $paginator['count'];
+        $paginator["paginator_next"] = ($paginator['next_page'] == null) ? null : $this->router->generate(
+            $route['route_name'], 
+            $routeParams
+        );
+
+        $routeParams['page'] = $paginator['total_page'];
+        $routeParams['count'] = $paginator['count'];
+        $paginator["paginator_next_fast"] = $this->router->generate(
+            $route['route_name'], 
+            $routeParams
+        );
         $paginator["entity"] = $entityNameHandled;
-        $paginator["paginator_prev"] = $paginator_prev;
-        $paginator["paginator_prev_fast"] = $paginator_prev_fast;
-        $paginator["paginator_next"] = $paginator_next;
-        $paginator["paginator_next_fast"] = $paginator_next_fast;
+        //$paginator["url"]
         return $paginator;
     }
 

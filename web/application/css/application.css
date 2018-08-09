@@ -326,6 +326,16 @@ h1, h2{
 .table-included-paginator{
     margin-bottom: 0px;
 }
+
+
+.paginator-nav-not-active {
+    pointer-events: none;
+    cursor: default;
+    text-decoration: none;
+    color: black;
+    opacity: 0.5;
+}
+
 /*##################### Others :      #####################*/
 
 table{
