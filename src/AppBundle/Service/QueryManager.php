@@ -88,7 +88,7 @@ class QueryManager
             }
         }
         if($querySelect_all_flag == false){
-            $querySelect = substr($querySelect, 0, -1);
+            $querySelect = substr($querySelect, 0, -1); // remove the comma at the end of string.
         }
 
         // Build from query
@@ -135,9 +135,16 @@ class QueryManager
             $queryWhere .= " ) ";
         }
 
+        // Build order by query
+        $queryOrderby = "order by";   
+        foreach ($criteria['criteria-orderby'] as $column => $orderby) {
+            $queryOrderby .= " " . $entityAlias . "." . $column . " " . $orderby . ",";
+        }
+        $queryOrderby = substr($queryOrderby, 0, -1); // remove the comma at the end of string.
+        dump($queryOrderby);
+
         // Build query
-        $query = $querySelect . " ". $queryFrom . " " . $queryWhere;
-        //dump($query);
+        $query = $querySelect . " ". $queryFrom . " " . $queryWhere . $queryOrderby;
 
         /**** Using pure DQL without setParameters function ****/
         $query_em = $this->getEntityManager()->createQuery($query);
@@ -156,6 +163,10 @@ class QueryManager
         $qb = $this->buildQueryByCriterias($criteria);
         $PaginatorPageCount = $this->getPaginatorManager()->getPaginatorPageCount();
         $offsetLimit = $this->getOffsetLimit($PaginatorPageCount);
+
+
+        //$qb->orderBy('c.id', 'DESC');
+
         $result = $this->executeQuery($qb->setFirstResult($offsetLimit['offset'])->setMaxResults($offsetLimit['limit']));
         if($criteria['pagination']['enabled']){
             // Get Paginator Attributes

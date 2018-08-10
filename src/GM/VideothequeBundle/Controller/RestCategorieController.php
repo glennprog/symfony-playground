@@ -23,11 +23,14 @@ class RestCategorieController extends Controller
         $criterias['pagination']['route']['route_name'] = ( $this->get('categorie_handler')->getRoute('rest_index') );
         $criterias['criteria-where'] = $this->getBaseCriterias_categorie();
 
-        $searchByCriterias = $this->get('search_engine_manager')->getCriterias();
+        $searchByCriterias = $this->get('search_engine_manager')->getSearchByCriteriasWhere();
+        dump($searchByCriterias);
         if($searchByCriterias != null){
             $criterias['criteria-where'][]= $searchByCriterias;
         }
-        dump($searchByCriterias);
+        $orderByCriterias = $this->get('search_engine_manager')->getOrderByCriterias();
+        $criterias['criteria-orderby'] = $orderByCriterias;
+
         dump($criterias);
 
         $categories = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result

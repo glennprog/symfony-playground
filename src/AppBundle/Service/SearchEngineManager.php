@@ -22,17 +22,17 @@ class SearchEngineManager
 		$this->requestStack = $requestStack;
     }
 
-    public function getSearchByCriterias(){
+    public function getSearchByCriteriasAttributes(){
         $request = $this->getRequestStack()->getCurrentRequest();
 
         if($request->query->get('searchBy') != null){
-            $searchBy = $request->query->get('searchBy');
+            $searchBy = json_decode($request->query->get('searchBy'));
         }
         elseif($request->attributes->get('searchBy') != null){
-            $searchBy = $request->attributes->get('searchBy');
+            $searchBy = json_decode($request->attributes->get('searchBy'));
         }
         elseif ( $searchBy = $request->request->get('searchBy')!= null ) {
-            $searchBy = $request->request->get('searchBy');
+            $searchBy = json_decode($request->request->get('searchBy'));
         }
         else{
             $searchBy = null;
@@ -50,13 +50,12 @@ class SearchEngineManager
         else{
             $searchByMode = 'equal';
         }
-
         return array('searchBy' => $searchBy, 'searchByMode' => $searchByMode);
     }
 
-    public function getCriterias($searchByCriterias = null){
+    public function getSearchByCriteriasWhere($searchByCriterias = null){
         if($searchByCriterias == null){
-            $searchByCriterias = $this->getSearchByCriterias();
+            $searchByCriterias = $this->getSearchByCriteriasAttributes();
         }
         if($searchByCriterias['searchBy'] == null){
             return null;
@@ -88,12 +87,12 @@ class SearchEngineManager
 
     public function getSearchCriterias_advanced_equal($searchByCriterias = null){
         if($searchByCriterias == null){
-            $searchByCriterias = $this->getSearchByCriterias();
+            $searchByCriterias = $this->getSearchByCriteriasAttributes();
         }
         if($searchByCriterias['searchBy'] == null){
             return null;
         }
-        $client_data_searchBy = json_decode($searchByCriterias['searchBy']);
+        $client_data_searchBy = $searchByCriterias['searchBy'];
         
         $criterias = array();
         $paramSearchBy = array();
@@ -124,12 +123,12 @@ class SearchEngineManager
 
     public function getSearchCriterias_advanced_like_data_percentage($searchByCriterias = null){
         if($searchByCriterias == null){
-            $searchByCriterias = $this->getSearchByCriterias();
+            $searchByCriterias = $this->getSearchByCriteriasAttributes();
         }
         if($searchByCriterias['searchBy'] == null){
             return null;
         }
-        $client_data_searchBy = json_decode($searchByCriterias['searchBy']);
+        $client_data_searchBy = $searchByCriterias['searchBy'];
         $criterias = array();
         $paramSearchBy = array();
         $begin = true;
@@ -157,15 +156,46 @@ class SearchEngineManager
         return $criterias;
     }
 
+    public function getOrderByCriteriasAttributes(){
+        $request = $this->getRequestStack()->getCurrentRequest();
+
+        if($request->query->get('orderBy') != null){
+            $orderBy = json_decode($request->query->get('orderBy'));
+        }
+        elseif($request->attributes->get('orderBy') != null){
+            $orderBy = json_decode($request->attributes->get('orderBy'));
+        }
+        elseif ( $orderBy = $request->request->get('orderBy')!= null ) {
+            $orderBy = json_decode($request->request->get('orderBy'));
+        }
+        else{
+            $orderBy = array("id" => "ASC");
+        }
+        return array('orderBy' => $orderBy);
+    }
+    
+    public function getOrderByCriterias($orderByCriteriasAttributes = null){
+        if($orderByCriteriasAttributes == null){
+            $orderByCriteriasAttributes = $this->getOrderByCriteriasAttributes();
+        }
+        if($orderByCriteriasAttributes['orderBy'] == null){
+            return $orderByCriteriasAttributes['orderBy'] = array("id" => "ASC");
+        }
+        $client_data_orderBy = $orderByCriteriasAttributes['orderBy'];
+        return $client_data_orderBy;
+    }
+
     // To test and confirm the functionnality of ...
     public function getSearchCriterias_advanced_like_percentage_data($searchByCriterias = null){
         if($searchByCriterias == null){
-            $searchByCriterias = $this->getSearchByCriterias();
+            $searchByCriterias = $this->getSearchByCriteriasAttributes();
         }
+
+        dump($searchByCriterias);
         if($searchByCriterias['searchBy'] == null){
             return null;
         }
-        $client_data_searchBy = json_decode($searchByCriterias['searchBy']);
+        $client_data_searchBy = $searchByCriterias['searchBy'];
         $criterias = array();
         $paramSearchBy = array();
         $begin = true;
@@ -195,12 +225,12 @@ class SearchEngineManager
 
     public function getSearchCriterias_advanced_like_percentage_data_percentage($searchByCriterias = null){
         if($searchByCriterias == null){
-            $searchByCriterias = $this->getSearchByCriterias();
+            $searchByCriterias = $this->getSearchByCriteriasAttributes();
         }
         if($searchByCriterias['searchBy'] == null){
             return null;
         }
-        $client_data_searchBy = json_decode($searchByCriterias['searchBy']);
+        $client_data_searchBy = $searchByCriterias['searchBy'];
         
         $criterias = array();
         $paramSearchBy = array();

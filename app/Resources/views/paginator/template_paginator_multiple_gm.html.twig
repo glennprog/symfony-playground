@@ -5,21 +5,21 @@
    <div class="flex-container">
       <div class="paginator-container-prev">
          <a id="paginator_prev_fast_{{paginator['entity']}}" class="paginator-nav text-dark paginator-prev-fast {{ (paginator['paginator_prev'] == null) ? "paginator-nav-not-active" : "" }}" 
-            href={{paginator['paginator_prev_fast']}}><i class="fas fa-fast-backward"></i>
+            href={{paginator['paginator_prev_fast']}}><i class="fas fa-fast-backward" data-micron="jelly"></i>
          </a>
          <a id="paginator_prev_{{paginator['entity']}}"
             class="paginator-nav text-dark paginator-prev {{ (paginator['paginator_prev'] == null) ? "paginator-nav-not-active" : "" }}" 
             href={{paginator['paginator_prev']}}>
-            <i class="fas fa-backward"></i>
+            <i class="fas fa-backward" data-micron="jelly"></i>
          </a>
       </div>
       <div class="paginator-container-next">
          <a id="paginator_next_{{paginator['entity']}}" 
             class="paginator-nav text-dark paginator-next {{ (paginator['paginator_next'] == null) ? "paginator-nav-not-active" : "" }}"
-            href={{paginator['paginator_next']}}><i class="fas fa-forward"></i>
+            href={{paginator['paginator_next']}}><i class="fas fa-forward" data-micron="jelly"></i>
          </a>
          <a id="paginator_next_fast_{{paginator['entity']}}" class="paginator-nav text-dark paginator-next-fast {{ (paginator['paginator_next'] == null) ? "paginator-nav-not-active" : "" }}" 
-            href={{paginator['paginator_next_fast']}}><i class="fas fa-fast-forward"></i>
+            href={{paginator['paginator_next_fast']}}><i class="fas fa-fast-forward" data-micron="jelly"></i>
          </a>
       </div>
       <div class="paginator-container-count">

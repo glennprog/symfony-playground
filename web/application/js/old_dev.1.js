@@ -67,19 +67,4 @@ $(document).ready(function () {
         }
         ajaxGetFilms(pathname, { "count": count_select, "page": page_input, "orderBy": orderBy });
     });
-
-    $("#search_container_data_categories").change(function () {
-        var columsSearch = $(this).attr('data-search');
-        columsSearchTab = columsSearch.split(';');
-        for (let index = 0; index < columsSearchTab.length; index++) {
-            const element = columsSearchTab[index];
-            search_data[element] = $(this).val();
-        }
-        console.log(search_data);
-        var page_input = $("#paginator_container_page_id_categories").val();
-        var count_select = $("#paginator_container_count_id_categories").val();
-        ajaxGetCategories(pathname, { "count": count_select, "page": page_input, "orderBy": orderBy , "searchBy":search_data});
-    });
-
-
 });

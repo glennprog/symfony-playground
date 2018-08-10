@@ -31,6 +31,7 @@ class CategorieHandler
                     'class' => Categorie::class,
                     'alias' => 'c',
                 ),
+                'criteria-orderby' => array('id' => 'ASC'),
                 'criteria-where' => null
         );
     }

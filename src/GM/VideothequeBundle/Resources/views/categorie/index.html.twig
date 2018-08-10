@@ -1,16 +1,13 @@
 {% extends 'GMVideothequeBundle::layout.html.twig' %}
 
 {% block app_main_content %}
+    {% set search_engine = true %}
     {% set search_container_entity = 'Categorie' %}
     <div class="container">
         <h1 class="h1-app">Categorie des films</h1>
-
-        <div class="flex-search-container-data">
-            <div class="search-container-data margin-top-m margin-bottom-m">
-                    Recherche : <input type="text" class="search-container-data-input" data-search="nom;id" name="search_container_data_{{search_container_entity}}" id="search_container_data_{{search_container_entity}}" placeholder="Recherche ...">
-            </div>
-        </div>
-
+        {% if categories['paginator'] is defined %}
+            {% include 'searchEngine/template_search_engine_v1.html.twig' with {'search_engine' : search_engine, 'search_container_entity' : search_container_entity } only %}
+        {% endif %}
         <table id="categories" class="table table-dark table-bordered table-hover table-sm table-included-paginator">
             <thead>
                 <tr class="bg-info" data-entity="categories">
@@ -30,7 +27,7 @@
         {% endif %}
         <div class="row margin-top-m">
             <div class="col">
-                <a class="text-dark link-button-main create-action" href="{{ path('categorie_new') }}" data-micron="pop"><i class="fas fa-plus-square"></i> Ajouter une categorie</a>
+                <a class="text-dark link-button-main create-action" href="{{ path('categorie_new') }}" data-micron="jelly"><i class="fas fa-plus-square"></i> Ajouter une categorie</a>
             </div>
         </div>
         <div class="row margin-top-s">
