@@ -141,7 +141,6 @@ class QueryManager
             $queryOrderby .= " " . $entityAlias . "." . $column . " " . $orderby . ",";
         }
         $queryOrderby = substr($queryOrderby, 0, -1); // remove the comma at the end of string.
-        dump($queryOrderby);
 
         // Build query
         $query = $querySelect . " ". $queryFrom . " " . $queryWhere . $queryOrderby;
@@ -154,7 +153,6 @@ class QueryManager
     }
 
     public function executeQuery($qb){
-        dump($qb);
         $resutl = $qb->getResult();
         return $resutl;
     }

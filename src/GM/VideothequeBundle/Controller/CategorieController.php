@@ -21,22 +21,12 @@ class CategorieController extends Controller
         $this->securityGuardianAccess(); // Calling of security Guardian
         $criterias = $this->get('categorie_handler')->getCriterias();
         $criterias['criteria-where'] = $this->getBaseCriterias_categorie();
-        
         $criterias['pagination']['route']['route_name'] = ( $this->get('categorie_handler')->getRoute('rest_index') ); // Using API to call json data
         $categories = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
-
-        /*
-        // Use this control if you don't use REST API to all json data.
-        if ($request->isXmlHttpRequest() ) { //|| $request->query->get('showJson') == 1
-            $delete_all_categories_url = $this->generateUrl('rest_categorie_delete_all');
-            return new JsonResponse(array('data' => array('test' => true, 'categories' => $categories, 'delete_all_categories_url' => $delete_all_categories_url), 'msg' => 'OK', 'status' => 200));
-        }
-        */
-
         return $this->render(
             $this->get('categorie_handler')->getTwig('index'), 
             array(
-                'categories' => $categories
+                'categories' => $categories,
             ));
     }
 

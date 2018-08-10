@@ -1,3 +1,54 @@
+function PaginatorManager(paginator_entity, search_engine_data, callback, search_container_entity) {
+    $("#paginator_" + paginator_entity + " .paginator-nav").click(function (e) {
+        e.preventDefault();
+        call_paginator_url = $(this)[0].getAttribute('href');
+        var paginator_count_select = $("#paginator_container_count_" + paginator_entity).val();
+        call_paginator_url = replaceParamsPageCount(call_paginator_url, null, paginator_count_select);
+
+        if ( $("#search_container_data_input_" + search_container_entity).val() == "") {
+            search_engine_data.searchBy = null;
+        }
+        var data = {'searchByMode': search_engine_data.searchByMode, 'searchBy': JSON.stringify(search_engine_data.searchBy), 'orderBy': JSON.stringify(search_engine_data.orderBy)};
+        callback(call_paginator_url, data);
+    });
+
+    $("#paginator_container_page_" + paginator_entity).change(function () {
+        var paginator_page_input = $(this).val();
+        if (paginator_page_input == "") {
+            paginator_page_input = 1;
+            $("#paginator_container_page_" + paginator_entity).val(1);
+        }
+        if (Number.isInteger(parseInt(paginator_page_input)) == false) {
+            paginator_page_input = 1;
+            $("#paginator_container_page_" + paginator_entity).val(1);
+        }
+        var paginator_count_select = $("#paginator_container_count_" + paginator_entity).val();
+        var paginator_prev_fast = $("#paginator_prev_fast_" + paginator_entity)[0].getAttribute('href'); // cause it's the first paginator's page
+        call_paginator_url = replaceParamsPageCount(paginator_prev_fast, paginator_page_input, paginator_count_select);
+        
+        
+        if ( $("#search_container_data_input_" + search_container_entity).val() == "") {
+            search_engine_data.searchBy = null;
+        }
+        var data = {'searchByMode': search_engine_data.searchByMode, 'searchBy': JSON.stringify(search_engine_data.searchBy), 'orderBy': JSON.stringify(search_engine_data.orderBy)};
+        callback(call_paginator_url, data);
+    });
+
+    $("#paginator_container_count_" + paginator_entity).change(function () {
+        var paginator_count_select = $(this).val();
+        var paginator_prev_fast = $("#paginator_prev_fast_" + paginator_entity)[0].getAttribute('href');
+        call_paginator_url = replaceParamsPageCount(paginator_prev_fast, null, paginator_count_select);
+        updatePaginatorPageCount(null, paginator_count_select, paginator_entity);
+        $("#paginator_container_page_" + paginator_entity).val(1);
+
+        if ( $("#search_container_data_input_" + search_container_entity).val() == "") {
+            search_engine_data.searchBy = null;
+        }
+        var data = {'searchByMode': search_engine_data.searchByMode, 'searchBy': JSON.stringify(search_engine_data.searchBy), 'orderBy': JSON.stringify(search_engine_data.orderBy)};
+        callback(call_paginator_url, data);
+    });
+}
+
 function update_paginator_route(paginator) {
     $("#paginator_prev_"+paginator["entity"]).prop("href", paginator["paginator_prev"]);
     if(paginator["paginator_prev"] == null){

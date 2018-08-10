@@ -31,6 +31,7 @@ class FilmHandler
                     'class' => Film::class,
                     'alias' => 'f',
                 ),
+                'criteria-orderby' => array('id' => 'ASC'),
                 'criteria-where' => null
         );
     }

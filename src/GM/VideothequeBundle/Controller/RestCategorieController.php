@@ -22,22 +22,15 @@ class RestCategorieController extends Controller
         $criterias = $this->get('categorie_handler')->getCriterias();
         $criterias['pagination']['route']['route_name'] = ( $this->get('categorie_handler')->getRoute('rest_index') );
         $criterias['criteria-where'] = $this->getBaseCriterias_categorie();
-
         $searchByCriterias = $this->get('search_engine_manager')->getSearchByCriteriasWhere();
-        dump($searchByCriterias);
         if($searchByCriterias != null){
             $criterias['criteria-where'][]= $searchByCriterias;
         }
         $orderByCriterias = $this->get('search_engine_manager')->getOrderByCriterias();
         $criterias['criteria-orderby'] = $orderByCriterias;
-
-        dump($criterias);
-
         $categories = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
         $delete_all_categories_url = $this->generateUrl('rest_categorie_delete_all');
-        
-        //return new Response();
-        return new JsonResponse(array('data' => array('categories' => $categories, 'delete_all_categories_url' => $delete_all_categories_url), 'msg' => 'OK', 'status' => 200));
+        return new JsonResponse(array('data' => array('categories_deux' => $categories_deux, 'categories' => $categories, 'delete_all_categories_url' => $delete_all_categories_url), 'msg' => 'OK', 'status' => 200));
     }
 
     public function showAction(Request $request, Categorie $categorie,  $id)

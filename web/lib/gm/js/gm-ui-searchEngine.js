@@ -1,4 +1,18 @@
 function searchEngineManager(search_container_entity, search_engine_data, callback, paginator_entity) {
+    // When the user clicks the button, open the modal 
+    $("#search_container_option_close_" + search_container_entity).click(function () {
+        // Get the modal
+        console.log($(this).attr('data-modal-id'));
+        var modal = document.getElementById('search_engine_options_' + search_container_entity);
+        modal.style.display = "none";
+    });
+    // When the user clicks on <span> (x), close the modal
+    $("#search_container_option_" + search_container_entity).click(function () {
+        // Get the modal
+        var modal = document.getElementById('search_engine_options_' + search_container_entity);
+        modal.style.display = "block";
+    });
+
     $("#search_engine_options_" + search_container_entity + " .input-search-engine-options").click(function () {
         var x = document.querySelector('input[name="search_engine_options_like_' + search_container_entity + '"]:checked').value; //var x = document.getElementById("myRadio").value;
         search_engine_data.searchByMode = x;
@@ -46,7 +60,7 @@ function searchEngineManager(search_container_entity, search_engine_data, callba
         callback(data);
     });
 
-    function setToOnePagePaginator(paginator_entity){
+    function setToOnePagePaginator(paginator_entity) {
         $("#paginator_container_page_" + paginator_entity).val(1);
     }
 }
