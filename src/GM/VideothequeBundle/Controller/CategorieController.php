@@ -23,10 +23,15 @@ class CategorieController extends Controller
         $criterias['criteria-where'] = $this->getBaseCriterias_categorie();
         $criterias['pagination']['route']['route_name'] = ( $this->get('categorie_handler')->getRoute('rest_index') ); // Using API to call json data
         $categories = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
+        
+        $criterias['pagination']['entity-name'] = "categorie_deux";
+        $categories_deux = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
+        
         return $this->render(
             $this->get('categorie_handler')->getTwig('index'), 
             array(
                 'categories' => $categories,
+                'categories_deux' => $categories_deux
             ));
     }
 

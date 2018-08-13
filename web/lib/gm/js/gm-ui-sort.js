@@ -12,6 +12,8 @@ function sortManager(search_engine_data, callback, search_container_entity, sort
             sort_child[index].className = className;
         }
         element = $(this).find(".ui-sort");
+
+        search_engine_data.orderBy = {};
         if (current_className.indexOf("sort-up") != -1) {
             element.removeClass();
             element.addClass("fas fa-sort-down ui-sort");
@@ -33,6 +35,4 @@ function sortManager(search_engine_data, callback, search_container_entity, sort
 
         callback(call_paginator_url, data);
     });
-
-
 }

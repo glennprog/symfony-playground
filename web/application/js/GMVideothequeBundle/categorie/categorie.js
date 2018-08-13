@@ -1,18 +1,53 @@
 $(document).ready(function () {
+    // Init the Unique identify of Object to Manage (for example for Search Engine, Sort, Refresh Table, ...)
     var paginator_entity = 'Categorie';
     var search_container_entity = 'Categorie';
     var sort_container_entity = 'Categorie';
+    // Init Mandatory viriables for UI Manager (Search Engine, Paginator, Sort).
     var searchBy_categorie = {};
     var searchByMode = 'data_percentage';
     var orderBy = {'nom' : 'ASC'};
     searchByMode = document.querySelector('input[name="search_engine_options_like_' + search_container_entity + '"]:checked').value;
     orderBy.nom = document.querySelector('input[name="search_engine_options_orderby_' + search_container_entity + '"]:checked').value;
     var search_engine_data = {'searchByMode': searchByMode, 'searchBy': searchBy_categorie, 'orderBy': orderBy}; 
-
+    // Set Search Engine Manager.
     searchEngineManager(search_container_entity, search_engine_data, ajaxGetCategoriesSearchEngine, paginator_entity);
+    // Set Panaginator Manager.
     PaginatorManager(paginator_entity, search_engine_data, ajaxGetCategories, search_container_entity);
+    // Set Sort Manager.
     sortManager(search_engine_data, ajaxGetCategories, search_container_entity, sort_container_entity, paginator_entity);
-
+    // Pre-Ajax call used as callback function by the Managers (Search Engine, Paginator, Sort).
+    function ajaxGetCategoriesSearchEngine(data_search_engine) {
+        //console.log(data_search_engine);
+        var data = {'searchByMode': data_search_engine.searchByMode, 'searchBy': JSON.stringify(data_search_engine.searchBy), 'orderBy': JSON.stringify(data_search_engine.orderBy)};
+        updateSearEngine(data_search_engine);
+        ajaxGetCategories(getUrlAjax(), data);
+    }
+    // Ajax call.
+    function ajaxGetCategories(url, data) {
+        $.ajax({
+            url: url,
+            method: "post",
+            data: data
+        }).done(function (response) {
+            refreshCategorieTable(response.data.categories);
+            update_paginator_route(response.data.categories.paginator);
+        });
+    }
+    // Get Url ajax call attached in the paginator prev-fast link. TODO : Send from Controller a specific variable for this value.
+    function getUrlAjax(){
+        var paginator_count_select = $("#paginator_container_count_" + paginator_entity).val();
+        var paginator_prev_fast = $("#paginator_prev_fast_" + paginator_entity)[0].getAttribute('href');
+        call_paginator_url = replaceParamsPageCount(paginator_prev_fast, null, paginator_count_select);
+        return call_paginator_url;
+    }
+    // Update the Search Engine data.
+    function updateSearEngine(data_search_engine){
+        searchBy_categorie = data_search_engine.searchBy;
+        searchByMode = data_search_engine.searchByMode;
+        orderBy = data_search_engine.orderBy;
+    }
+    // Refresh Html Table.
     function refreshCategorieTable(categories) {
         categorie_size = Object.size(categories.result);
         $("#categories_tbody  tr").remove();
@@ -28,34 +63,23 @@ $(document).ready(function () {
             });
         }
     }
-
-    function ajaxGetCategoriesSearchEngine(data_search_engine) {
-        var data = {'searchByMode': data_search_engine.searchByMode, 'searchBy': JSON.stringify(data_search_engine.searchBy), 'orderBy': JSON.stringify(data_search_engine.orderBy)};
-        updateSearEngine(data_search_engine);
-        ajaxGetCategories(getUrlAjax(), data);
+    // Window onclick Manager.
+    window.onclick = function (event) {
+        var modal_search_options = document.getElementById('search_engine_options_' + search_container_entity);
+        // Search-Engine-UI :: When the user clicks anywhere outside of the modal, close it.
+        if (event.target == modal_search_options) {
+            modal_search_options.style.display = "none";
+        }
     }
-
-    function ajaxGetCategories(url, data) {
-        $.ajax({
-            url: url,
-            method: "post",
-            data: data
-        }).done(function (response) {
-            refreshCategorieTable(response.data.categories);
-            update_paginator_route(response.data.categories.paginator);
-        });
-    }
-
-    function getUrlAjax(){
-        var paginator_count_select = $("#paginator_container_count_" + paginator_entity).val();
-        var paginator_prev_fast = $("#paginator_prev_fast_" + paginator_entity)[0].getAttribute('href');
-        call_paginator_url = replaceParamsPageCount(paginator_prev_fast, null, paginator_count_select);
-        return call_paginator_url;
-    }
-
-    function updateSearEngine(data_search_engine){
-        searchBy_categorie = data_search_engine.searchBy;
-        searchByMode = data_search_engine.searchByMode;
-        orderBy = data_search_engine.orderBy;
-    }
+    // Re-init the sort icon when Search-Engine:OrderBy is triggering.
+    $("#search_engine_options_" + search_container_entity + " .input-search-engine-options").click(function () {
+        var th_parent = $("#table_" + search_container_entity + " .th-sortable").parent();
+        var sort_child = th_parent.find(".fa-sort-up, .fa-sort-down");
+        for (let index = 0; index < sort_child.length; index++) {
+            var className = sort_child[index].className;
+            className = className.replace("fa-sort-up", "fa-sort");
+            className = className.replace("fa-sort-down", "fa-sort");
+            sort_child[index].className = className;
+        }
+    });
 });
