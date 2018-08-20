@@ -1,0 +1,11 @@
+ [x] - Revoir la suppression : Mettre des alert message avant suppression. Ne pas afficher le bouton de suppression massive si pas de data.
+ - Gestion des guillement dans les chaine de caractères envoyés au serveur pour traitement.
+ - Ajouter l'url du film.
+ - Small dashboard disque pour voir le nombre de films par catégories
+ - Voir le nombre de fois qu'un films est vu (donc lancé)
+ - Implémenter l'analyse comportemental pour voir les fonctionnalité que les utilisateurs aiment le plus et/ou n'utilisent pas.
+ - Envoie de mail à l'admin lorsqu'un film est ajouter
+ - Dans le cas où la fonctionnalité "envoie de mail à l'admin" est implémentée, mettre alors en place la gestion des utlisateur (activation, suppression, etc)
+ - Clean code
+ - Implementation API REST avec un Bundle.
+ 

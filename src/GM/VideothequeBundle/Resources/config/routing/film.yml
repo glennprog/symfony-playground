@@ -38,3 +38,31 @@ film_delete_all:
     path:     /all/delete
     defaults: { _controller: "GMVideothequeBundle:Film:delete_all" }
     methods:  [GET, POST]
+
+
+
+######################## REST API ########################
+rest_film_index:
+    path:     /api_v1/page/{page}/count/{count}
+    defaults: { _controller: "GMVideothequeBundle:RestFilm:index"}
+    methods:  [GET, POST]
+
+
+rest_film_show:
+    path:     /api_v1/{id}/show
+    defaults: { _controller: "GMVideothequeBundle:RestFilm:show"}
+    methods:  [GET, POST]
+    requirements:
+        id: '\d+'
+
+rest_film_delete:
+    path:     /api_v1/{id}/delete
+    defaults: { _controller: "GMVideothequeBundle:RestFilm:delete" }
+    methods:  [DELETE, GET, POST]
+    requirements:
+        id: '\d+'
+
+rest_film_delete_all:
+    path:     /api_v1/all/delete
+    defaults: { _controller: "GMVideothequeBundle:RestFilm:delete_all" }
+    methods:  [GET, POST]

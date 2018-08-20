@@ -1,4 +1,4 @@
-function searchEngineManager(search_container_entity, search_engine_data, callback, paginator_entity) {
+function searchEngineManager(search_container_entity, search_engine_data, callback, paginator_entity, colSearch) {
     // When the user clicks the button, open the modal 
     $("#search_container_option_close_" + search_container_entity).click(function () {
         // Get the modal
@@ -17,7 +17,9 @@ function searchEngineManager(search_container_entity, search_engine_data, callba
         search_engine_data.searchByMode = x;
         search_engine_data.orderBy = {};
         var y = document.querySelector('input[name="search_engine_options_orderby_' + search_container_entity + '"]:checked').value;
-        search_engine_data.orderBy.nom = y;
+        console.log(colSearch);
+        console.log(search_engine_data);
+        search_engine_data.orderBy[colSearch] = y;
         if ($("#search_container_data_input_" + search_container_entity).val() == "") {
             search_engine_data.searchBy = null;
         }
@@ -34,7 +36,7 @@ function searchEngineManager(search_container_entity, search_engine_data, callba
     });
     //$("#search_container_data_" + paginator_entity).change(function () {
     $("#search_container_data_input_" + search_container_entity).keyup(function () {
-        setToOnePagePaginator(paginator_entity);
+        //setToOnePagePaginator(paginator_entity);
         search_data_input = search_engine_data.searchBy;
         if ($(this).val() == "") {
             search_data_input = null;
@@ -56,8 +58,10 @@ function searchEngineManager(search_container_entity, search_engine_data, callba
         var data = { 'searchByMode': search_engine_data.searchByMode, 'searchBy': search_engine_data.searchBy, 'orderBy': search_engine_data.orderBy };
         callback(data);
     });
+    /*
     function setToOnePagePaginator(paginator_entity) {
         $("#paginator_container_page_" + paginator_entity).val(1);
     }
+    */
 }
 

@@ -24,7 +24,7 @@
       </div>
       <div class="paginator-container-count">
          <span>{{'Max'|trans}} :</span>
-         <select name="paginator_container_count_name_{{paginator['entity']}}" id="paginator_container_count_{{paginator['entity']}}">
+         <select name="paginator_container_count_name_{{paginator['entity']}}" id="paginator_container_count_{{paginator['entity']}}" {{dataSize == 0 ? 'disabled' : ''}}>
          <option value="5" {% if paginator['count'] == 5%}selected{% endif %}>5</option>
          <option value="10" {% if paginator['count'] == 10%}selected{% endif %}>10</option>
          <option value="25" {% if paginator['count'] == 25%}selected{% endif %}>25</option>
@@ -34,7 +34,7 @@
          </select>
       </div>
       <div class="paginator-container-page">
-         Page <input type="text" name="paginator_container_page_name_{{paginator['entity']}}" id="paginator_container_page_{{paginator['entity']}}" placeholder="Entrer le numéro de la page" value = {{paginator['current_page']}}>
+         Page <input type="text" name="paginator_container_page_name_{{paginator['entity']}}" id="paginator_container_page_{{paginator['entity']}}" placeholder="Entrer le numéro de la page"  {{dataSize == 0 ? 'disabled' : ''}} value = {{paginator['current_page']}}>
       </div>
       <div class="paginator-container-page-total">
          {% if paginator['current_page'] <= paginator['total_page'] %}

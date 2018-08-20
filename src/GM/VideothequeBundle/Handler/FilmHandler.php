@@ -46,6 +46,7 @@ class FilmHandler
             'index' => 'film_index',
             'show' => 'film_show',
             'edit' => 'film_edit',
+            'rest_index' => 'rest_film_index',
         );
         return $listRoutes[$template];
     }

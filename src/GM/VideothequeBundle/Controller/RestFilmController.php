@@ -14,7 +14,7 @@ use GM\VideothequeBundle\Form\FilmType;
  * Film controller.
  *
  */
-class FilmController extends Controller
+class RestFilmController extends Controller
 {    
     public function indexAction(Request $request)
     {
@@ -23,13 +23,18 @@ class FilmController extends Controller
         $criterias['criteria-where'] = $this->getBaseCriterias_film();
         $criterias['pagination']['route']['route_name'] = ( $this->get('film_handler')->getRoute('rest_index') ); // Using API to call json data
         
+        $searchByCriterias = $this->get('search_engine_manager')->getSearchByCriteriasWhere();
+        if($searchByCriterias != null){
+            $criterias['criteria-where'][]= $searchByCriterias;
+        }
+        $orderByCriterias = $this->get('search_engine_manager')->getOrderByCriterias();
+        $criterias['criteria-orderby'] = $orderByCriterias;
+
         $films = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
-        
-        return $this->render(
-            $this->get('film_handler')->getTwig('index'),
-            array(
-                'films' => $films
-            ));
+        $delete_all_films_url = $this->generateUrl('rest_categorie_delete_all');
+
+        return new JsonResponse(array('data' => array('films' => $films, 'delete_all_films_url' => $delete_all_films_url), 'msg' => 'OK', 'status' => 200));
+    
     }
 
     public function newAction(Request $request)

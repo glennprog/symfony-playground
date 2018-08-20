@@ -27,12 +27,22 @@ class CategorieController extends Controller
         $criterias['pagination']['entity-name'] = "categorie_deux";
         $categories_deux = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
         
+        /*
         return $this->render(
             $this->get('categorie_handler')->getTwig('index'), 
             array(
                 'categories' => $categories,
                 'categories_deux' => $categories_deux
             ));
+        $criterias['pagination']['entity-name'] = "categorie_deux";
+        $categories_deux = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
+        */
+
+        return $this->render(
+            $this->get('categorie_handler')->getTwig('index'), 
+            array(
+                'categories' => $categories,
+        ));
     }
 
     public function showAction(Request $request, Categorie $categorie,  $id)
@@ -46,6 +56,7 @@ class CategorieController extends Controller
             $request->getSession()->getFlashBag()->add("warning", $msgGen);
             return $this->redirectToRoute('categorie_index');
         }
+        dump($FilmsParCategorie);
         return $this->render(
             $this->get('categorie_handler')->getTwig('show'), 
             array(

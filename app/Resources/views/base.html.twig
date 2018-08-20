@@ -13,6 +13,7 @@
             <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
             <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
             <!--<link href="https://unpkg.com/webkul-micron@1.1.6/dist/css/micron.min.css" type="text/css" rel="stylesheet">-->        
+            
         {% endblock %}
         {% block stylesheetsChild %}{% endblock %}
 </head>
@@ -52,11 +53,12 @@
     {% block javascripts %}
             <script src="{{ asset('frameworks/jquery/jquery-3.3.1.min.js') }}"></script>
             <script src="{{ asset('frameworks/jquery/jquery-ui-1.12.1/jquery-ui.min.js') }}"></script>
+            <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
             <script src="{{ asset('frameworks/bootstrap/js/bootstrap.min.js') }}"></script>
             <script src="{{ asset('frameworks/micron/js/micron.min.js') }}"></script>
             <script src="{{ asset('lib/gm/js/gm-utils.js') }}"></script>
-            <script src="{{ asset('lib/gm/js/min/gm-ui-paginator.min.js') }}"></script>
-            <script src="{{ asset('lib/gm/js/min/gm-ui-searchEngine.min.js') }}"></script>
+            <script src="{{ asset('lib/gm/js/gm-ui-paginator.js') }}"></script>
+            <script src="{{ asset('lib/gm/js/gm-ui-searchEngine.js') }}"></script>
             <script src="{{ asset('lib/gm/js/min/gm-ui-sort.min.js') }}"></script>
             <script src="{{ asset('lib/gm/js/min/gm-ui-utils.js') }}"></script>
             <script src="{{ asset('application/js/application.js') }}"></script>

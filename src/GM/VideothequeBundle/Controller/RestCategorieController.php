@@ -32,11 +32,15 @@ class RestCategorieController extends Controller
 
         $categories = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
         $delete_all_categories_url = $this->generateUrl('rest_categorie_delete_all');
-        
+
+        /*
         $criterias['pagination']['entity-name'] = "categorie_deux";
         $categories_deux = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
-        
         return new JsonResponse(array('data' => array('categories_deux' => $categories_deux, 'categories' => $categories, 'delete_all_categories_url' => $delete_all_categories_url), 'msg' => 'OK', 'status' => 200));
+        */
+
+        return new JsonResponse(array('data' => array('categories' => $categories, 'delete_all_categories_url' => $delete_all_categories_url), 'msg' => 'OK', 'status' => 200));
+    
     }
 
     public function showAction(Request $request, Categorie $categorie,  $id)
@@ -160,34 +164,6 @@ class RestCategorieController extends Controller
         return $criteria;
     }
     
-    public function FilmsParCategorie($categorieID)
-    {
-        $criterias = $this->get('film_handler')->getCriterias();
-            $criterias['pagination']['route'] = array(
-                'route_name' => $this->get('categorie_handler')->getRoute('rest_show_film_par_categorie'), //rest_show_film_par_categorie
-                'params' => array('id' => $categorieID)
-            );
-            $criterias['criteria-where'] = $this->getBaseCriterias_film();
-            $criterias['criteria-where'][] = 
-                array(
-                    'criterias' => array(
-                        array(
-                                'column' => array(
-                                'name' => 'categorie',
-                                'value' => $categorieID
-                            ),
-                            'operator' => array(
-                                'affectation' => '=',
-                                'condition' => null
-                            ),
-                        ),
-                    ),
-                    'criterias-condition' => 'and'
-                );    
-        $films = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
-        return $films;
-    }
-
     public function showFilmParCategorieAction(Request $request, Categorie $categorie, $id, $page, $count)
     {
         $this->securityGuardianAccess(); // Calling of security Guardian
@@ -208,5 +184,41 @@ class RestCategorieController extends Controller
                 'status' => 200
             )
         );
+    }
+
+    public function FilmsParCategorie($categorieID)
+    {
+        $criterias = $this->get('film_handler')->getCriterias();
+            $criterias['pagination']['route'] = array(
+                'route_name' => $this->get('categorie_handler')->getRoute('rest_show_film_par_categorie'), //rest_show_film_par_categorie
+                'params' => array('id' => $categorieID)
+            );
+            $criterias['criteria-where'] = $this->getBaseCriterias_film();
+            $searchByCriterias = $this->get('search_engine_manager')->getSearchByCriteriasWhere();
+            if($searchByCriterias != null){
+                $criterias['criteria-where'][]= $searchByCriterias;
+            }
+            $orderByCriterias = $this->get('search_engine_manager')->getOrderByCriterias();
+            $criterias['criteria-orderby'] = $orderByCriterias;
+    
+            $criterias['criteria-where'][] = 
+                array(
+                    'criterias' => array(
+                        array(
+                                'column' => array(
+                                'name' => 'categorie',
+                                'value' => $categorieID
+                            ),
+                            'operator' => array(
+                                'affectation' => '=',
+                                'condition' => null
+                            ),
+                        ),
+                    ),
+                    'criterias-condition' => 'and'
+                );    
+        $films = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
+        //dump($criterias);
+        return $films;
     }
 }
