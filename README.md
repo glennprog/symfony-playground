@@ -93,66 +93,15 @@ Branch, edit, commit, merge, push, status, add ...
 
 
 # Principal Contenus du playground
+Le contenus n'est sert juste à jouer avec les composants, le code, etc.. Donc ce n'est pas un projet finis en l'état.
+Le code n'est donc pas encore épuré, c'est tel un échafaudage, un small dratf pour jouer avec symf.
 
-Tous le contenu n'est pas renseigné, il sera mis à jour bientôt.
-
-- Services
-    - QuestionHadnler service
-    - AnswerHadnler service
-    - WatchDogLogger service
-    - message generator service
-    - Form Manager service
-    - injection des service Core
-    - injection des services custom
-    - Generator de guid
-
-    Bonus : 
-    - Outils Alerts message (disponible depuis le repos https://github.com/glennprog/custom-alert)
-    - Utlisation des flashbag injecté dans la réponse de la requête.
-    - Utilisation des repository entité pour des requête custom (par exemple QuestionRepository)
-    - WatchDogLogger : Traceur de log sur Suppression et mis à jour; Avec écriture de log en DB par exemple.
-    - message generator : Un générateur de message associés aux actions (création, mise à jour, etc)
-    - AnswerHadnler Handler of Answer (using as a service also)
-    - Generateur de GUID moins secure et très secure (avec open ssl par exemple)
-    - BaseHandler in AppBundle
-    - BaseEntity in AppBundle (à venir prochainement, mais en cours de réflexion)
-
-- Bar de navigation
-    - Layout pour l'app
-    - layout pour chaque bundle
-
-- Gestion d'utilisateur avec FOSUSER
-    ```
-    Voir la documentation symfony : http://symfony.com/doc/master/bundles/FOSUserBundle/index.html
-    ```
-    - Personalisation des templates FosUser
-        - register_content
-        - register confirmed
-        - security : login_content
-        - change password
-        - profile
-    - Class Utilisateur personnalisée (nom, prénom, guid)
-    - Personalisation du formulaire d'inscription : RegistrationFormType
-        - lien doc officielle : https://symfony.com/doc/current/bundles/FOSUserBundle/overriding_forms.html
-    - Connexion google [à faire]
-    - Connexion facebook [à faire]
-
-- Système de pagination (performant)
-    - traitement serveur
-    - traitement front (beau style, template différent disponibles à venir)
-
-- Recupération des paramètre d'une url en javascript 
-- Modification des paramètre d'une url en javascript
-- Custom methode de lecture de la taille d'un objet (vu comme array)
-- Ajax methode pour meilleur expérience utilisateur
-- Serialization d'entity
-
-Mise à jour du contenus bientôt
+Des travaux seront menés pour avoir un playground safe et riche et surtout épuré en l'état.
 
 # Arrive bientôt:
 
 Un prochain travail portera sur la documentation du code, avec la génération de la doc associée.
+Mise à jour du contenus bientôt de la documentation en cours (bientôt dans le wiki)
 
 
-
-<(^__^)>
+<(^__^)> aka sudo master :)

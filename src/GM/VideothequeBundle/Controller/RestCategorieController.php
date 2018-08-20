@@ -33,12 +33,6 @@ class RestCategorieController extends Controller
         $categories = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
         $delete_all_categories_url = $this->generateUrl('rest_categorie_delete_all');
 
-        /*
-        $criterias['pagination']['entity-name'] = "categorie_deux";
-        $categories_deux = $this->get('query_manager')->findByCriterias( $criterias ); // Get query's result
-        return new JsonResponse(array('data' => array('categories_deux' => $categories_deux, 'categories' => $categories, 'delete_all_categories_url' => $delete_all_categories_url), 'msg' => 'OK', 'status' => 200));
-        */
-
         return new JsonResponse(array('data' => array('categories' => $categories, 'delete_all_categories_url' => $delete_all_categories_url), 'msg' => 'OK', 'status' => 200));
     
     }
